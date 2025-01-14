@@ -47,6 +47,9 @@ button{
     height: 2em;
     border-radius: 10px;
 }
+button:hover{
+    background: #00a32c;
+}
 /* .logo{
     font-size: 25px;
     font-weight: bold;

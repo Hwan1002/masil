@@ -12,11 +12,9 @@ const Modal = ({ isOpen, onClose, title, content,  actions, className}) => {
 
     const handleClose = () => {
       setIsVisible(false);
-      setTimeout(() => {
-        onClose();
-      }, 700);
+      onClose();
     };
-
+  
     if (!isVisible && !isOpen) return null;
     return (
       <div className={`modal-backdrop ${isOpen ? "open" : ""}`}>
@@ -42,9 +40,7 @@ const Modal = ({ isOpen, onClose, title, content,  actions, className}) => {
               </button>
             ))}
             {!actions.length && (
-              <button className="default-close" onClick={handleClose}>
-                확인
-              </button>
+              <button className="default-close" onClick={handleClose}>확인</button>
             )}
           </div>
         </div>

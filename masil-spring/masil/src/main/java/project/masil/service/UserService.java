@@ -24,7 +24,7 @@ public class UserService {
 	// Id 중복체크 메서드
 	// 중복시에 true 반환
 	public boolean isDuplicateId(String userId) {
-		return userRepository.existsById(userId);
+		return userRepository.existsByUserId(userId);
 
 	}
 
@@ -52,8 +52,6 @@ public class UserService {
 				.value("회원가입이 완료되었습니다.") // 성공 메시지
 				.build();
 	}
-	
-	
 	
 	
 	

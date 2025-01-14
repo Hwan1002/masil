@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useContext, useEffect } from 'react';
 import { ProjectContext } from '../context/MasilContext';
 import { useNavigate } from 'react-router-dom';
@@ -25,7 +26,6 @@ const MyPage = () => {
     const navigate = useNavigate();
 
     useEffect(()=>{
-      debugger;
       const axiosTest = async() => {
         try {
           const response = await axios.get("http://localhost:9090/user/123");

@@ -2,56 +2,111 @@ import React, { useState, useRef, useContext } from "react";
 import "../css/SignUp.css";
 import { ProjectContext } from "../context/MasilContext";
 import { useNavigate } from "react-router-dom";
+import Modal from "../component/Modal";
+import useModal from "../context/useModal";
 import axios from "axios";
 
 const SignUp = () => {
-  //회원가입 formData
+  //프로필사진 상태
   const [profilePhoto, setProfilePhoto] = useState(null);
 
+  //중복체크버튼 눌렀는지 
+  const [DuplicateBtn, setDuplicateBtn] = useState(false);
+
+  //비밀번호 확인 상태 따로 관리
+  const [pwdConfirm, setPwdConfirm] = useState("");
+
+  //회원가입 formData
   const [formData, setFormData] = useState({
     userId: "",
     userName: "",
     password: "",
     email: "",
   });
+  
+  const navigate = useNavigate();
 
+  //모달 기능 사용
+  const {
+    isModalOpen,
+    modalTitle,
+    modalMessage,
+    modalActions,
+    openModal,
+    closeModal,
+  } = useModal();
+
+  //회원가입 버튼 클릭 함수
   const submitFormData = async (e) => {
     e.preventDefault();
+    //빈값확인
+    const isEmpty = Object.values(formData).some((value) => !value);
+    if (isEmpty) {
+      openModal({
+        message: "빈칸을 입력해주세요.",
+      });
+      return;
+    }
+    //중복체크 눌렀는지
+    if (!DuplicateBtn) {
+      openModal({
+        message: "아이디 중복 확인해주세요.",
+      });
+      return;
+    }
+    //비밀번호 불일치
+    if (pwdConfirm !== formData.password) {
+      openModal({
+        message: "비밀번호가 일치하지 않습니다.",
+      });
+      return;
+    }
     try {
-      debugger;
       const data = new FormData();
       if (profilePhoto) {
         data.append("profilePhoto", profilePhoto);
       }
-      data.append(
-        "dto",
-        new Blob([JSON.stringify(formData)], { type: "application/json" })
-      );
-
+      data.append("dto",new Blob([JSON.stringify(formData)], { type: "application/json" }));
       const response = await axios.post("http://localhost:9090/user", data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
       if (response) {
-        alert(response.data.value);
-        navigate("/login");
+        openModal({
+          title: "회원가입",
+          message: "환영합니다.",
+          actions: [{label: "확인", onClick:()=>{ closeModal(); navigate("/login"); }}],
+        });
       }
     } catch (error) {
-      console.error("에러남" + error);
+      openModal({
+        title: "회원가입",
+        message: error.response.data.error,
+      });
     }
   };
+
   //프로필 사진
   const inputImgRef = useRef(null);
   const { imagePreview, setImagePreview } = useContext(ProjectContext);
-  const navigate = useNavigate();
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if ((name = "email")) {
+      if (emailRegex.test(value)) {
+        setFormData({ ...formData, [name]: value });
+      } else {
+        openModal({
+          message: "옳바른 이메일 형식을 입력하세요.",
+        });
+        return;
+      }
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const handleProfileClick = () => {
@@ -70,6 +125,27 @@ const SignUp = () => {
         setImagePreview(reader.result);
       };
       reader.readAsDataURL(file);
+    }
+  };
+  const idDuplicate = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.get("http://localhost:9090/user", {
+        params: { userId: formData.userId },
+      });
+      console.log(response.data);
+      if (response.data) {
+        openModal({
+          message: "중복된 아이디입니다.",
+        });
+      } else {
+        setDuplicateBtn(true);
+        openModal({
+          message: "사용가능한 아이디입니다.",
+        });
+      }
+    } catch (error) {
+      console.log(error.response.data);
     }
   };
   return (
@@ -109,13 +185,19 @@ const SignUp = () => {
               placeholder="이름을 입력하세요."
               onChange={(e) => handleInputChange(e)}
             />
-            <input
-              type="text"
-              name="userId"
-              className="form-input"
-              placeholder="아이디를 입력하세요"
-              onChange={(e) => handleInputChange(e)}
-            />
+            <div className="inputAndBtn">
+              <input
+                type="text"
+                name="userId"
+                className="form-input"
+                placeholder="아이디를 입력하세요"
+                onChange={(e) => handleInputChange(e)}
+              />
+              <button type="button" onClick={(e) => idDuplicate(e)}>
+                중복확인
+              </button>
+            </div>
+
             <input
               type="password"
               name="password"
@@ -127,6 +209,7 @@ const SignUp = () => {
               type="password"
               className="form-input"
               placeholder="비밀번호 확인"
+              onChange={(e) => setPwdConfirm(e.target.value)}
             />
             <input
               type="email"
@@ -144,6 +227,13 @@ const SignUp = () => {
           </button>
         </div>
       </form>
+      <Modal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        title={modalTitle}
+        content={modalMessage}
+        actions={modalActions}
+      />
     </div>
   );
 };
