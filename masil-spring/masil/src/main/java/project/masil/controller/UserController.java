@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -25,7 +26,7 @@ public class UserController {
 	
 	// 마이페이지에서의 유저정보조회 게시판에대한 내용이들어왔을때 수정예정 
 	@GetMapping("/{userId}") 
-	public ResponseEntity<?> signin(@PathVariable("userId")String userId ){
+	public ResponseEntity<?> getInfo(@PathVariable("userId")String userId ){
 		ResponseDTO response = service.getInfo(userId) ;
 		return ResponseEntity.ok(response); 
 	}
@@ -39,9 +40,18 @@ public class UserController {
 	}
 	
 	// 중복체크 메서드 
-	
 	@GetMapping
 	public ResponseEntity<?> isDuplicateId(@RequestParam(value = "userId") String userId ){
 		return ResponseEntity.ok(service.isDuplicateId(userId));
 	}
+	
+	// 로그인 메서드
+	@PostMapping("/login")
+	public ResponseEntity<?> signin(@RequestBody UserDTO dto){
+		return ResponseEntity.ok(service.signin(dto)) ;
+	}
+	
+	
+	
+	
 }

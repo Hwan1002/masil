@@ -23,28 +23,28 @@ public class UserService {
 
 	// Id 중복체크 메서드
 	// 중복시에 true 반환
-	public boolean isDuplicateId(String userId) {
+	public Boolean isDuplicateId(String userId) {
 		return userRepository.existsById(userId);
 
 	}
 
 	// 회원정보 조회 ()
-	public  ResponseDTO<UserDTO> getInfo(String userId) {
-		UserEntity entity =userRepository.findById(userId).orElseThrow(() -> new RuntimeException("해당 유저를 찾을 수 없습니다 .")) ;
-		return ResponseDTO.<UserDTO>builder()
-				.status(200).value(toDTO(entity)).build();
-		
+	public ResponseDTO<UserDTO> getInfo(String userId) {
+		UserEntity entity = userRepository.findById(userId)
+				.orElseThrow(() -> new RuntimeException("해당 유저를 찾을 수 없습니다 ."));
+		return ResponseDTO.<UserDTO>builder().status(200).value(toDTO(entity)).build();
+
 	}
-	
-	
-	// 회원가입 ( 추후 예외처리 로직 추가예정 .) 
-	// 예외처리 : 이메일 중복일시에 예외 
+
+	// 회원가입 ( 추후 예외처리 로직 추가예정 .)
+	// 예외처리 : 이메일 중복일시에 예외
 	public ResponseDTO<String> signUp(UserDTO dto, MultipartFile profilePhoto) {
 		// 사진을 저장하고 사진의 경로를 얻는 stirng 반환받은후 그 반환받은 값을 profilePhoto에 직접 넣어준다 .
-		if(userRepository.existsByEmail(dto.getEmail())) {
-			throw new  EmailAlreadyExistsException (dto.getEmail() +" 은(는) 중복된 이메일입니다: ");
-		}; 
-		
+		if (userRepository.existsByEmail(dto.getEmail())) {
+			throw new EmailAlreadyExistsException(dto.getEmail() + " 은(는) 중복된 이메일입니다: ");
+		}
+		;
+
 		String uploadDir = System.getProperty("user.dir") + "/uploads";
 		dto.setProfilePhotoPath(FileUploadUtil.saveFile(profilePhoto, uploadDir, "profilePhotos"));
 		userRepository.save(toEntity(dto));
@@ -52,22 +52,34 @@ public class UserService {
 				.value("회원가입이 완료되었습니다.") // 성공 메시지
 				.build();
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+	// 로그인
+	public ResponseDTO<String> signin(UserDTO dto) {
+		UserEntity entity = userRepository.findByUserId(dto.getUserId());
+		if (entity == null) {
+			throw new IdIsNotExistsException("아이디가 일치하지않습니다.");
+		}
+		
+		if (!entity.getPassword().equals(dto.getPassword())) {
+			throw new PasswordMismatchException("비밀번호가 일치하지않습니다.");
+		}
+
+		return ResponseDTO.<String>builder().status(200).value("환영합니다").build();
+
+	}
+
+//	// 회원가입의 이메일인증번호 전송 ( 아이디찾기와 비밀번호 찾기에도 쓰일예정 )
+//	public ResponseDTO<Integer> 
+//	
+//	
+//	
+//	;
 
 	// entity -> dto
 	public UserDTO toDTO(UserEntity entity) {
 
-		return UserDTO.builder().userId(entity.getUserId()).password(entity.getPassword()).userName(entity.getUserName())
-				.userNickName(entity.getUserNickName()).email(entity.getEmail())
+		return UserDTO.builder().userId(entity.getUserId()).password(entity.getPassword())
+				.userName(entity.getUserName()).userNickName(entity.getUserNickName()).email(entity.getEmail())
 				.profilePhotoPath(entity.getProfilePhotoPath()).location(entity.getLocation())
 				.authProvider(entity.getAuthProvider()).build();
 	}
@@ -78,15 +90,25 @@ public class UserService {
 				.userNickName(dto.getUserNickName()).email(dto.getEmail()).profilePhotoPath(dto.getProfilePhotoPath())
 				.location(dto.getLocation()).authProvider(dto.getAuthProvider()).build();
 	}
-	
-	
-	
-	// 이메일 중복예외 내부클래스 
-    public static class EmailAlreadyExistsException extends RuntimeException {
-        public EmailAlreadyExistsException(String message) {
-            super(message);
-        }
-    }
-	
-	
+
+	// 이메일 중복예외 내부클래스
+	public static class EmailAlreadyExistsException extends RuntimeException {
+		public EmailAlreadyExistsException(String message) {
+			super(message);
+		}
+	}
+
+	// 아이디 불일치 예외 내부클래스
+	public static class IdIsNotExistsException extends RuntimeException {
+		public IdIsNotExistsException(String message) {
+			super(message);
+		}
+	}
+
+	public static class PasswordMismatchException extends RuntimeException {
+		public PasswordMismatchException(String message) {
+			super(message);
+		}
+	}
+
 }
