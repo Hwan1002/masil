@@ -104,19 +104,19 @@ const SignUp = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if ((name = "email")) {
-      if (emailRegex.test(value)) {
-        setFormData({ ...formData, [name]: value });
-      } else {
-        openModal({
-          message: "옳바른 이메일 형식을 입력하세요.",
-        });
-        return;
-      }
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
+    //   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    //   if ((name = "email")) {
+    //     if (emailRegex.test(value)) {
+    //       setFormData({ ...formData, [name]: value });
+    //     } else {
+    //       openModal({
+    //         message: "옳바른 이메일 형식을 입력하세요.",
+    //       });
+    //       return;
+    //     }
+    //   } else {
+    setFormData({ ...formData, [name]: value });
+    // }
   };
 
   const handleProfileClick = () => {

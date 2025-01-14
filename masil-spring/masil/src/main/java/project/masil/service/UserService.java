@@ -1,12 +1,7 @@
 package project.masil.service;
 
-import java.util.List;
-
-import javax.management.RuntimeErrorException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 import project.masil.common.FileUploadUtil;
@@ -24,7 +19,7 @@ public class UserService {
 	// Id 중복체크 메서드
 	// 중복시에 true 반환
 	public Boolean isDuplicateId(String userId) {
-		return userRepository.existsById(userId);
+		return userRepository.existsByUserId(userId);
 
 	}
 
