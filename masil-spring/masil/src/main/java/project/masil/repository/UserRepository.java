@@ -10,6 +10,8 @@ import project.masil.entity.UserEntity;
 public interface UserRepository  extends JpaRepository<UserEntity,String >{
 
 	Boolean existsByEmail(String email);
+	
 	Boolean existsByUserId(String userId);
 
+	UserEntity findByUserId(String userId) ;
 }
