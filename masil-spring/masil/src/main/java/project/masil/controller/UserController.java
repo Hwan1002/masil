@@ -31,6 +31,8 @@ public class UserController {
 		return ResponseEntity.ok(response); 
 	}
 	
+	
+	
 	// 회원가입 메서드 
 	@PostMapping(consumes = {"multipart/form-data"}) // body속 데이터의 타입명시 
 	public ResponseEntity<?> signup(@RequestPart(value = "profilePhoto" , required =false)  MultipartFile profilePhoto,
