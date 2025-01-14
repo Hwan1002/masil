@@ -1,0 +1,63 @@
+.signup_form{
+  text-align: center;
+  width: 30em;
+  height: 30em;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 1em;
+  /* box-shadow: 0 0px 2px #999, 0px 0px 10px #999; */
+}
+.signup_form form{
+  width:100%;
+}
+.form_input{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin: 2em 0;
+}
+.form_input input{
+  border: 1px solid #f0f0f0;
+  border-radius: 5px;
+  margin-bottom: 1em;
+  font-size: .8rem;
+  height: 2em;
+  padding: 1em;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.inputAll {
+  display: flex;
+  flex-direction: column;
+  margin-left: 4em;
+}
+.form-input:focus {
+  border-color: #00ffbf;
+  box-shadow: 0 0 8px rgb(65, 252, 48);
+  outline: none;
+}
+
+/* Hover 효과 */
+.form-input:hover {
+  box-shadow: 0 0 8px rgb(65, 252, 48);
+}
+.profilePhoto{
+  margin-bottom: 1em;
+}
+.photoImg{
+  width:5em;
+  height:5em;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.photoImg img {
+  width:100%;
+  object-fit: cover;
+}
+
+.signUp_button button:first-child{margin-right: 1em;}

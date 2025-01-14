@@ -1,0 +1,100 @@
+/* 로그인 섹션 컨테이너 */
+.FindId_container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 30em;
+    height: auto;
+    padding: 50px;
+    gap: 1rem;
+    border-radius: 8px;
+    border: 1px solid #a9ddb7;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+}
+
+/* 입력 필드와 버튼을 감싸는 컨테이너 */
+.FindId_inputWrapper {
+    position: relative; /* 버튼의 위치를 입력 필드 내부로 조정 */
+    width: 100%; /* 입력 필드가 버튼과 함께 맞춰질 수 있도록 */
+}
+
+/* 이메일 div 왼쪽정렬렬 */
+.FindId_left{
+    display: flex;
+    width: 100%;
+    justify-content: flex-start;
+}
+
+/* 이메일입력칸과 찾기버튼 컨테이너 */
+.FindId_inputContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+/* 입력 필드 스타일 */
+.FindId_input {
+    width: 100%;
+    padding: 10px 50px 10px 10px; /* 버튼 크기만큼 오른쪽 패딩 추가 */
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* 버튼 스타일 */
+.FindId_sendBtn {
+    position: absolute;
+    top: 50%;
+    right: 5px; /* 입력 필드 오른쪽에 버튼 위치 */
+    transform: translateY(-50%); /* 버튼을 수직 중앙 정렬 */
+    padding: 5px 10px;
+    font-size: 0.9rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* 버튼 호버 효과 */
+.FindId_sendBtn:hover {
+    background-color: #42db6b;
+}
+
+
+/* 돌아가기, 비밀번호 찾기 컨테이너 버튼 */
+.FindId_flexrow {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+    gap: 3rem;
+}
+
+
+/* 돌아가기, 비밀번호 찾기 버튼 */
+.FindId_button {
+    background: #a9ddb7;
+    border: none;
+    color: #fff;
+    font-size: .8rem;
+    width: 6em;
+    height: 2.5em;
+    width: 100%;
+    cursor: pointer;
+}
+
+/* 회원아이디 안내메시지 */
+.FindId_message{
+    text-align: center;
+    font-size: 1rem;
+    color: #555;
+}
+
+/* 버튼 마우스올렸을시 색상변경*/
+.FindId_button:hover {
+    background-color: #42db6b;
+  }

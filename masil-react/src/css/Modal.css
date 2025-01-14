@@ -1,0 +1,67 @@
+/* Modal.css */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    visibility: hidden;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+.modal-backdrop.open {
+    opacity: 1;
+    transform: scale(1);
+    visibility: visible;
+}
+/* 모달창 기본 공통 css */
+.modal-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: white;
+    padding: 1em;
+    border-radius: 8px;
+    min-width: 20em;
+    width: auto;
+    height: auto;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.modal-content.open {
+    opacity: 1;
+    transform: scale(1);
+}
+.modal-content h2{
+    margin: 0;
+    font-size: 1.1rem;
+}
+.modal-content p{
+    font-size: 0.8rem;
+}
+.modal-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-actions button {
+    background-color: #22a800;
+    color: white;
+    width: 5em;
+    height: 2em;
+}
+
+.modal-actions button[type="submit"] {
+    background-color: #4caf50;
+    color: white;
+}
+
+
