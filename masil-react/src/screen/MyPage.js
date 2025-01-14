@@ -2,10 +2,14 @@
 import React, { useState, useRef, useContext, useEffect } from 'react';
 import { ProjectContext } from '../context/MasilContext';
 import { useNavigate } from 'react-router-dom';
+import Modal from '../component/Modal';
+import useModal from '../context/useModal';
 import axios from 'axios';
 const MyPage = () => {
+
   const [formData, setFormData] = useState({
-      id : '',
+      userId : '',
+      userNickName : '',
       password : '',
       user_Name : '',
       email : '',
@@ -13,11 +17,13 @@ const MyPage = () => {
     })
     
     useEffect(() => {
-      const test = async () =>{
-        const response = await axios.get("http://localhost:9090/user/123");
-        console.log(response.data);
+      const getUserInfo = async()=>{
+        const response = await axios.get(`http://localhost:9090/user/master`)
+        if(response){
+          setFormData(response.data);
+        }
       }
-      test();
+      getUserInfo();
     },[])
 
    //프로필 사진
@@ -25,19 +31,7 @@ const MyPage = () => {
     const {imagePreview, setImagePreview} = useContext(ProjectContext);
     const navigate = useNavigate();
 
-    useEffect(()=>{
-      const axiosTest = async() => {
-        try {
-          const response = await axios.get("http://localhost:9090/user/123");
-          if(response){
-            console.log(response.data);
-          }
-        } catch (error) {
-          console.log("에러" + error);
-        }
-      }
-      axiosTest();
-    },[])
+ 
     const handleInputChange = (event) => {
       const { name, value } = event.target;
       setFormData({
@@ -83,8 +77,9 @@ const MyPage = () => {
           </div>
           <div className='inputAll'>
             {/* <input type="text" name="user_name" className="form-input" placeholder='이름을 입력하세요.'onChange={handleInputChange}/> */}
-            <input type="text" name="user_id" className="form-input"placeholder='닉네임을 입력하세요'/>
-            <input type="text" name="user_id" className="form-input"placeholder='아이디를 입력하세요'/>
+            <input type="text" name="userId" className="form-input"placeholder='아이디를 입력하세요'/>
+            <input type="text" name="userNickName" className="form-input"placeholder='닉네임을 입력하세요'/>
+            <input type="email" name="email" className="form-input"placeholder='아이디를 입력하세요'/>
             <input type="password" name="password" className="form-input" placeholder="비밀번호를 입력하세요."/>
             <input type="password" className="form-input"  placeholder="비밀번호 확인"/>
           </div>

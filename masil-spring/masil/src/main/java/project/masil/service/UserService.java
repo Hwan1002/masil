@@ -24,14 +24,13 @@ public class UserService {
 	// Id 중복체크 메서드
 	// 중복시에 true 반환
 	public Boolean isDuplicateId(String userId) {
-		return userRepository.existsById(userId);
+		return userRepository.existsByUserId(userId);
 
 	}
 
 	// 회원정보 조회 ()
 	public ResponseDTO<UserDTO> getInfo(String userId) {
-		UserEntity entity = userRepository.findById(userId)
-				.orElseThrow(() -> new RuntimeException("해당 유저를 찾을 수 없습니다 ."));
+		UserEntity entity = userRepository.findByUserId(userId);
 		return ResponseDTO.<UserDTO>builder().status(200).value(toDTO(entity)).build();
 
 	}

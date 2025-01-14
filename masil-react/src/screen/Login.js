@@ -1,34 +1,65 @@
-import React, { useState } from 'react';
-import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'; // 아이콘 가져오기
-import '../css/Login.css';
-import kakao from '../css/img/socialImg/kakao.png'
-import google from '../css/img/socialImg/google.jpg'
-import naver from '../css/img/socialImg/naver.png'
-import axios from 'axios';
+import React, { useContext, useState } from "react";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"; // 아이콘 가져오기
+import "../css/Login.css";
+import kakao from "../css/img/socialImg/kakao.png";
+import google from "../css/img/socialImg/google.jpg";
+import naver from "../css/img/socialImg/naver.png";
+import Modal from "../component/Modal";
+import useModal from "../context/useModal";
+import axios from "axios";
+import { ProjectContext } from "../context/MasilContext";
 const Login = () => {
     // 비밀번호 보이기, 숨기기 버튼 상태
-    const [showPassword, setShowPassword] = useState(false);
-    const [loginInfo, setLoginInfo] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
+  //form 값 상태
+  const [loginInfo, setLoginInfo] = useState({});
+  //로그인 성공 여부
+  const {setLoginSuccess} = useContext(ProjectContext);
 
-    //로그인 값 핸들러
-    const loginHandler = (e) => {
-        const { name, value } = e.target;
-        setLoginInfo({ ...loginInfo, [name]: value });
+  const {
+    isModalOpen,
+    modalTitle,
+    modalMessage,
+    modalActions,
+    openModal,
+    closeModal,
+  } = useModal();
+
+  //로그인 값 핸들러
+  const loginHandler = (e) => {
+    const { name, value } = e.target;
+    setLoginInfo({ ...loginInfo, [name]: value });
+  };
+
+  const loginSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        "http://localhost:9090/user/login",
+        loginInfo
+      );
+      if (response) {
+        setLoginSuccess(true);
+        openModal({
+          message: response.data.value,
+        });
+        // 쿠키활용해서 토큰 저장하기 구현
+      } else {
+        openModal({
+          message: response.data.value,
+        });
+        return;
+      }
+    } catch (error) {
+      openModal({
+        message: error.response.data.error,
+      });
     }
+  };
 
-    const loginSubmit = async() => {
-        try {
-            const response = await axios.post("http://localhost:9090/user/login", loginInfo);
-            if(response){
-                alert(response.data.value);
-            }
-        } catch (error) {
-            alert(error.response.data.error);
-        }
-    }
-
-    return (
-      <form className="login_container" onSubmit={loginSubmit}>
+  return (
+    <>
+      <form className="login_container" onSubmit={(e) => loginSubmit(e)}>
         <h2>로그인</h2>
         {/* 일반 로그인 */}
         <div>
@@ -111,7 +142,15 @@ const Login = () => {
           </div>
         </div>
       </form>
-    );
+      <Modal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        title={modalTitle}
+        content={modalMessage}
+        actions={modalActions}
+      />
+    </>
+  );
 };
 
 export default Login;
