@@ -38,7 +38,7 @@ const SignUp = () => {
         navigate("/login");
       }
     } catch (error) {
-      console.error("에러남" + error);
+      alert(error.response.data.error);
     }
   };
   //프로필 사진
