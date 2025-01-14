@@ -25,8 +25,7 @@ public class UserService {
 
 	// 회원정보 조회 ()
 	public ResponseDTO<UserDTO> getInfo(String userId) {
-		UserEntity entity = userRepository.findById(userId)
-				.orElseThrow(() -> new RuntimeException("해당 유저를 찾을 수 없습니다 ."));
+		UserEntity entity = userRepository.findByUserId(userId);
 		return ResponseDTO.<UserDTO>builder().status(200).value(toDTO(entity)).build();
 
 	}
@@ -100,6 +99,7 @@ public class UserService {
 		}
 	}
 
+	// 비밀번호 불일치 예외 내부클래스 
 	public static class PasswordMismatchException extends RuntimeException {
 		public PasswordMismatchException(String message) {
 			super(message);

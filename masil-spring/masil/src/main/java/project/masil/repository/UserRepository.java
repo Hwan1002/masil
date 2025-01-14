@@ -7,11 +7,13 @@ import net.bytebuddy.dynamic.DynamicType.Builder.FieldDefinition.Optional;
 import project.masil.entity.UserEntity;
 
 @Repository
-public interface UserRepository  extends JpaRepository<UserEntity,String >{
+public interface UserRepository  extends JpaRepository<UserEntity,Integer >{
 
 	Boolean existsByEmail(String email);
 	
 	Boolean existsByUserId(String userId);
 
 	UserEntity findByUserId(String userId) ;
+	
+
 }
