@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import project.masil.dto.ResponseDTO;
 import project.masil.dto.UserDTO;
+import project.masil.service.EmailService;
 import project.masil.service.UserService;
 
 @RequestMapping("user")
@@ -23,6 +24,8 @@ public class UserController {
 	// 서비스 의존성 주입 
 	@Autowired
 	private UserService service ;
+	@Autowired
+	private EmailService emailService;
 	
 	// 마이페이지에서의 유저정보조회 게시판에대한 내용이들어왔을때 수정예정 
 	@GetMapping("/{userId}") 
@@ -51,6 +54,18 @@ public class UserController {
 	@PostMapping("/login")
 	public ResponseEntity<?> signin(@RequestBody UserDTO dto){
 		return ResponseEntity.ok(service.signin(dto)) ;
+	}
+	
+	
+	// 이메일 전송 메서드 
+	@PostMapping("/send-email")
+	public ResponseEntity<?> sendEmail(@RequestParam("to") String to) {
+	    try {
+	        emailService.sendEmail(to);
+	        return ResponseEntity.ok("메일을 전송했습니다");
+	    } catch (Exception e) {
+	        return ResponseEntity.status(500).body("Failed to send email: " + e.getMessage());
+	    }	
 	}
 	
 	
