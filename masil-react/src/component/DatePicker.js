@@ -12,18 +12,26 @@ const DatePicker = () => {
   const [endDate, setEndDate] = useState(new Date());
   return(
     <LocalizationProvider dateAdapter={AdapterDateFns} locale={ko}>
-      <DateTimePicker
-        label="대여 시작 시간"
-        value={startDate}
-        onChange={setStartDate}
-        renderInput={(params) => <TextField {...params} className="startTime"/>}
-      />
-      <DateTimePicker
-        label="대여 종료 시간"
-        value={endDate}
-        onChange={setEndDate}
-        renderInput={(params) => <TextField {...params} className="endTime"/>}
-      />
+      <div className="startTime">
+        <DateTimePicker
+          label="대여 시작 시간"
+          value={startDate}
+          onChange={setStartDate}
+          renderInput={(params) => <TextField {...params} />}
+          inputFormat="yyyy/MM/dd hh:mm a"
+          style={{marginBottom:"2em"}}
+        />
+      </div>
+      <div className="endTime">
+        <DateTimePicker
+          label="대여 종료 시간"
+          value={endDate}
+          onChange={setEndDate}
+          renderInput={(params) => <TextField {...params}/>}
+          inputFormat="yyyy/MM/dd hh:mm a"
+        />
+      </div>
+      
     </LocalizationProvider>
   )
 }

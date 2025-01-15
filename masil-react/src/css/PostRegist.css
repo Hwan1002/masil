@@ -1,5 +1,5 @@
 .postRegist{
-  border: 1px solid red;
+  /* box-shadow: 0 0px 2px #999, 0px 0px 10px #999; */
   padding:1em;
 }
 .postRegist form{
@@ -8,9 +8,6 @@
   justify-content: center;
 }
 .postRegist .formDiv{
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
   margin-bottom: 2em;
 }
 .postRegist .formDiv input{
@@ -26,4 +23,8 @@
 }
 .registPhoto img {
   width:100%;
+}
+.formDiv{
+  display: flex;
+  flex-direction: column;
 }
