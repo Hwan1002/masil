@@ -1,0 +1,29 @@
+.postRegist{
+  border: 1px solid red;
+  padding:1em;
+}
+.postRegist form{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.postRegist .formDiv{
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin-bottom: 2em;
+}
+.postRegist .formDiv input{
+  border-radius: 5px;
+  width:20em;
+  height:3em;
+}
+.registPhoto{
+  width: 5em;
+  height:5em;
+  background-color: #fff;
+  border:1px solid #ccc;
+}
+.registPhoto img {
+  width:100%;
+}
