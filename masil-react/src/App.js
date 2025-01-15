@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import "./css/reset.css";
 import Header from './component/Header';
 import { Route, Routes } from 'react-router-dom';
@@ -9,6 +8,8 @@ import MyPage from './screen/MyPage';
 import Login from './screen/Login';
 import UserFindId from './screen/UserFindId';
 import UserFindPwd from './screen/UserFindPwd';
+import PostRegist from './screen/PostRegist';
+
 function App() {
   return (
     <ProjectProvider>
@@ -22,6 +23,7 @@ function App() {
           <Route path="/mypage" element={<MyPage/>}/>
           <Route path="/userfindid" element={<UserFindId/>}/>
           <Route path="/userfindpwd" element={<UserFindPwd/>}/>
+          <Route path="/postRegist" element={<PostRegist/>}/>
         </Routes>
       </div>
     </div>

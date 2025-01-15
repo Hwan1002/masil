@@ -20,6 +20,7 @@ const SignUp = () => {
   const [formData, setFormData] = useState({
     userId: "",
     userName: "",
+    userNickName: "",
     password: "",
     email: "",
   });
@@ -66,10 +67,7 @@ const SignUp = () => {
       if (profilePhoto) {
         data.append("profilePhoto", profilePhoto);
       }
-      data.append(
-        "dto",
-        new Blob([JSON.stringify(formData)], { type: "application/json" })
-      );
+      data.append("dto", new Blob([JSON.stringify(formData)], { type: "application/json" }));
       const response = await axios.post("http://localhost:9090/user", data, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -78,16 +76,8 @@ const SignUp = () => {
       if (response) {
         openModal({
           title: "회원가입",
-          message: "환영합니다.",
-          actions: [
-            {
-              label: "확인",
-              onClick: () => {
-                closeModal();
-                navigate("/login");
-              },
-            },
-          ],
+          message: response.data.value,
+          actions: [{label: "확인", onClick:()=>{ closeModal(); navigate("/login"); }}],
         });
       }
     } catch (error) {
@@ -104,17 +94,17 @@ const SignUp = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    //   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    //   if ((name = "email")) {
-    //     if (emailRegex.test(value)) {
-    //       setFormData({ ...formData, [name]: value });
-    //     } else {
-    //       openModal({
-    //         message: "옳바른 이메일 형식을 입력하세요.",
-    //       });
-    //       return;
-    //     }
+    // const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    // if ((name = "email")) {
+    //   if (emailRegex.test(value)) {
+    //     setFormData({ ...formData, [name]: value });
     //   } else {
+    //     openModal({
+    //       message: "옳바른 이메일 형식을 입력하세요.",
+    //     });
+    //     return;
+    //   }
+    // } else {
     setFormData({ ...formData, [name]: value });
     // }
   };
@@ -139,6 +129,12 @@ const SignUp = () => {
   };
   const idDuplicate = async (e) => {
     e.preventDefault();
+    if(!formData.userId){
+      openModal({
+        message:"아이디를 입력해주세요."
+      })
+      return;
+    }
     try {
       const response = await axios.get("http://localhost:9090/user", {
         params: { userId: formData.userId },
@@ -207,7 +203,13 @@ const SignUp = () => {
                 중복확인
               </button>
             </div>
-
+            <input
+                type="text"
+                name="userNickName"
+                className="form-input"
+                placeholder="닉네임을 입력하세요"
+                onChange={(e) => handleInputChange(e)}
+              />
             <input
               type="password"
               name="password"
@@ -221,13 +223,17 @@ const SignUp = () => {
               placeholder="비밀번호 확인"
               onChange={(e) => setPwdConfirm(e.target.value)}
             />
-            <input
-              type="email"
-              name="email"
-              className="form-input"
-              placeholder="이메일을 입력하세요."
-              onChange={(e) => handleInputChange(e)}
-            />
+            <div className="inputAndBtn">
+              <input
+                type="email"
+                name="email"
+                className="form-input"
+                placeholder="이메일을 입력하세요."
+                onChange={(e) => handleInputChange(e)}
+              />
+              <button>인증</button>
+            </div>
+            
           </div>
         </div>
         <div className="signUp_button">

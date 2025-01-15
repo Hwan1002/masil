@@ -12,8 +12,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UserDTO {
 
-	
-
 	private String userId; // 회원아이디 
 
 	private String password; // 비밀번호
