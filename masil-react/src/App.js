@@ -9,6 +9,7 @@ import MyPage from './screen/MyPage';
 import Login from './screen/Login';
 import UserFindId from './screen/UserFindId';
 import UserFindPwd from './screen/UserFindPwd';
+import RentalItem from './screen/RentalItem';
 function App() {
   return (
     <ProjectProvider>
@@ -22,6 +23,7 @@ function App() {
           <Route path="/mypage" element={<MyPage/>}/>
           <Route path="/userfindid" element={<UserFindId/>}/>
           <Route path="/userfindpwd" element={<UserFindPwd/>}/>
+          <Route path='/rentalitem' element={<RentalItem/>}/>
         </Routes>
       </div>
     </div>
