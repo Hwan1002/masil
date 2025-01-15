@@ -67,7 +67,7 @@ const SignUp = () => {
       if (profilePhoto) {
         data.append("profilePhoto", profilePhoto);
       }
-      data.append("dto",new Blob([JSON.stringify(formData)], { type: "application/json" }));
+      data.append("dto", new Blob([JSON.stringify(formData)], { type: "application/json" }));
       const response = await axios.post("http://localhost:9090/user", data, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -76,7 +76,7 @@ const SignUp = () => {
       if (response) {
         openModal({
           title: "회원가입",
-          message: "환영합니다.",
+          message: response.data.value,
           actions: [{label: "확인", onClick:()=>{ closeModal(); navigate("/login"); }}],
         });
       }
@@ -224,13 +224,17 @@ const SignUp = () => {
               placeholder="비밀번호 확인"
               onChange={(e) => setPwdConfirm(e.target.value)}
             />
-            <input
-              type="email"
-              name="email"
-              className="form-input"
-              placeholder="이메일을 입력하세요."
-              onChange={(e) => handleInputChange(e)}
-            />
+            <div className="inputAndBtn">
+              <input
+                type="email"
+                name="email"
+                className="form-input"
+                placeholder="이메일을 입력하세요."
+                onChange={(e) => handleInputChange(e)}
+              />
+              <button>인증</button>
+            </div>
+            
           </div>
         </div>
         <div className="signUp_button">

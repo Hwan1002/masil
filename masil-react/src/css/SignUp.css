@@ -1,13 +1,13 @@
 .signup_form{
   text-align: center;
   width: 40em;
-  height: 25em;
+  height: 30em;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border-radius: 1em;
+  /* border-radius: 1em; */
   box-shadow: 0 0px 2px #999, 0px 0px 10px #999;
 }
 .signup_form form{
