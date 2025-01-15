@@ -56,9 +56,9 @@ public class UserController {
 
 	// 이메일 전송 메서드
 	@PostMapping("/send-email")
-	public ResponseEntity<?> sendEmail(@RequestParam("to") String to) {
+	public ResponseEntity<?> sendEmail(@RequestBody UserDTO dto ) {
 		try {
-			emailService.sendEmail(to);
+			emailService.sendEmail(dto.getEmail());
 			return ResponseEntity.ok("메일을 전송했습니다");
 		} catch (Exception e) {
 			return ResponseEntity.status(500).body("Failed to send email: " + e.getMessage());
@@ -67,8 +67,8 @@ public class UserController {
 
 	// 인증번호 검증 메서드
 	@PostMapping("/verify")
-	public ResponseEntity<String> verifyCode(@RequestParam("email") String email, @RequestParam("verifycode") String code) {
-		boolean isValid = emailService.verifyCode(email, code);
+	public ResponseEntity<String> verifyCode(@RequestBody UserDTO dto) {
+		boolean isValid = emailService.verifyCode(dto.getEmail(),dto.getVerifyCode());
 		if (isValid) {
 			return ResponseEntity.ok("인증에 성공하였습니다.");
 		} else {

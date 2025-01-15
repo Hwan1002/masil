@@ -30,5 +30,6 @@ public class UserDTO {
 	
 	private String authProvider ; // 소셜로그인공급자 
 	
+	private String verifyCode ; // 이메일 인증번호 
 	
 }
