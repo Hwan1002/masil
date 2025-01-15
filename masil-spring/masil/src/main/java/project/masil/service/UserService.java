@@ -1,12 +1,7 @@
 package project.masil.service;
 
-import java.util.List;
-
-import javax.management.RuntimeErrorException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 import project.masil.common.FileUploadUtil;
@@ -104,6 +99,7 @@ public class UserService {
 		}
 	}
 
+	// 비밀번호 불일치 예외 내부클래스 
 	public static class PasswordMismatchException extends RuntimeException {
 		public PasswordMismatchException(String message) {
 			super(message);

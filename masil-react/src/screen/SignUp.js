@@ -10,7 +10,7 @@ const SignUp = () => {
   //프로필사진 상태
   const [profilePhoto, setProfilePhoto] = useState(null);
 
-  //중복체크버튼 눌렀는지 
+  //중복체크버튼 눌렀는지
   const [DuplicateBtn, setDuplicateBtn] = useState(false);
 
   //비밀번호 확인 상태 따로 관리
@@ -24,7 +24,7 @@ const SignUp = () => {
     password: "",
     email: "",
   });
-  
+
   const navigate = useNavigate();
 
   //모달 기능 사용
@@ -91,7 +91,6 @@ const SignUp = () => {
   //프로필 사진
   const inputImgRef = useRef(null);
   const { imagePreview, setImagePreview } = useContext(ProjectContext);
-
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
