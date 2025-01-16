@@ -72,13 +72,6 @@ public class UserService {
 
 	}
 
-//	// 회원가입의 이메일인증번호 전송 ( 아이디찾기와 비밀번호 찾기에도 쓰일예정 )
-//	public ResponseDTO<Integer> 
-//	
-//	
-//	
-//	;
-
 	// entity -> dto
 	public UserDTO toDTO(UserEntity entity) {
 

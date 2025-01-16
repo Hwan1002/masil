@@ -6,10 +6,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
 
 @Service
 public class EmailService {
@@ -42,6 +46,10 @@ public class EmailService {
 
 		// 만료된 데이터 삭제 스케줄러 실행
 		scheduleExpirationCleanup(to);
+		
+		
+		
+		
 	}
 
 	// 인증번호 검증 메서드
@@ -86,4 +94,35 @@ public class EmailService {
 			}
 		}, 5, TimeUnit.MINUTES); // 5분 후 실행
 	}
+	
+	
+	
+	private void validateEmailAddress(String email) throws AddressException {
+        if (email == null || email.trim().isEmpty()) {
+            throw new IllegalArgumentException("이메일 주소가 null이거나 비어 있습니다.");
+        }
+
+        // 방법 1: Apache Commons Validator를 사용한 검증
+        EmailValidator validator = EmailValidator.getInstance();
+        if (!validator.isValid(email)) {
+            throw new IllegalArgumentException("잘못된 이메일 형식입니다: " + email);
+        }
+
+        // 방법 2: Javax Mail의 InternetAddress를 사용한 검증
+        InternetAddress emailAddr = new InternetAddress(email);
+        emailAddr.validate(); // 유효하지 않은 경우 AddressException 발생
+    }
+
 }
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
