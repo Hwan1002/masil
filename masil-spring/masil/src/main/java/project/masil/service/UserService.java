@@ -18,7 +18,6 @@ public class UserService {
 	@Autowired // repository 의존성 주입
 	private UserRepository userRepository;
 	
-	@Autowired // passwordEncoder 의존성 주입 
 	PasswordEncoder passwordEncoder =  new BCryptPasswordEncoder() ;
 	
 

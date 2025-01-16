@@ -67,12 +67,7 @@ public class UserController {
 
 	// 인증번호 검증 메서드
 	@PostMapping("/verify")
-	public ResponseEntity<String> verifyCode(@RequestBody UserDTO dto) {
-		boolean isValid = emailService.verifyCode(dto.getEmail(), dto.getVerifyCode());
-		if (isValid) {
-			return ResponseEntity.ok("인증에 성공하였습니다.");
-		} else {
-			return ResponseEntity.badRequest().body("인증에 실패하였습니다. 유효하지 않거나 만료된 코드입니다.");
-		}
+	public ResponseEntity<ResponseDTO> verifyCode(@RequestBody UserDTO dto) {
+		return ResponseEntity.ok(emailService.verifyCode(dto.getEmail(), dto.getVerifyCode()));
 	}
 }

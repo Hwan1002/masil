@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
+import project.masil.dto.ResponseDTO;
 
 @Service
 public class EmailService {
@@ -53,29 +54,34 @@ public class EmailService {
 	}
 
 	// 인증번호 검증 메서드
-	public boolean verifyCode(String email, String code) {
-		// 이메일에 대한 인증번호가 없으면 실패
+public ResponseDTO<String> verifyCode(String email, String code) {
+		
+		//  이메일인풋태그에 이메일값과 인증번호값을 보냈을때 이메일이 없는 예외 
 		if (!verificationCodes.containsKey(email)) {
-			return false;
+			throw new VerificationCodeNotFoundException("입력하신 이메일에 대한 인증번호가 없습니다.") ;
 		}
 
-		// 유효시간 초과 시 실패 처리 및 데이터 삭제
+		// 유효시간 초과 시 실패 처리 및 데이터 삭제 후 유효시간이 만료되었습니다 예외처리 
 		if (System.currentTimeMillis() > expirationTimes.get(email)) {
 			verificationCodes.remove(email);
 			expirationTimes.remove(email);
-			return false;
+			throw new VerificationCodeExpiredException("인증번호 유효시간이 초과되었습니다.") ;
 		}
 
-		// 인증번호가 일치하는지 확인
+		// 인증번호가 일치여부 판단 
 		boolean isValid = verificationCodes.get(email).equals(code);
 
-		// 성공적으로 검증되면 데이터 삭제
-		if (isValid) {
-			verificationCodes.remove(email);
-			expirationTimes.remove(email);
+		// 인증번호 불일치시 예외처리 
+		if (!isValid) {
+			throw new VerificationCodeMismatchException("인증번호가 일치하지않습니다. ");
 		}
-
-		return isValid;
+		
+		// 성공적으로 검증되면 데이터 삭제
+		verificationCodes.remove(email);
+		expirationTimes.remove(email);
+		
+		return ResponseDTO.<String>builder().status(200).value("인증에 성공하였습니다.").build();
+		
 	}
 
 	// 난수 생성 메서드 (6자리)
@@ -96,23 +102,58 @@ public class EmailService {
 	}
 	
 	
+	// 백엔드에서 이메일정규식에 대한 처리를 하게된다면 사용할 메서드 
+//	private void validateEmailAddress(String email) throws AddressException {
+//        if (email == null || email.trim().isEmpty()) {
+//            throw new IllegalArgumentException("이메일 주소가 null이거나 비어 있습니다.");
+//        }
+//
+//        // 방법 1: Apache Commons Validator를 사용한 검증
+//        EmailValidator validator = EmailValidator.getInstance();
+//        if (!validator.isValid(email)) {
+//            throw new IllegalArgumentException("잘못된 이메일 형식입니다: " + email);
+//        }
+//
+//        // 방법 2: Javax Mail의 InternetAddress를 사용한 검증
+//        InternetAddress emailAddr = new InternetAddress(email);
+//        emailAddr.validate(); // 유효하지 않은 경우 AddressException 발생
+//    }
+
 	
-	private void validateEmailAddress(String email) throws AddressException {
-        if (email == null || email.trim().isEmpty()) {
-            throw new IllegalArgumentException("이메일 주소가 null이거나 비어 있습니다.");
-        }
+	
+	// 이메일과 인증번호가 일치하지않을때 예외처리  
+	public class VerificationException extends RuntimeException {
+	    public VerificationException(String message) {
+	        super(message);
+	    }
+	}
+	
+	
+	
+	public class VerificationCodeNotFoundException extends  VerificationException {
+	    public VerificationCodeNotFoundException(String message) {
+	        super(message);
+	    }
+	}
+	
+	public class VerificationCodeExpiredException extends VerificationException {
+	    public VerificationCodeExpiredException(String message) {
+	        super(message);
+	    }
+	}
 
-        // 방법 1: Apache Commons Validator를 사용한 검증
-        EmailValidator validator = EmailValidator.getInstance();
-        if (!validator.isValid(email)) {
-            throw new IllegalArgumentException("잘못된 이메일 형식입니다: " + email);
-        }
-
-        // 방법 2: Javax Mail의 InternetAddress를 사용한 검증
-        InternetAddress emailAddr = new InternetAddress(email);
-        emailAddr.validate(); // 유효하지 않은 경우 AddressException 발생
-    }
-
+	public class VerificationCodeMismatchException extends VerificationException {
+	    public VerificationCodeMismatchException(String message) {
+	        super(message);
+	    }
+	}
+	
+	
+	
+	
+	
+	
+	
 }
 
 	
