@@ -23,6 +23,8 @@ public class EmailService {
 	private JavaMailSender mailSender;
 
 	// 인증번호와 유효시간을 저장하는 맵
+	// 덮어쓰기를 위해 ConcurrentHasgMap으로 생성 
+	// 키가 이미 존재하는경우 기존키에 매핑된값이 새로운값으로 대체됨 .
 	private final Map<String, String> verificationCodes = new ConcurrentHashMap<>();
 	private final Map<String, Long> expirationTimes = new ConcurrentHashMap<>();
 
@@ -33,8 +35,10 @@ public class EmailService {
 		String code = generateVerificationCode();
 
 		// 인증번호와 유효시간 저장 (덮어쓰기 허용)
+		// expirationTimes 변수에 이메일을 넣는이유는 
+		// hashMap은 key가 삭제되면 value도 삭제되기떄문에 expirationTimes 변수에 이메일(verificationCodes 에 key) 을넣어 모두 삭제될수있게한다  
 		verificationCodes.put(to, code);
-		expirationTimes.put(to, System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(5)); // 5분 후 만료
+		expirationTimes.put(to, System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(1));  // 현재시간과 5분을 밀리초로 더해주어 유효시간을 설정한다 
 
 		// 이메일 내용 설정
 		SimpleMailMessage message = new SimpleMailMessage();
@@ -62,6 +66,7 @@ public ResponseDTO<String> verifyCode(String email, String code) {
 		}
 
 		// 유효시간 초과 시 실패 처리 및 데이터 삭제 후 유효시간이 만료되었습니다 예외처리 
+		// 이메일키를통해 유효시간값을얻어 현재시간과 비교후 현재시간이 더 클경우 각 변수에서 email키를통해 각각변수에서 이메일과 인증번호 , 유효시간을 삭제한다 
 		if (System.currentTimeMillis() > expirationTimes.get(email)) {
 			verificationCodes.remove(email);
 			expirationTimes.remove(email);
@@ -98,7 +103,7 @@ public ResponseDTO<String> verifyCode(String email, String code) {
 				verificationCodes.remove(email);
 				expirationTimes.remove(email);
 			}
-		}, 5, TimeUnit.MINUTES); // 5분 후 실행
+		}, 1, TimeUnit.HOURS); // 한시간 이후 삭제 
 	}
 	
 	
