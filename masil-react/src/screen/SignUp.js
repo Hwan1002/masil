@@ -11,11 +11,11 @@ const SignUp = () => {
   const [profilePhoto, setProfilePhoto] = useState(null);
 
   //중복체크 & 이메일 인증 버튼 눌렀는지
-  const [DuplicateBtn, setDuplicateBtn] = useState(false);
-  const [CertifiedBtn, setCertifiedBtn] = useState(true);
-  //비밀번호 확인 상태 따로 관리
+  const [duplicateBtn, setDuplicateBtn] = useState(false);
+  const [certifiedBtn, setCertifiedBtn] = useState(false);
+  //비밀번호 확인  & 인증코드 상태 따로 관리
   const [pwdConfirm, setPwdConfirm] = useState("");
-
+  const [verifyCode, setVerifyCode] = useState("");
   //회원가입 formData
   const [formData, setFormData] = useState({
     userId: "",
@@ -49,7 +49,7 @@ const SignUp = () => {
       return;
     }
     //중복체크 눌렀는지
-    if (!DuplicateBtn) {
+    if (!duplicateBtn) {
       openModal({
         message: "아이디 중복 확인해주세요.",
       });
@@ -62,7 +62,7 @@ const SignUp = () => {
       });
       return;
     }
-    if(!CertifiedBtn){
+    if(!certifiedBtn){
       openModal({
         message: "이메일 인증을 해주세요.",
       });
@@ -160,33 +160,34 @@ const SignUp = () => {
       console.log(error.response.data);
     }
   };
+
   const sendCertifyNumber = async(e) => {
     e.preventDefault();
+    debugger;
+    setCertifiedBtn(false);
     try {
-      const response = await axios.post('http://localhost:9090/send-email',formData.email);
+      const response = await axios.post('http://localhost:9090/send-email',{email:formData.email});
       if(response){
         setCertifiedBtn(true);
         openModal({
           message:response.data.value,
         })
-      }else{
-        openModal({
-          title:"전송 실패",
-          message:response.data.value,
-        })
       }
     } catch (error) {
-      openModal({
-        message:error.response.data.value
-      })
+      console.log(error.message);
     }
   }
   const emailCertified = async(e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:9090/verify')
+      const response = await axios.post('http://localhost:9090/verify',{verifyCode:verifyCode});
+      if(response){
+        openModal({
+          message:response.data.value,
+        })
+      }
     } catch (error) {
-      
+      console.log(error.message);
     }
   }
   return (
@@ -268,11 +269,13 @@ const SignUp = () => {
               />
               <button type="button" onClick={(e)=>sendCertifyNumber(e)}>인증</button>
             </div>
-            <div className="inputAndBtn emailCertified">
-              <input type="text" placeholder="인증번호를 입력해주세요."/>
-              <button onClick={(e)=>emailCertified(e)}>확인</button>
-            </div>
-            
+            {certifiedBtn? (
+              <div className="inputAndBtn emailCertified">
+                <input type="text" placeholder="인증번호를 입력해주세요." className="form-input" onChange={(e)=>setVerifyCode(e.target.value)}/>
+                <button button onClick={(e)=>emailCertified(e)}>확인</button>
+              </div>
+            ):("")
+            }
           </div>
         </div>
         <div className="signUp_button">
