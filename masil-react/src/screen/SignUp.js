@@ -10,9 +10,9 @@ const SignUp = () => {
   //프로필사진 상태
   const [profilePhoto, setProfilePhoto] = useState(null);
 
-  //중복체크버튼 눌렀는지
+  //중복체크 & 이메일 인증 버튼 눌렀는지
   const [DuplicateBtn, setDuplicateBtn] = useState(false);
-
+  const [CertifiedBtn, setCertifiedBtn] = useState(true);
   //비밀번호 확인 상태 따로 관리
   const [pwdConfirm, setPwdConfirm] = useState("");
 
@@ -59,6 +59,12 @@ const SignUp = () => {
     if (pwdConfirm !== formData.password) {
       openModal({
         message: "비밀번호가 일치하지 않습니다.",
+      });
+      return;
+    }
+    if(!CertifiedBtn){
+      openModal({
+        message: "이메일 인증을 해주세요.",
       });
       return;
     }
@@ -154,6 +160,35 @@ const SignUp = () => {
       console.log(error.response.data);
     }
   };
+  const sendCertifyNumber = async(e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post('http://localhost:9090/send-email',formData.email);
+      if(response){
+        setCertifiedBtn(true);
+        openModal({
+          message:response.data.value,
+        })
+      }else{
+        openModal({
+          title:"전송 실패",
+          message:response.data.value,
+        })
+      }
+    } catch (error) {
+      openModal({
+        message:error.response.data.value
+      })
+    }
+  }
+  const emailCertified = async(e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post('http://localhost:9090/verify')
+    } catch (error) {
+      
+    }
+  }
   return (
     <div className="signup_form">
       <h2>회원가입</h2>
@@ -231,7 +266,11 @@ const SignUp = () => {
                 placeholder="이메일을 입력하세요."
                 onChange={(e) => handleInputChange(e)}
               />
-              <button>인증</button>
+              <button type="button" onClick={(e)=>sendCertifyNumber(e)}>인증</button>
+            </div>
+            <div className="inputAndBtn emailCertified">
+              <input type="text" placeholder="인증번호를 입력해주세요."/>
+              <button onClick={(e)=>emailCertified(e)}>확인</button>
             </div>
             
           </div>
