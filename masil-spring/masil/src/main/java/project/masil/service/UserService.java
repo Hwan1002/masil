@@ -1,12 +1,9 @@
 package project.masil.service;
 
-import java.util.List;
-
-import javax.management.RuntimeErrorException;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 import project.masil.common.FileUploadUtil;
@@ -20,6 +17,9 @@ public class UserService {
 
 	@Autowired // repository 의존성 주입
 	private UserRepository userRepository;
+	
+	PasswordEncoder passwordEncoder =  new BCryptPasswordEncoder() ;
+	
 
 	// Id 중복체크 메서드
 	// 중복시에 true 반환
@@ -46,6 +46,9 @@ public class UserService {
 
 		String uploadDir = System.getProperty("user.dir") + "/uploads";
 		dto.setProfilePhotoPath(FileUploadUtil.saveFile(profilePhoto, uploadDir, "profilePhotos"));
+		
+		dto.setPassword(passwordEncoder.encode(dto.getPassword()));
+		
 		userRepository.save(toEntity(dto));
 		return ResponseDTO.<String>builder().status(201) // HTTP 상태 코드
 				.value("회원가입이 완료되었습니다.") // 성공 메시지
@@ -54,25 +57,19 @@ public class UserService {
 
 	// 로그인
 	public ResponseDTO<String> signin(UserDTO dto) {
-		UserEntity entity = userRepository.findByUserId(dto.getUserId());
-		if (entity == null) {
+		UserEntity user = userRepository.findByUserId(dto.getUserId());
+		if (user == null) {
 			throw new IdIsNotExistsException("아이디가 일치하지않습니다.");
 		}
 		
-		if (!entity.getPassword().equals(dto.getPassword())) {
+		if(!passwordEncoder.matches(dto.getPassword(),user.getPassword())) { 
 			throw new PasswordMismatchException("비밀번호가 일치하지않습니다.");
 		}
+	
 
 		return ResponseDTO.<String>builder().status(200).value("환영합니다").build();
 
 	}
-
-//	// 회원가입의 이메일인증번호 전송 ( 아이디찾기와 비밀번호 찾기에도 쓰일예정 )
-//	public ResponseDTO<Integer> 
-//	
-//	
-//	
-//	;
 
 	// entity -> dto
 	public UserDTO toDTO(UserEntity entity) {
@@ -104,6 +101,7 @@ public class UserService {
 		}
 	}
 
+	// 비밀번호 불일치 예외 내부클래스 
 	public static class PasswordMismatchException extends RuntimeException {
 		public PasswordMismatchException(String message) {
 			super(message);
