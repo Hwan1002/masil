@@ -8,6 +8,7 @@ import Modal from "../component/Modal";
 import useModal from "../context/useModal";
 import axios from "axios";
 import { ProjectContext } from "../context/MasilContext";
+import { useNavigate } from "react-router-dom";
 const Login = () => {
     // 비밀번호 보이기, 숨기기 버튼 상태
   const [showPassword, setShowPassword] = useState(false);
@@ -15,7 +16,7 @@ const Login = () => {
   const [loginInfo, setLoginInfo] = useState({});
   //로그인 성공 여부
   const {setLoginSuccess} = useContext(ProjectContext);
-
+  const navigate = useNavigate();
   const {
     isModalOpen,
     modalTitle,
@@ -42,6 +43,7 @@ const Login = () => {
         setLoginSuccess(true);
         openModal({
           message: response.data.value,
+          actions:[{label:"확인", onClick:()=>{closeModal();navigate("/")}}]
         });
         // 쿠키활용해서 토큰 저장하기 구현
       } else {
