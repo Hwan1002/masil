@@ -9,6 +9,7 @@ import Login from './screen/Login';
 import UserFindId from './screen/UserFindId';
 import UserFindPwd from './screen/UserFindPwd';
 import PostRegist from './screen/PostRegist';
+import RentalItem from "./screen/RentalItem";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/userfindid" element={<UserFindId/>}/>
           <Route path="/userfindpwd" element={<UserFindPwd/>}/>
           <Route path="/postRegist" element={<PostRegist/>}/>
+          <Route path="/rentalitem" element={<RentalItem/>}/>
         </Routes>
       </div>
     </div>
