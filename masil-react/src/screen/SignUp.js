@@ -13,7 +13,6 @@ const SignUp = () => {
   //중복체크 & 이메일 인증 버튼 눌렀는지
   const [duplicateBtn, setDuplicateBtn] = useState(false);
   const [certifiedBtn, setCertifiedBtn] = useState(false);
-  const [verfyBtn, setVerifyBtn] = useState(false);
   //비밀번호 확인  & 인증코드 상태 따로 관리
   const [pwdConfirm, setPwdConfirm] = useState("");
   const [verifyCode, setVerifyCode] = useState("");
@@ -63,7 +62,7 @@ const SignUp = () => {
       });
       return;
     }
-    if(!verfyBtn){
+    if(!certifiedBtn){
       openModal({
         message: "이메일 인증을 해주세요.",
       });
@@ -164,40 +163,32 @@ const SignUp = () => {
 
   const sendCertifyNumber = async(e) => {
     e.preventDefault();
+    debugger;
     setCertifiedBtn(false);
     try {
       const response = await axios.post('http://localhost:9090/user/send-email',{email:formData.email});
       if(response){
         setCertifiedBtn(true);
         openModal({
-          message:response.data,
-        })
-      }else{
-        openModal({
-          message:response.data.error,
+          message:response.data.value
         })
       }
     } catch (error) {
-      openModal({
-        message:error.response.data.error,
-      })
+      console.log(error.response.data.error);
     }
   }
   const emailCertified = async(e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:9090/user/verify',{email:formData.email,verifyCode:verifyCode});
+      const response = await axios.post('http://localhost:9090/user/verify',{
+      email:formData.email,verifyCode:verifyCode});
       if(response){
-        setVerifyBtn(true);
-        setCertifiedBtn(false);
         openModal({
-          message: response.data.value,
+          message:response.data.value
         })
       }
     } catch (error) {
-      openModal({
-        message:error.response.data.error,
-      })
+      console.log(error.response.data.error);
     }
   }
   return (
