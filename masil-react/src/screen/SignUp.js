@@ -170,7 +170,7 @@ const SignUp = () => {
       if(response){
         setCertifiedBtn(true);
         openModal({
-          message:response.data
+          message:response.data.value
         })
       }
     } catch (error) {
