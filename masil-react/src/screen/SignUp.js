@@ -166,28 +166,29 @@ const SignUp = () => {
     debugger;
     setCertifiedBtn(false);
     try {
-      const response = await axios.post('http://localhost:9090/send-email',{email:formData.email});
+      const response = await axios.post('http://localhost:9090/user/send-email',{email:formData.email});
       if(response){
         setCertifiedBtn(true);
         openModal({
-          message:response.data.value,
+          message:response.data
         })
       }
     } catch (error) {
-      console.log(error.message);
+      console.log(error.response.data.error);
     }
   }
   const emailCertified = async(e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:9090/verify',{verifyCode:verifyCode});
+      const response = await axios.post('http://localhost:9090/user/verify',{
+      email:formData.email,verifyCode:verifyCode});
       if(response){
         openModal({
-          message:response.data.value,
+          message:response.data.value
         })
       }
     } catch (error) {
-      console.log(error.message);
+      console.log(error.response.data.error);
     }
   }
   return (

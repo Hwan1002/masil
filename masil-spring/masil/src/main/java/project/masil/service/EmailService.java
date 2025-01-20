@@ -38,7 +38,7 @@ public class EmailService {
 		// expirationTimes 변수에 이메일을 넣는이유는 
 		// hashMap은 key가 삭제되면 value도 삭제되기떄문에 expirationTimes 변수에 이메일(verificationCodes 에 key) 을넣어 모두 삭제될수있게한다  
 		verificationCodes.put(to, code);
-		expirationTimes.put(to, System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(1));  // 현재시간과 5분을 밀리초로 더해주어 유효시간을 설정한다 
+		expirationTimes.put(to, System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(5));  // 현재시간과 5분을 밀리초로 더해주어 유효시간을 설정한다 
 
 		// 이메일 내용 설정
 		SimpleMailMessage message = new SimpleMailMessage();
