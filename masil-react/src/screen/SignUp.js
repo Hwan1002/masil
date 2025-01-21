@@ -18,7 +18,8 @@ const SignUp = () => {
   //비밀번호 확인  & 인증코드 상태 따로 관리
   const [pwdConfirm, setPwdConfirm] = useState("");
   const [verifyCode, setVerifyCode] = useState("");
-  //이메일 인증 보낼때 나타나는 로딩창 상태
+  //이메일 인증 보낼때 나타나는 타이머 상태
+  const [timer, setTimer] = useState(0);
   
   //회원가입 formData
   const [formData, setFormData] = useState({
@@ -188,6 +189,20 @@ const SignUp = () => {
         openModal({
           message:response.data,
         })
+        setTimer(300);
+        const timerInterval = setInterval(() => {
+          setTimer(prev => {
+            if (prev <= 1) {
+              clearInterval(timerInterval);
+              return 0;
+            }
+            return prev - 1;
+          });
+        }, 1000);
+      } else {
+        openModal({
+          message: response.data.error,
+        });
       }
     } catch (error) {
       setIsLoading(false);
@@ -292,6 +307,11 @@ const SignUp = () => {
               />
               <button type="button" onClick={(e)=>sendCertifyNumber(e)}>인증</button>
             </div>
+            {timer > 0 && certifiedBtn ?(
+              <div className="timer">
+                남은 시간: {Math.floor(timer / 60)}분 {timer % 60}초
+              </div>
+            ): ("")}
             {certifiedBtn? (
               <div className="inputAndBtn emailCertified">
                 <input type="text" placeholder="인증번호를 입력해주세요." className="form-input" onChange={(e)=>setVerifyCode(e.target.value)}/>
