@@ -1,15 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import '../css/UserFindId.css';
 import { useNavigate } from 'react-router-dom';
 import Modal from "../component/Modal";
 import useModal from "../context/useModal";
+import axios from 'axios';
 
 const UserFindId = () => {
     const navigate = useNavigate();
-    const [isLoading, setIsLoading] = useState(false);
-    const [isSent, setIsSent] = useState(false);
+    const [isLoading, setIsLoading] = useState(false); //로딩상태 false일땐 찾기 true일땐 전송 중...
     const [email, setEmail] = useState('');
-    const [sentEmail, setSentEmail] = useState('');
 
     const {
         isModalOpen,
@@ -20,7 +19,7 @@ const UserFindId = () => {
         closeModal,
     } = useModal();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (email.trim() === '') {
@@ -31,14 +30,30 @@ const UserFindId = () => {
             return;
         }
 
-        setIsLoading(true);
-        setSentEmail(email);
+        setIsLoading(true); //로딩버튼을 전송 중... 버튼으로 바꿈
 
-        setTimeout(() => {
-            setIsLoading(false);
-            setIsSent(true); // 이메일 발송 완료 상태로 설정
-            setEmail('');
-        }, 2000);
+        try {
+            const response = await axios.post(
+                `http://localhost:9090/user/findUserId`, {
+                    email: email
+                }
+            );
+            const userId = response.data.value;
+            openModal({
+                message: `회원님의 아이디는  "${userId}" 입니다.`,
+            });
+        } catch (error) {
+            openModal({
+                title : "경고",
+                message: error.response.data.error
+            });
+        }
+    };
+
+    const handleModalClose = () => {
+        closeModal();
+        setIsLoading(false); // 로딩버튼을 다시 찾기버튼으로 바꿈
+        setEmail(''); // 이메일 입력 값 초기화는 모달 닫을 때만
     };
 
     //엔터키 전송
@@ -47,16 +62,6 @@ const UserFindId = () => {
             handleSubmit(e);
         }
     };
-
-    // isSent 상태가 true로 변경될 때만 모달을 열도록 useEffect 사용
-    useEffect(() => {
-        if (isSent) {
-            openModal({
-                message: `${sentEmail} 이메일 주소로 회원님의 아이디를 발송했습니다.`,
-            });
-            setIsSent(false); // 모달을 한 번만 열도록 상태 초기화
-        }
-    }, [isSent, sentEmail, openModal]); // 의존성 배열에 isSent와 sentEmail 추가
 
     return (
         <form className='FindId_container' onSubmit={handleSubmit}>
@@ -73,7 +78,7 @@ const UserFindId = () => {
                         onChange={(e) => setEmail(e.target.value)}
                         onKeyDown={handleKeyPress}
                     />
-                    <button type="submit" className='FindId_sendBtn'  disabled={isLoading || isSent}>
+                    <button type="submit" className='FindId_sendBtn' disabled={isLoading}>
                         {isLoading ? "전송 중..." : "찾기"}
                     </button>
                 </div>
@@ -98,7 +103,7 @@ const UserFindId = () => {
 
             <Modal
                 isOpen={isModalOpen}
-                onClose={closeModal}
+                onClose={handleModalClose}
                 title={modalTitle}
                 content={modalMessage}
                 actions={modalActions}
