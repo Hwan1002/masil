@@ -28,7 +28,7 @@ const Header = () => {
             <button className='logo' onClick={()=>navigate("/")}>Masil</button>
             <nav className='navBar'>
               <button onClick={() => scrollToSection('about')}>About Me</button>
-              <button onClick={() => scrollToSection('skills')}>Skills</button>
+              <button onClick={() => navigate('/rentalitem')}>중고물건</button>
               <button onClick={() => scrollToSection('archiving')}>Archiving</button>
               <button onClick={() => scrollToSection('project')}>Projects</button>
               <button onClick={() => scrollToSection('career')}>Career</button>

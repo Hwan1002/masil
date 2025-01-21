@@ -15,12 +15,15 @@ import org.springframework.stereotype.Service;
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
 import project.masil.dto.ResponseDTO;
+import project.masil.repository.UserRepository;
 
 @Service
 public class EmailService {
 
 	@Autowired
 	private JavaMailSender mailSender;
+	
+	
 
 	// 인증번호와 유효시간을 저장하는 맵
 	// 덮어쓰기를 위해 ConcurrentHasgMap으로 생성 
@@ -28,8 +31,10 @@ public class EmailService {
 	private final Map<String, String> verificationCodes = new ConcurrentHashMap<>();
 	private final Map<String, Long> expirationTimes = new ConcurrentHashMap<>();
 
+	
+	
 	// 이메일 인증번호 전송 메서드
-	public void sendEmail(String to) {
+	public ResponseDTO<String> sendEmail(String to) {
 		
 		// 인증번호 난수 생성 및 문자열변수에 저장 
 		String code = generateVerificationCode();
@@ -51,9 +56,7 @@ public class EmailService {
 
 		// 만료된 데이터 삭제 스케줄러 실행
 		scheduleExpirationCleanup(to);
-		
-		
-		
+		return ResponseDTO.<String>builder().status(200).value("인증번호 전송을 성공하였습니다").build() ;
 		
 	}
 
@@ -134,19 +137,22 @@ public ResponseDTO<String> verifyCode(String email, String code) {
 	}
 	
 	
-	
+	// 이메일에대한 인증번호가 존재하지않을때 예외처리 
 	public class VerificationCodeNotFoundException extends  VerificationException {
 	    public VerificationCodeNotFoundException(String message) {
 	        super(message);
 	    }
 	}
 	
+	
+	// 인증번호 유효기간 만료 예외처리 
 	public class VerificationCodeExpiredException extends VerificationException {
 	    public VerificationCodeExpiredException(String message) {
 	        super(message);
 	    }
 	}
 
+	// 인증번호 불일치 예외처리 
 	public class VerificationCodeMismatchException extends VerificationException {
 	    public VerificationCodeMismatchException(String message) {
 	        super(message);

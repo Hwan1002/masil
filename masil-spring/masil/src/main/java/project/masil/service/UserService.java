@@ -17,9 +17,8 @@ public class UserService {
 
 	@Autowired // repository 의존성 주입
 	private UserRepository userRepository;
-	
-	PasswordEncoder passwordEncoder =  new BCryptPasswordEncoder() ;
-	
+
+	PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 	// Id 중복체크 메서드
 	// 중복시에 true 반환
@@ -46,9 +45,9 @@ public class UserService {
 
 		String uploadDir = System.getProperty("user.dir") + "/uploads";
 		dto.setProfilePhotoPath(FileUploadUtil.saveFile(profilePhoto, uploadDir, "profilePhotos"));
-		
+
 		dto.setPassword(passwordEncoder.encode(dto.getPassword()));
-		
+
 		userRepository.save(toEntity(dto));
 		return ResponseDTO.<String>builder().status(201) // HTTP 상태 코드
 				.value("회원가입이 완료되었습니다.") // 성공 메시지
@@ -61,15 +60,33 @@ public class UserService {
 		if (user == null) {
 			throw new IdIsNotExistsException("아이디가 일치하지않습니다.");
 		}
-		
-		if(!passwordEncoder.matches(dto.getPassword(),user.getPassword())) { 
+
+		if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
 			throw new PasswordMismatchException("비밀번호가 일치하지않습니다.");
 		}
-	
 
 		return ResponseDTO.<String>builder().status(200).value("환영합니다").build();
 
 	}
+
+	// 아이디찾기 .
+	public ResponseDTO<String> findUserId(String email) {
+		UserEntity user = userRepository.findByEmail(email);
+		if (user == null) {
+			throw new EmailIsNotExistsException("이메일이 존재하지않습니다 .");
+		}
+		return ResponseDTO.<String>builder().status(200).value(user.getUserId()).build();
+
+	}
+	
+	// 비밀번호 재설정
+	public ResponseDTO<String> resetPassword(UserDTO dto) {
+		UserEntity user = userRepository.findByEmail(dto.getEmail());
+		user.setPassword(passwordEncoder.encode(dto.getPassword()));
+		userRepository.save(user);
+		return ResponseDTO.<String>builder().status(200).value("새로운 비밀번호로 로그인해주세요").build();
+	}
+	
 
 	// entity -> dto
 	public UserDTO toDTO(UserEntity entity) {
@@ -101,9 +118,16 @@ public class UserService {
 		}
 	}
 
-	// 비밀번호 불일치 예외 내부클래스 
+	// 비밀번호 불일치 예외 내부클래스
 	public static class PasswordMismatchException extends RuntimeException {
 		public PasswordMismatchException(String message) {
+			super(message);
+		}
+	}
+
+	// 이메일 불일치 예외 내부클래스
+	public static class EmailIsNotExistsException extends RuntimeException {
+		public EmailIsNotExistsException(String message) {
 			super(message);
 		}
 	}

@@ -24,6 +24,16 @@
   border-radius: 4px;
 }
 
+/* 로그인 인풋 호버시 테두리 */
+.login_input:hover{
+  box-shadow: 0 0 8px rgb(65, 252, 48);
+}
+
+/* 비밀번호 인풋 호버시 테두리 */
+.password_input:hover{
+  box-shadow: 0 0 8px rgb(65, 252, 48);
+}
+
 /* 비밀번호 섹션 컨테이너 */
 .password_container {
   margin-top: 16px;
