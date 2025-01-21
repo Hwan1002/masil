@@ -177,9 +177,8 @@ const SignUp = () => {
     setIsLoading(true);
     openModal({
       title:"전송 중",
-      message:<LoadingModal/>,
+      message: <LoadingModal/>,
     });
-
     try {
       const response = await axios.post('http://localhost:9090/user/send-email',{email:formData.email});
       if(response){
@@ -198,11 +197,7 @@ const SignUp = () => {
             return prev - 1;
           });
         }, 1000);
-      } else {
-        openModal({
-          message: response.data.error,
-        });
-      }
+      } 
     } catch (error) {
       setIsLoading(false);
       openModal({
