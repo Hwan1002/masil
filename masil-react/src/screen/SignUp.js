@@ -14,6 +14,7 @@ const SignUp = () => {
   //중복체크 & 이메일 인증 버튼 눌렀는지
   const [duplicateBtn, setDuplicateBtn] = useState(false);
   const [certifiedBtn, setCertifiedBtn] = useState(false);
+  const [verfyBtn, setVerifyBtn] = useState(false);
   //비밀번호 확인  & 인증코드 상태 따로 관리
   const [pwdConfirm, setPwdConfirm] = useState("");
   const [verifyCode, setVerifyCode] = useState("");
@@ -66,7 +67,7 @@ const SignUp = () => {
       });
       return;
     }
-    if(!certifiedBtn){
+    if(!verfyBtn){
       openModal({
         message: "이메일 인증을 해주세요.",
       });
@@ -208,15 +209,18 @@ const SignUp = () => {
   const emailCertified = async(e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:9090/user/verify',{
-      email:formData.email,verifyCode:verifyCode});
+      const response = await axios.post('http://localhost:9090/user/verify',{email:formData.email,verifyCode:verifyCode});
       if(response){
+        setVerifyBtn(true);
+        setCertifiedBtn(false);
         openModal({
-          message:response.data.value
+          message: response.data.value,
         })
       }
     } catch (error) {
-      console.log(error.response.data.error);
+      openModal({
+        message:error.response.data.error,
+      })
     }
   }
   return (

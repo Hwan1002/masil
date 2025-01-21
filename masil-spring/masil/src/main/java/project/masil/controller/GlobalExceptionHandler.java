@@ -37,17 +37,7 @@ public class GlobalExceptionHandler {
 				.error(ex.getMessage()).build();
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
 	}
-	
-	
-	// EmailIsNotExistsException
-	@ExceptionHandler(UserService.EmailIsNotExistsException.class)
-	public ResponseEntity<ResponseDTO<String>>EmailIsNotExistsException(UserService.EmailIsNotExistsException ex) {
-		ResponseDTO<String> response = ResponseDTO.<String>builder().status(HttpStatus.NOT_FOUND.value())
-				.error(ex.getMessage()).build();
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-	}
-	
-	
+
 	
 	// email verificationException (같은 상태코드를 줘도 상관없기때문에 한 예외클래스를 상속받고 모두 같은코드와 각기다른 메세지를 전달할 수 있게 작성 ) 
 	@ExceptionHandler(EmailService.VerificationException.class)

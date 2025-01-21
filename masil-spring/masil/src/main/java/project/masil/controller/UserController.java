@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -58,32 +57,17 @@ public class UserController {
 	// 이메일 전송 메서드
 	@PostMapping("/send-email")
 	public ResponseEntity<?> sendEmail(@RequestBody UserDTO dto) {
-		return ResponseEntity.ok(emailService.sendEmail(dto.getEmail()));
+		try {
+			emailService.sendEmail(dto.getEmail());
+			return ResponseEntity.ok("메일을 전송했습니다");
+		} catch (Exception e) {
+			return ResponseEntity.status(500).body("Failed to send email: " + e.getMessage());
+		}
 	}
 
 	// 인증번호 검증 메서드
 	@PostMapping("/verify")
-	public ResponseEntity<?> verifyCode(@RequestBody UserDTO dto) {
+	public ResponseEntity<ResponseDTO> verifyCode(@RequestBody UserDTO dto) {
 		return ResponseEntity.ok(emailService.verifyCode(dto.getEmail(), dto.getVerifyCode()));
 	}
-
-	// 아이디 찾기 메서드 
-	@PostMapping("/findUserId")
-	public ResponseEntity<?> findId(@RequestBody UserDTO dto) {
-		return ResponseEntity.ok(service.findUserId(dto.getEmail())) ;
-	}
-	
-	// 비밀번호 재설정 메서드 (이메일 인증번호 요청과 검증후 재설정로직)
-	@PutMapping("/ResetPassword")
-	public ResponseEntity<?> resetPassword(@RequestBody UserDTO dto ){
-		return ResponseEntity.ok(service.resetPassword(dto)) ;
-	}
-	
-	
-	
-	
-	
-	
-	
-
 }
