@@ -177,9 +177,66 @@ userService에서 새로운 메서드를 만들어 비밀번호를 재설정하�
 
 
 메모장 이슈정리 
-각 기능별 알기쉽게 정리하고 토큰관련 끝내고 소셜로그인 어떻게할지 구상하고 위치정보서비스 도입하기 .
+각 기능별 알기쉽게 정리하고 토큰관련 끝내고  .회원정보수정 소셜로그인 어떻게할지 구상하고 위치정보서비스 도입하기 
 https 선택사항 
 
+
+ **JWT 01-23 
+
+token provider 클래스를 만들었다 .
+accessToken과 refreshToken을 모두 사용예정이고 
+로그인시에 서비스계층에 로그인메서드에서 access토큰은 responseDTO를통해서 반환예정이고
+refresh토큰은 userEntity에 먼저 저장해주고 httpOnly쿠키를 생성해 쿠키에 refresh토큰을 저장후 클라이언트에게 다시 반환해준다 .
+
+java servlet api를 사용해서 Cookie와 httpservletResponse를 사용할 수 있게 해주었다 .
+Cookie 객체를 만들수있게되었고  refreshToken을 포함하여  HTTP 응답헤더에 쿠키를 포함할 수 있게하였다 .
+
+이제 accessToken을 Json객체에 포함하여 응답본문에 실어서 보낼 수 있게되었다 ..
+
+추가로 해야할일은 AccessToken의 유효시간(15분) 이만료되었을때 refreshToken을 통해 AccessToken을 재발급하는 로직을 어디에 사용해야하는지 알아야하고 
+RefreshToken이 만료되었을때 어떻게 재발급을 해야할지도 생각해야한다 .
+토큰발급시에 생기는 예외에대한 처리도 필요하다 .
+
+
+
+클라이언트는 요청시 헤더에 	authorization : Bearer <AccessToken>을 포함하여 요청을 보낸다
+accessToken이 유효한경우 : 응답반환
+
+만료되었거나 유효하지않은경우 : 401 Unauthorized 반환 .
+클라이언트가 "토큰재발급API호출 (RefreshToken 자동전송)
+서버에서 RefreshToken 검증후 새로운 AccessToken 발급 
+
+클라이언트가 새로발급받은 AccessToken으로 원래요청 다시시도 
+서버에서 요청 처리후 응답반환 .
+
+이방법을 사용하는것이 권장되지만 이해가되지않는부분은
+
+사용자 - 클라이언트 - 서버 이런식의 요청응답구조가 이루어져있는데
+accessToken이 만료된경우 클라이언트가 재요청을 하려면 사용자는 어떤화면을 받아보게되는건지 ? 
+
+클라이언트가 401을 받았을떄에 로직처리를 사용자가 인지하지못하게끔 투명하게 처리해야한다 .
+401응답을받았을때 refreshToken을이용해 Access토큰을 재발급받는 API에 요청을하고 원래 하려던 요청을 재요청해야한다 .
+이안에서의 예외사항은 refreshToken도 만료되었을경우를 생각해야하고 이때 refreshToken을 재발급받는 로직도 필요하다 . 
+
+그렇다면 나 (서버) 는 성공에 대한 응답과 refreshToken이 만료되었을때의 응답과 accessToken이 만료되었을떄의 응답에서 상태코드를 통한 구분과 알맞는 예외메세지 필요하고
+클라이언트는 상태코드를통해 성공(200) AceessToken만료(401) refreshToken만료(403) 에 대한 처리를 요청메서드에서 각각
+조건을통해 처리할 수 있게끔하면
+사용자에 시점에서 매끄러운 처리가 가능하다 .
+
+
+
+servletContainer의 동작원리를 이해해야함 .
+
+HttpServletResponse는 HTTP응답헤더와 상태코드를 직접 설정할 수 있다 .
+ResponseEntity 는 HTTP응답본문(body) 과 상태코드를 반환하는데 사용된다 .
+ 두객체는 서로 독립적으로 동작하며
+HttpservletResponse에 추가된 쿠키나 헤더는 별도로 반환하지않아도 클라이언트로 자동 전송된다 .
+이는 SpringBoot와 서블릿컨테이너의 역할이다 .
+
+
+------------------------------------------------------------------------------------------------
+현재 로그인시 access토큰은 정상적으로 ResponseDTO에 포함되어 반환하고있고
+refreshToken은 쿠키에 저장되어 잘 반환되고있다 . 
 
 
 

@@ -13,8 +13,9 @@ import lombok.NoArgsConstructor;
 @Data
 public class ResponseDTO<T> {
 
-	private int status ;
-	private List<T> data ;
-	private T value ;
-	private String error ;
+	private int status ; // 상태코드
+	private List<T> data ; // 리스트형태의 응답
+	private T value ; // 단일응답
+	private String error ; // 에러메세지 
+	private String accessToken ; // accessToken 
 }

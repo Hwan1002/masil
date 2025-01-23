@@ -1,5 +1,7 @@
 package project.masil.controller;
 
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.servlet.http.HttpServletResponse;
 import project.masil.dto.ResponseDTO;
 import project.masil.dto.UserDTO;
 import project.masil.service.EmailService;
@@ -51,8 +54,8 @@ public class UserController {
 
 	// 로그인 메서드
 	@PostMapping("/login")
-	public ResponseEntity<?> signin(@RequestBody UserDTO dto) {
-		return ResponseEntity.ok(service.signin(dto));
+	public ResponseEntity<?> signin(@RequestBody UserDTO dto , HttpServletResponse response) {
+		return ResponseEntity.ok(service.signin(dto,response));
 	}
 
 	// 이메일 전송 메서드

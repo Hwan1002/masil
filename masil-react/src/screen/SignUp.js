@@ -185,7 +185,7 @@ const SignUp = () => {
         setIsLoading(false);
         setCertifiedBtn(true);
         openModal({
-          message:response.data,
+          message:response.data.value
         })
         setTimer(300);
         const timerInterval = setInterval(() => {

@@ -1,6 +1,5 @@
 package project.masil.dto;
 
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,5 +28,7 @@ public class UserDTO {
 	private String authProvider ; // 소셜로그인공급자 
 	
 	private String verifyCode ; // 이메일 인증번호 
+	
+	private String refreshToken ; // refreshToken
 	
 }
