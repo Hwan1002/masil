@@ -65,8 +65,9 @@ public class JwtTokenProvider {
         }
     }
 
-    // 토큰에서 사용자 ID 추출
-    public String getUsernameFromToken(String token) {
+    // 토큰에서 사용자 ID 추출 
+    // SecurityContext에 userId를 저장하기위한 메서드
+    public String getUserIdFromToken(String token) {
         Claims claims = Jwts.parserBuilder()
                             .setSigningKey(secretKey)
                             .build()
