@@ -66,12 +66,12 @@ const SignUp = () => {
       });
       return;
     }
-    if(!certifiedBtn){
-      openModal({
-        message: "이메일 인증을 해주세요.",
-      });
-      return;
-    }
+    // if(!certifiedBtn){
+    //   openModal({
+    //     message: "이메일 인증을 해주세요.",
+    //   });
+    //   return;
+    // }
     try {
       const data = new FormData();
       if (profilePhoto) {
@@ -187,7 +187,7 @@ const SignUp = () => {
         openModal({
           message:response.data.value,
         })
-        setTimer(10);
+        setTimer(300);
         
         const timerInterval = setInterval(() => {
           setTimer(prev => {
@@ -306,7 +306,7 @@ const SignUp = () => {
                 <button type="button" onClick={(e)=>sendCertifyNumber(e)}>인증</button>
               ):(<button type="button" onClick={(e)=>sendCertifyNumber(e)}>재인증</button>)}
             </div>
-            {timer > 0? (
+            {timer > 0 && certifiedBtn? (
               <div className="inputAndBtn emailCertified">
                 <input type="text" placeholder="인증번호를 입력해주세요." className="form-input" onChange={(e)=>setVerifyCode(e.target.value)}/>
                 <button button onClick={(e)=>emailCertified(e)}>확인</button>
