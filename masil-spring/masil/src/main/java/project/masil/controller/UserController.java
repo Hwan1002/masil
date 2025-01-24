@@ -1,7 +1,10 @@
 package project.masil.controller;
 
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.servlet.http.HttpServletResponse;
 import project.masil.dto.ResponseDTO;
 import project.masil.dto.UserDTO;
 import project.masil.service.EmailService;
@@ -29,8 +33,8 @@ public class UserController {
 	private EmailService emailService;
 
 	// 마이페이지에서의 유저정보조회 게시판에대한 내용이들어왔을때 수정예정
-	@GetMapping("/{userId}")
-	public ResponseEntity<?> getInfo(@PathVariable("userId") String userId) {
+	@GetMapping("/userInfo")
+	public ResponseEntity<?> getInfo(@AuthenticationPrincipal String userId) {
 		ResponseDTO response = service.getInfo(userId);
 		return ResponseEntity.ok(response);
 	}
@@ -51,8 +55,8 @@ public class UserController {
 
 	// 로그인 메서드
 	@PostMapping("/login")
-	public ResponseEntity<?> signin(@RequestBody UserDTO dto) {
-		return ResponseEntity.ok(service.signin(dto));
+	public ResponseEntity<?> signin(@RequestBody UserDTO dto , HttpServletResponse response) {
+		return ResponseEntity.ok(service.signin(dto,response));
 	}
 
 	// 이메일 전송 메서드

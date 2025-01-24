@@ -32,6 +32,7 @@
 *, :after, :before {
     box-sizing: border-box;
 }
+
 h1,h2,h3,h4,h5{
     font-family: 'S-CoreDream-3Light';
 }
@@ -39,6 +40,7 @@ div,button,span,p,li,a{
     font-family: 'Pretendard-Regular';
 }
 button{
+    cursor: pointer;
     background: #a9ddb7;
     border:none;
     color:#fff;
@@ -96,3 +98,26 @@ button:hover{
     align-items: center;
     min-height: 45em;
 }
+/* loading중 스타일 */
+.loadingDiv{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.loading {
+    border: 4px solid rgba(172, 172, 172, 0.1);
+    border-left-color: #60ff7d;
+    border-radius: 50%;
+    width: 2em;
+    height: 2em;
+    margin:1em 0;
+    animation: spin 1s linear infinite;
+  }
+  
+  /* 스피너 애니메이션 */
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }

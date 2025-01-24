@@ -4,6 +4,7 @@ import { ProjectContext } from "../context/MasilContext";
 import { useNavigate } from "react-router-dom";
 import Modal from "../component/Modal";
 import useModal from "../context/useModal";
+import LoadingModal from "../component/LoadingModal";
 import axios from "axios";
 
 const SignUp = () => {
@@ -16,6 +17,9 @@ const SignUp = () => {
   //비밀번호 확인  & 인증코드 상태 따로 관리
   const [pwdConfirm, setPwdConfirm] = useState("");
   const [verifyCode, setVerifyCode] = useState("");
+  //이메일 인증 보낼때 나타나는 타이머 상태
+  const [timer, setTimer] = useState(0);
+  
   //회원가입 formData
   const [formData, setFormData] = useState({
     userId: "",
@@ -24,9 +28,9 @@ const SignUp = () => {
     password: "",
     email: "",
   });
-
+  const {isLoading,setIsLoading} = useContext(ProjectContext);
   const navigate = useNavigate();
-
+  
   //모달 기능 사용
   const {
     isModalOpen,
@@ -163,18 +167,42 @@ const SignUp = () => {
 
   const sendCertifyNumber = async(e) => {
     e.preventDefault();
-    debugger;
+    if(formData.email === ''){
+      openModal({
+        message: "이메일을 작성해주세요.",
+      })
+      return;
+    }
     setCertifiedBtn(false);
+    setIsLoading(true);
+    openModal({
+      title:"전송 중",
+      message: <LoadingModal/>,
+    });
     try {
       const response = await axios.post('http://localhost:9090/user/send-email',{email:formData.email});
       if(response){
+        setIsLoading(false);
         setCertifiedBtn(true);
         openModal({
           message:response.data.value
         })
-      }
+        setTimer(300);
+        const timerInterval = setInterval(() => {
+          setTimer(prev => {
+            if (prev <= 1) {
+              clearInterval(timerInterval);
+              return 0;
+            }
+            return prev - 1;
+          });
+        }, 1000);
+      } 
     } catch (error) {
-      console.log(error.response.data.error);
+      setIsLoading(false);
+      openModal({
+        message:error.response.data.error,
+      })
     }
   }
   const emailCertified = async(e) => {
@@ -270,6 +298,11 @@ const SignUp = () => {
               />
               <button type="button" onClick={(e)=>sendCertifyNumber(e)}>인증</button>
             </div>
+            {timer > 0 && certifiedBtn ?(
+              <div className="timer">
+                남은 시간: {Math.floor(timer / 60)}분 {timer % 60}초
+              </div>
+            ): ("")}
             {certifiedBtn? (
               <div className="inputAndBtn emailCertified">
                 <input type="text" placeholder="인증번호를 입력해주세요." className="form-input" onChange={(e)=>setVerifyCode(e.target.value)}/>
@@ -291,7 +324,7 @@ const SignUp = () => {
         onClose={closeModal}
         title={modalTitle}
         content={modalMessage}
-        actions={modalActions}
+        actions={modalTitle === "전송 중" ? [] : modalActions}
       />
     </div>
   );

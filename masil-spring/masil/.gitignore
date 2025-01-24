@@ -37,3 +37,6 @@ out/
 .vscode/
 
 .metadata/
+/application.properties
+/masil-spring/masil/src/main/resources/application.properties
+

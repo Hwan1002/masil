@@ -38,5 +38,7 @@ public class UserEntity {
 	private String location; // 위치설정
 
 	private String authProvider; // 소셜로그인공급자
+	
+	private String refreshToken ; // refreshToken 
 
 }
