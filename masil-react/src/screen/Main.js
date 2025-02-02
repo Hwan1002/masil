@@ -5,15 +5,15 @@ const Main = () => {
   const navigate = useNavigate();
   
   return(
-    <>
+   
     <div className="mainContents">
-      <div>메인페이지다 싀발</div>
-      <div>메인페이지다 싀발</div>
-      <div>메인페이지다 싀발</div>
+      <div>메인페이지</div>
+      <div>메인페이지</div>
+      <div>메인페이지</div>
       <button onClick={()=>navigate("/postRegist")}>+</button>
     </div>
       
-    </>
+ 
   )
 }
 export default Main;

@@ -68,9 +68,10 @@ public class UserService {
 		if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
 			throw new PasswordMismatchException("비밀번호가 일치하지않습니다.");
 		}
+		
 		String accessToken = tokenProvider.generateAccessToken(user.getUserId());
-		String refreshToken = tokenProvider.generateRefreshToken(user.getUserId());
-
+		String refreshToken = tokenProvider.generateRefreshToken(user.getUserId());		
+		
 		user.setRefreshToken(refreshToken);
 		userRepository.save(user); // DB에 RefreshToken 업데이트 
 		
@@ -80,6 +81,10 @@ public class UserService {
         refreshCookie.setSecure(false);  // HTTPS에서만 전송 (배포 환경에서 필수 true로 변환해주기)
         refreshCookie.setPath("/");     // 쿠키의 경로 설정 (루트 경로)
         refreshCookie.setMaxAge(7 * 24 * 60 * 60); // 유효기간: 7일
+        
+        
+        // 
+        
         response.addCookie(refreshCookie); // 응답에 쿠키 추가
 		
 		return ResponseDTO.<String>builder().status(200).value("환영합니다").accessToken(accessToken).build();
@@ -141,11 +146,21 @@ public class UserService {
 		}
 	}
 
+	
+
 	// 이메일 불일치 예외 내부클래스
 	public static class EmailIsNotExistsException extends RuntimeException {
 		public EmailIsNotExistsException(String message) {
 			super(message);
 		}
 	}
+	
+	
+	
+	
+	
+	
+	
+	
 
 }
