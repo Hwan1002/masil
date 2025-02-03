@@ -75,6 +75,7 @@ const RentalItem = () => {
                         </a>
                     ))}
                 </div>
+                <button onClick={() => navigate("/postRegist")} className="fixed-button">+</button>
             </div>
         );
 
