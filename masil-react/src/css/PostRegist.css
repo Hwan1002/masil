@@ -36,7 +36,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin:1.5em 0 1.5em 0;
+  margin:0 0 1.5em 0;
 }
 /* 사진사이즈 */
 .registPhoto img {
@@ -52,4 +52,15 @@
 .registnavigate{
   display: flex;
   justify-content: space-between;
+}
+
+.registerror{
+  color: red;
+}
+
+/* 미리보기 이미지들을 가로로 배치하는 스타일 */
+.imagePreviewContainer {
+  display: flex;  
+  flex-direction: row;  
+  flex-wrap: wrap; 
 }

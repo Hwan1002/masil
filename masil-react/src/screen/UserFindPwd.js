@@ -4,18 +4,16 @@ import { useNavigate } from 'react-router-dom';
 import Modal from "../component/Modal";
 import useModal from "../context/useModal";
 import axios from 'axios';
+import LoadingModal from '../component/LoadingModal';
 
 const UserFindPwd = () => {
     const navigate = useNavigate();
-    const [isLoading, setIsLoading] = useState(false); // 로딩 상태 관리
-    const [email, setEmail] = useState(''); // 입력값 관리
-    const [isVerified, setIsVerified] = useState(false);
-    //이메일 인증 버튼 눌렀는지
-    const [certifiedBtn, setCertifiedBtn] = useState(false);
-    //비밀번호 확인  & 인증코드 상태 따로 관리
-    const [pwd, setPwd] = useState('');
-    const [pwdConfirm, setPwdConfirm] = useState("");
-    const [verifyCode, setVerifyCode] = useState("");
+    const [email, setEmail] = useState(''); // 이메일 입력값 관리: 사용자가 입력하는 이메일
+    const [isVerified, setIsVerified] = useState(false); // 인증 상태: 이메일 인증 완료 여부
+    const [password, setPassWord] = useState(''); // 새 비밀번호 입력값 관리: 사용자가 입력하는 새 비밀번호
+    const [pwdConfirm, setPwdConfirm] = useState(""); // 비밀번호 확인 입력값 관리: 새 비밀번호와 일치하는지 확인
+    const [verifyCode, setVerifyCode] = useState(""); // 인증 코드 입력값 관리: 사용자가 입력한 인증 코드
+    
     const {
         isModalOpen,
         modalTitle,
@@ -28,11 +26,13 @@ const UserFindPwd = () => {
     //이메일 인증번호 전송 요청
     const sendCertifyNumber = async (e) => {
         e.preventDefault();
-        setCertifiedBtn(false);
+        openModal({
+            title: "전송 중",
+            message: <LoadingModal />,
+        });
         try {
-            const response = await axios.post('http://localhost:9090/user/send-email', { email: email });
+            const response = await axios.post(`http://localhost:9090/user/send-email`, { email: email });
             if (response) {
-                setCertifiedBtn(true);
                 openModal({
                     message: response.data.value
                 })
@@ -46,24 +46,74 @@ const UserFindPwd = () => {
     const emailCertified = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:9090/user/verify', {
+            const response = await axios.post(`http://localhost:9090/user/verify`, {
                 email: email, verifyCode: verifyCode
             });
             if (response) {
                 setIsVerified(true);
                 openModal({
                     message: response.data.value,
-                    message: "인증이 완료되었습니다. 비밀번호 설정페이지로 넘어갑니다."
+                    message: "비밀번호 설정 페이지로 넘어갑니다."
                 })
-                console.log("현재veri", verifyCode)
             }
         } catch (error) {
-            console.log(error.response.data.error);
+            openModal({
+                message: error.response.data.error
+            })
         }
     }
 
+    //비밀번호 재설정 put요청청
+    const resetpassword = async () => {
+        if (password.trim() === "" || pwdConfirm.trim() === "") {
+            openModal({
+                message: "비밀번호를 입력해주세요.",
+            });
+            return;
+        }
+
+        if (password !== pwdConfirm) {
+            openModal({
+                message: "비밀번호가 일치하지 않습니다.",
+            });
+            return;
+        }
+
+        try {
+            const response = await axios.put(`http://localhost:9090/user/ResetPassword`, {
+                email: email,
+                password: password
+            });
+
+            if (response.status === 200) {
+                openModal({
+                    message: response.data.value,
+                    actions: [
+                        {
+                            label: "확인",
+                            onClick: () => navigate("/login")
+                        }
+                    ]
+                });
+            }
+        } catch (error) {
+            openModal({
+                message: "비밀번호 변경에 실패했습니다. 다시 시도해주세요.",
+            });
+            console.error(error);
+        }
+    };
+
+
     const handleSubmit = (e) => {
         e.preventDefault(); // 기본 동작 방지
+
+        if (pwdConfirm !== password) {
+            openModal({
+                message: "비밀번호가 일치하지 않습니다.",
+            });
+            return;
+        }
 
         if (email.trim() === '') {
             openModal({
@@ -72,17 +122,23 @@ const UserFindPwd = () => {
             });
             return;
         }
-
-
-        setIsLoading(true); // 로딩 시작
     };
 
     // 엔터 키 전송
     const handleKeyPress = (e) => {
         if (e.key === "Enter") {
-            handleSubmit(e); // 엔터 키 입력 시 handleSubmit 호출
+            e.preventDefault();
+
+            if (e.target.name === "email") {
+                sendCertifyNumber(e); // 이메일 전송 버튼 기능 실행
+            } else if (e.target.name === "verifyCode") {
+                emailCertified(e); // 인증번호 확인 버튼 기능 실행
+            } else if (isVerified && e.target.name === "passwordConfirm") {
+                handleSubmit(e); // 비밀번호 변경 제출 실행
+            }
         }
     };
+
 
     return (
         <form className='FindId_container' onSubmit={handleSubmit}>
@@ -97,6 +153,7 @@ const UserFindPwd = () => {
                             <input
                                 className='FindId_input'
                                 type='email'
+                                name='email'
                                 placeholder='이메일 입력'
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
@@ -105,10 +162,9 @@ const UserFindPwd = () => {
                             <button
                                 type="submit"
                                 className='FindId_sendBtn'
-                                disabled={isLoading}
                                 onClick={(e) => sendCertifyNumber(e)}
                             >
-                                {isLoading ? "전송 중..." : "전송"}
+                                전송
                             </button>
                         </div>
                     </div>
@@ -119,6 +175,7 @@ const UserFindPwd = () => {
                             <input
                                 className='FindId_input'
                                 type='text'
+                                name='verifyCode'
                                 placeholder='인증번호 입력'
                                 value={verifyCode}
                                 onChange={(e) => setVerifyCode(e.target.value)}
@@ -127,10 +184,9 @@ const UserFindPwd = () => {
                             <button
                                 type="submit"
                                 className='FindId_sendBtn'
-                                disabled={isLoading}
                                 onClick={(e) => emailCertified(e)}
                             >
-                                {isLoading ? "전송 중..." : "인증"}
+                                인증
                             </button>
                         </div>
                     </div>
@@ -159,8 +215,8 @@ const UserFindPwd = () => {
                                 className='FindId_input'
                                 type='password'
                                 placeholder='새 비밀번호 입력'
-                                value={pwd}
-                                onChange={(e) => setPwd(e.target.value)}
+                                value={password}
+                                onChange={(e) => setPassWord(e.target.value)}
                             />
                         </div>
                     </div>
@@ -177,8 +233,8 @@ const UserFindPwd = () => {
                             />
                         </div>
                     </div>
-                         {/* 돌아가기 버튼 및 비밀번호 찾기 버튼 */}
-                         <div className='FindId_flexrow'>
+                    {/* 돌아가기 버튼 및 비밀번호 찾기 버튼 */}
+                    <div className='FindId_flexrow'>
                         <button
                             type="button"
                             onClick={() => navigate('/userfindid')}
@@ -186,7 +242,7 @@ const UserFindPwd = () => {
                         >
                             아이디 찾기
                         </button>
-                        <button type="button" className='FindId_button' onClick={() => navigate('/login')}>
+                        <button type="button" className='FindId_button' onClick={(e) => resetpassword()}>
                             비밀번호 재설정
                         </button>
                     </div>

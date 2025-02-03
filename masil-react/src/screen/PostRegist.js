@@ -10,6 +10,8 @@ const PostRegist = () => {
   const [errorMessage, setErrorMessage] = useState(""); // 에러 메시지 상태 추가
   const [selectedImages, setSelectedImages] = useState([]); // 여러 이미지를 저장하는 배열
 
+
+  //가격 인풋창 변경상태
   const handleChange = (e) => {
     const value = e.target.value;
     
@@ -23,10 +25,29 @@ const PostRegist = () => {
   };
 
   const handleFileChange = (e) => {
-    const files = Array.from(e.target.files); // 파일 목록을 배열로 변환
-    const imageUrls = files.map((file) => URL.createObjectURL(file)); // 이미지 URL 생성
-    setSelectedImages(imageUrls); // 여러 이미지 URL을 상태에 저장
+    // e.target.files -> 사용자가 선택한 파일목록을 가져옴옴
+    // Array.from(e.target.files) -> FileList 객체를 배열(Array)로 변환
+    // 배열로 반환해야 .map() 사용할때 파일을 쉽게 처리할 수 있음
+    const files = Array.from(e.target.files);
+    
+    //selectedImages (이미 선택된 이미지 개수) + 새로 선택한 files 개수 가 5가 안넘는지 확인
+    //5를 초과하면 경고메시지 띄움
+    //return을 사용하여 함수 실행을 중단 / 실행을 중단하지 않으면 추가등록을 할 수 있는걸 사전에 방지함함
+    if (selectedImages.length + files.length > 5) {
+      alert("최대 5개의 사진만 등록할 수 있습니다.");
+      return;
+    }
+  
+    //files.map((file) => URL.createObjectURL(file)); 각 파일을 브라우저에서 미리볼 수 있도록 URL 생성성
+    const imageUrls = files.map((file) => URL.createObjectURL(file));
+
+    
+    setSelectedImages((prevImages) => [...prevImages, ...imageUrls]);
+  
+    // 파일 선택 창 초기화 방지
+    e.target.value = "";
   };
+  
 
   const triggerFileInput = () => {
     document.getElementById("fileInput").click(); // 버튼 클릭 시 파일 선택창 열기
@@ -59,7 +80,7 @@ const PostRegist = () => {
           />
 
           {/* 선택된 여러 이미지 미리보기 */}
-          <div style={{ marginTop: "10px" }}>
+          <div className="imagePreviewContainer">
             {selectedImages.map((image, index) => (
               <img
                 key={index}
@@ -81,7 +102,7 @@ const PostRegist = () => {
             value={price}
           />
           {/* 에러 메시지 표시 */}
-          {errorMessage && <div style={{ color: "red" }}>{errorMessage}</div>}
+          {errorMessage && <div className="registerror">{errorMessage}</div>}
         </div>
         <div className="formDiv formDiv2">
           <DatePicker />
