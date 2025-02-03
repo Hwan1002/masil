@@ -21,11 +21,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	
 	@Autowired
     private  JwtTokenProvider jwtTokenProvider;
-    
-	@Autowired
-	private  UserDetailsService userDetailsService; // Spring Security에서 사용자 정보를 로드하기 위한 서비스
-
- 
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -36,11 +31,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // JWT가 유효한 경우 인증 정보 설정
         if (StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt)) {
             String userId = jwtTokenProvider.getUserIdFromToken(jwt); // 토큰에서 userId 추출
-            UserDetails userDetails = userDetailsService.loadUserByUsername(userId); // 사용자 정보 로드
+            
 
-            // 인증 객체 생성 및 SecurityContext에 설정
+            // 인증 객체 생성 및 SecurityContext에 설정(token을 통해 userId만 저장)
+
             Authentication authentication =
-                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    new UsernamePasswordAuthenticationToken(userId, null);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 

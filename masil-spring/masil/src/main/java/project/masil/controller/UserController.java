@@ -5,6 +5,7 @@ package project.masil.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -56,6 +57,7 @@ public class UserController {
 	// 로그인 메서드
 	@PostMapping("/login")
 	public ResponseEntity<?> signin(@RequestBody UserDTO dto , HttpServletResponse response) {
+		
 		return ResponseEntity.ok(service.signin(dto,response));
 	}
 
@@ -84,10 +86,13 @@ public class UserController {
 	}
 	
 	
+	// refreshToken을 통한 AccessToken 재발급메서드
+	// 쿠키에 저장되어있는 refresh토큰을 어떻게 매개변수로 받을것인지에 대한 생각을 해봐야함 .
+//	@PostMapping("/refresh")
+//	public ResponseEntity<?> refresh(@AuthenticationPrincipal ){
+//		String refreshToken = cookieUtil.getCookie(request, "refresh_token").getValue()
+//	}
 	
-	
-	
-	
-	
+
 
 }
