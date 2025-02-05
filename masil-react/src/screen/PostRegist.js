@@ -3,6 +3,7 @@ import '../css/PostRegist.css';
 import camera from '../css/img/photo/camera.png';
 import DatePicker from "../component/DatePicker";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const PostRegist = () => {
   const navigate = useNavigate();
@@ -10,9 +11,25 @@ const PostRegist = () => {
   const [errorMessage, setErrorMessage] = useState(""); // 에러 메시지 상태 추가
   const [selectedImages, setSelectedImages] = useState([]); // 여러 이미지를 저장하는 배열
 
-  const handleSubmit = (e) => {
+  //DatePicker 에서 값 받아옴
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+
+  const handleSubmit = async(e) => {
     e.preventDefault();  // 기본 폼 제출을 방지
+    debugger;
     // 여기에 폼 제출 후 처리 로직 추가
+    console.log("대여 시작 시간:", startDate);
+    console.log("대여 종료 시간:", endDate);
+    try {
+      const data = new FormData();
+      if (selectedImages) {
+        data.append("postPhoto", selectedImages);
+      }
+      const response = await axios.post('http://localhost:9090/post/upload',)
+    } catch (error) {
+      
+    }
     console.log('폼 제출');
   };
   
@@ -80,7 +97,7 @@ const PostRegist = () => {
     <div className="postRegist">
       <h2>게시물 등록</h2>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={(e)=>handleSubmit(e)}>
         <div className="formDiv">
           <label>사진({selectedImages.length}/4)</label>
           <div className="photoContainer"> {/* 추가된 div */}
@@ -91,7 +108,6 @@ const PostRegist = () => {
             >
               <img src={camera} alt="사진 등록" />
             </button> 
-
             <input
               id="fileInput"
               name="profilePhoto"
@@ -115,10 +131,10 @@ const PostRegist = () => {
           </div>
 
           <label>제목</label>
-          <input name="title" type="text" placeholder="게시물 제목" maxlength="40"/>
+          <input name="postTitle" type="text" placeholder="게시물 제목" maxlength="40" onChange={handleChange}/>
           <label>가격</label>
           <input
-            name="price"
+            name="postPrice"
             type="text"
             placeholder="가격 입력"
             onChange={handleChange}
@@ -133,13 +149,13 @@ const PostRegist = () => {
         </div>
         <div className="formDiv">
           <label>설명</label>
-          <textarea  placeholder="등록할 물건의 설명을 작성해주세요."  className="registdescription" />
+          <textarea className="registdescription" name="description" placeholder="등록할 물건의 설명을 작성해주세요." onChange={handleChange} />
         </div>
-      </form>
       <div className="registnavigate">
         <button onClick={() => navigate('/rentalitem')}>뒤로가기</button>
-        <button onClick={() => navigate('/rentalitem')}>등록하기</button>
+        <button type="submit">등록하기</button>
       </div>
+      </form>
     </div>
   );
 };

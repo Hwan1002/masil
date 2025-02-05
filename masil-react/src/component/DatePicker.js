@@ -6,11 +6,10 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { TextField } from "@mui/material";
 import { ko } from 'date-fns/locale';
 import 'react-datepicker/dist/react-datepicker.css';
-import { DateTime } from 'luxon';
+import { DateTime } from "luxon";
 
-const DatePicker = () => {
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+const DatePicker = ({startDate,setStartDate,endDate,setEndDate}) => {
+ 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ko}>
       
