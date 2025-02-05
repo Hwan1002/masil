@@ -15,7 +15,7 @@ const Login = () => {
   //form 값 상태
   const [loginInfo, setLoginInfo] = useState({});
   //로그인 성공 여부
-  const {setLoginSuccess} = useContext(ProjectContext);
+  const {setLoginSuccess, setAccessToken,} = useContext(ProjectContext);
   const navigate = useNavigate();
   const {
     isModalOpen,
@@ -26,6 +26,14 @@ const Login = () => {
     closeModal,
   } = useModal();
 
+//  const [tokenTimer, setTokenTimer] = useState(0);
+  // const [timeText, setTimeText] = useState("");
+  // if(accessToken !== null){
+  //   setTokenTimer(300);
+  //   setTimeText(`남은 토큰 시간 : ${tokenTimer}`);
+  // }
+
+
   //로그인 값 핸들러
   const loginHandler = (e) => {
     const { name, value } = e.target;
@@ -34,17 +42,30 @@ const Login = () => {
 
   const loginSubmit = async (e) => {
     e.preventDefault();
+   
     try {
+      const isEmpty = Object.values(loginInfo).some((value) => !value);
+      if (isEmpty) {
+        openModal({
+          message: "빈칸을 입력해주세요.",
+        });
+        return;
+      }
+      if (!loginInfo.password){
+        openModal({
+            message: "비밀번호를 입력해주세요.",
+        });
+        return;
+      }
       const response = await axios.post(
         "http://localhost:9090/user/login",
         loginInfo
       );
       if (response) {
         setLoginSuccess(true);
-        console.log(response.data.accessToken);
         openModal({
           message: response.data.value,
-          actions:[{label:"확인", onClick:()=>{closeModal();navigate("/")}}]
+          actions:[{label:"확인", onClick:()=>{setAccessToken(response.data.accessToken);closeModal();navigate("/")}}]
         });
         // 쿠키활용해서 토큰 저장하기 구현
       } else {

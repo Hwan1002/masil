@@ -13,7 +13,9 @@ import lombok.NoArgsConstructor;
 public class PostDTO {
 
 	private Integer idx; //게시물 식별자
-
+	
+	private String postPhotoPath; // 프로필사진
+	
 	private String postTitle; //게시글 제목
 
 	private String postPrice; //게시글 제품 렌탈가격

@@ -7,37 +7,30 @@ import useModal from '../context/useModal';
 import axios from 'axios';
 const MyPage = () => {
 
-  const [formData, setFormData] = useState({
-      userId : '',
-      userNickName : '',
-      password : '',
-      user_Name : '',
-      email : '',
-      profile_Photo : null,
-    })
-    
-    useEffect(() => {
-      const getUserInfo = async()=>{
-        const response = await axios.get(`http://localhost:9090/user/userInfo`,
-           {
-            headers: {
-              Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjMiLCJpYXQiOjE3Mzg3MjYyOTIsImV4cCI6MTczODcyNzE5Mn0.jU77GZVWm7b1L9HlStFG9bhwpQ_TOh2k1o-r--SkM50" // Bearer 토큰 형식
-            }
-          });
+  const [formData, setFormData] = useState({});
+  const {imagePreview, setImagePreview, accessToken} = useContext(ProjectContext); 
 
-        if(response){
-          setFormData(response.data);
-        }
+  useEffect(() => {
+    const getUserInfo = async()=>{
+      const response = await axios.get(`http://localhost:9090/user/userInfo`,
+          {
+          headers: {
+            Authorization: `Bearer ${accessToken}` // Bearer 토큰 형식
+          }
+        });
+
+      if(response){
+        setFormData(response.data.value);
+        
       }
-      getUserInfo();
-    },[])
-
+    }
+    getUserInfo();
+  },[])
+    setImagePreview(`http://localhost:9090/${formData.profilePhotoPath}`)
    //프로필 사진
     const inputImgRef = useRef(null); 
-    const {imagePreview, setImagePreview} = useContext(ProjectContext);
+    
     const navigate = useNavigate();
-
- 
     const handleInputChange = (event) => {
       const { name, value } = event.target;
       setFormData({
@@ -75,19 +68,16 @@ const MyPage = () => {
           <div className='profilePhoto'>
             {imagePreview !== null? (
               <div className='photoImg'>
-                <img src={imagePreview} alt="preview"/>
+                <img src={imagePreview} alt="강병준사진"/>
               </div>    
               ) : ''}
                 <button type="button" className='profileChangeBtn' onClick={handleProfileClick}>프로필 사진</button>
                 <input name="profilePhoto" type="file" accept="image/*" ref={inputImgRef} onChange={ImageUpload} style={{display:"none"}}/>
           </div>
           <div className='inputAll'>
-            {/* <input type="text" name="user_name" className="form-input" placeholder='이름을 입력하세요.'onChange={handleInputChange}/> */}
-            <input type="text" name="userId" className="form-input" value={formData.userId}/>
-            <input type="text" name="userNickName" className="form-input"placeholder='닉네임을 입력하세요'/>
-            <input type="email" name="email" className="form-input"placeholder='아이디를 입력하세요'/>
-            <input type="password" name="password" className="form-input" placeholder="비밀번호를 입력하세요."/>
-            <input type="password" className="form-input"  placeholder="비밀번호 확인"/>
+            <input type="text" name="user_name" className="form-input" value={formData.userName} readOnly/>
+            <input type="text" name="userId" className="form-input" value={formData.userId} readOnly/>
+            <input type="text" name="userNickName" className="form-input" value={formData.userNickName} placeholder='닉네임을 입력하세요' onChange={(e) => {handleInputChange(e)}}/>
           </div>
         </div>
         <div className='signUp_button'>

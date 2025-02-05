@@ -40,9 +40,11 @@ public class FileUploadUtil {
 			File destinationFile = new File(fullUploadDir + File.separator + fileName);
 			file.transferTo(destinationFile);
 
-			return "http://localhost:8080/uploads/" + subDir + "/" + fileName; // 상대 경로 반환
+		 
+			return "/"+subDir+"/"+fileName ; // 상대 경로 반환
 		} catch (IOException e) {
 			throw new RuntimeException("파일 저장 중 오류가 발생했습니다.", e);
+			
 		}
 	}
 

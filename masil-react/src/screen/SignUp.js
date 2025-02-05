@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext,useEffect } from "react";
+import React, { useState, useRef, useContext, useEffect} from "react";
 import "../css/SignUp.css";
 import { ProjectContext } from "../context/MasilContext";
 import { useNavigate } from "react-router-dom";
@@ -66,6 +66,7 @@ const SignUp = () => {
       });
       return;
     }
+  
     // if(!certifiedBtn){
     //   openModal({
     //     message: "이메일 인증을 해주세요.",
@@ -129,7 +130,7 @@ const SignUp = () => {
     e.preventDefault();
     const file = e.target.files[0];
     if (file) {
-      setProfilePhoto(file); // File 객체로 설정
+      setProfilePhoto(file);
       const reader = new FileReader();
       reader.onload = () => {
         setImagePreview(reader.result);
@@ -149,7 +150,6 @@ const SignUp = () => {
       const response = await axios.get("http://localhost:9090/user", {
         params: { userId: formData.userId },
       });
-      console.log(response.data);
       if (response.data) {
         openModal({
           message: "중복된 아이디입니다.",
@@ -312,7 +312,7 @@ const SignUp = () => {
             {timer > 0 && certifiedBtn? (
               <div className="inputAndBtn emailCertified">
                 <input type="text" placeholder="인증번호를 입력해주세요." className="form-input" onChange={(e)=>setVerifyCode(e.target.value)}/>
-                <button button onClick={(e)=>emailCertified(e)}>확인</button>
+                <button onClick={(e)=>emailCertified(e)}>확인</button>
                 <div className="timer">
                   남은 시간: {Math.floor(timer / 60)}분 {timer % 60}초
                 </div>
@@ -322,7 +322,7 @@ const SignUp = () => {
           </div>
         </div>
         <div className="signUp_button">
-        <button type="button" onClick={() => navigate("/")}>돌아가기</button>
+        {/* <button type="button" onClick={() => navigate("/")}>돌아가기</button> */}
           <button type="submit">회원가입</button>
         </div>
       </form>

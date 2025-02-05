@@ -16,7 +16,7 @@ import project.masil.security.JwtAuthenticationFilter;
 @Configuration
 public class WebSecurityConfig implements WebMvcConfigurer {
 	
-	
+
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -51,7 +51,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 	  @Override
 	   public void addResourceHandlers(ResourceHandlerRegistry registry) {
 	      registry.addResourceHandler("/uploads/**")
-	              .addResourceLocations("file:uploads/"); // 파일 시스템에서 'uploads' 디렉토리의 파일을 서빙
+	              .addResourceLocations("file:C:/Users/admin/Desktop/project/masil/masil-spring/masil/uploads/");
 	   }
 	
 	
