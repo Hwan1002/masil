@@ -41,6 +41,7 @@ const Login = () => {
       );
       if (response) {
         setLoginSuccess(true);
+        console.log(response.data.accessToken);
         openModal({
           message: response.data.value,
           actions:[{label:"확인", onClick:()=>{closeModal();navigate("/")}}]
