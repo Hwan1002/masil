@@ -221,7 +221,9 @@ const SignUp = () => {
         })
       }
     } catch (error) {
-      console.log(error.response.data.error);
+      openModal({
+        message:error.reponse.data.error
+      })
     }
   }
   return (
@@ -309,7 +311,7 @@ const SignUp = () => {
             {timer > 0 && certifiedBtn? (
               <div className="inputAndBtn emailCertified">
                 <input type="text" placeholder="인증번호를 입력해주세요." className="form-input" onChange={(e)=>setVerifyCode(e.target.value)}/>
-                <button button onClick={(e)=>emailCertified(e)}>확인</button>
+                <button onClick={(e)=>emailCertified(e)}>확인</button>
                 <div className="timer">
                   남은 시간: {Math.floor(timer / 60)}분 {timer % 60}초
                 </div>
