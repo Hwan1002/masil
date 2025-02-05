@@ -48,7 +48,7 @@ public class UserService {
 		;
 
 		String uploadDir = System.getProperty("user.dir") + "/uploads";
-		dto.setProfilePhotoPath(FileUploadUtil.saveFile(profilePhoto, uploadDir, "profilePhotos"));
+		dto.setProfilePhotoPath("/uploads" +FileUploadUtil.saveFile(profilePhoto, uploadDir, "profilePhotos"));
 
 		dto.setPassword(passwordEncoder.encode(dto.getPassword()));
 

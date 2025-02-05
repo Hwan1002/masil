@@ -26,7 +26,6 @@ const MyPage = () => {
     }
     getUserInfo();
   },[])
-    setImagePreview(`http://localhost:9090/${formData.profilePhotoPath}`)
    //프로필 사진
     const inputImgRef = useRef(null); 
     
@@ -68,7 +67,7 @@ const MyPage = () => {
           <div className='profilePhoto'>
             {imagePreview !== null? (
               <div className='photoImg'>
-                <img src={imagePreview} alt="강병준사진"/>
+                <img src={`http://localhost:/9090${formData.profilePhotoPath}`} alt="강병준사진"/>
               </div>    
               ) : ''}
                 <button type="button" className='profileChangeBtn' onClick={handleProfileClick}>프로필 사진</button>
