@@ -12,10 +12,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import jakarta.mail.internet.AddressException;
-import jakarta.mail.internet.InternetAddress;
 import project.masil.dto.ResponseDTO;
-import project.masil.repository.UserRepository;
 
 @Service
 public class EmailService {
@@ -23,7 +20,7 @@ public class EmailService {
 	@Autowired
 	private JavaMailSender mailSender;
 	
-	
+
 
 	// 인증번호와 유효시간을 저장하는 맵
 	// 덮어쓰기를 위해 ConcurrentHasgMap으로 생성 
@@ -35,6 +32,9 @@ public class EmailService {
 	
 	// 이메일 인증번호 전송 메서드
 	public ResponseDTO<String> sendEmail(String to) {
+		
+		
+
 		
 		// 인증번호 난수 생성 및 문자열변수에 저장 
 		String code = generateVerificationCode();
@@ -56,7 +56,7 @@ public class EmailService {
 
 		// 만료된 데이터 삭제 스케줄러 실행
 		scheduleExpirationCleanup(to);
-		return ResponseDTO.<String>builder().status(200).value("인증번호 전송을 성공하였습니다").build() ;
+		return ResponseDTO.<String>builder().status(200).value("인증번호 전송을 성공하였습니다. ").build() ;
 		
 	}
 
@@ -160,9 +160,7 @@ public ResponseDTO<String> verifyCode(String email, String code) {
 	}
 	
 	
-	
-	
-	
+
 	
 	
 }

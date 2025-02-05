@@ -23,6 +23,7 @@ public class UserService {
 	@Autowired // tokenProvider 의존성주입
 	private JwtTokenProvider tokenProvider;
 
+
 	PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 	// Id 중복체크 메서드
@@ -91,7 +92,7 @@ public class UserService {
 
 	}
 
-	// 아이디찾기 .
+	// 아이디 찾기 
 	public ResponseDTO<String> findUserId(String email) {
 		UserEntity user = userRepository.findByEmail(email);
 		if (user == null) {
@@ -100,6 +101,15 @@ public class UserService {
 		return ResponseDTO.<String>builder().status(200).value(user.getUserId()).build();
 
 	}
+	
+	// 비밀번호 재설정 전 이메일 검증메서드
+	public void validateEmailExists(String email){
+		// repository에 이메일이 없을시 예외처리 .(userService에 있는 예외처리생성자 사용)
+		if(!userRepository.existsByEmail(email)) {
+            throw new UserService.EmailIsNotExistsException("등록되지 않은 이메일입니다. ");
+		};
+	}
+	
 
 	// 비밀번호 재설정
 	public ResponseDTO<String> resetPassword(UserDTO dto) {
@@ -154,6 +164,7 @@ public class UserService {
 			super(message);
 		}
 	}
+	
 	
 	
 	

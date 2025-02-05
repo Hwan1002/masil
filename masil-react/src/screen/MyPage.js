@@ -21,7 +21,7 @@ const MyPage = () => {
         const response = await axios.get(`http://localhost:9090/user/userInfo`,
            {
             headers: {
-              Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjMiLCJpYXQiOjE3MzgwNTcxNjcsImV4cCI6MTczODA1ODA2N30.l2RC6FMrbga5Ldyg80hxAEpFPSR_iCKfs3Ix_OtiMYQ" // Bearer 토큰 형식
+              Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjMiLCJpYXQiOjE3Mzg3MjYyOTIsImV4cCI6MTczODcyNzE5Mn0.jU77GZVWm7b1L9HlStFG9bhwpQ_TOh2k1o-r--SkM50" // Bearer 토큰 형식
             }
           });
 

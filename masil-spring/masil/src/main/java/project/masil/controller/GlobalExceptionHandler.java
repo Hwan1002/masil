@@ -56,5 +56,9 @@ public class GlobalExceptionHandler {
 				.error(ex.getMessage()).build();
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 	}
+	
+	
+	
+	
 
 }

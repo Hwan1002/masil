@@ -61,12 +61,19 @@ public class UserController {
 		return ResponseEntity.ok(service.signin(dto,response));
 	}
 
-	// 이메일 전송 메서드
+	// 이메일 전송 메서드 (회원가입)
 	@PostMapping("/send-email")
 	public ResponseEntity<?> sendEmail(@RequestBody UserDTO dto) {
 		return ResponseEntity.ok(emailService.sendEmail(dto.getEmail()));
 	}
 
+	// 이메일 전송 메서드 (비밀번호 재설정전 검증로직)
+	@PostMapping("/findPassword")
+	public ResponseEntity<?> sendResetPassword(@RequestBody UserDTO dto) {
+		service.validateEmailExists(dto.getEmail());
+		return ResponseEntity.ok(emailService.sendEmail(dto.getEmail()));
+	}
+	
 	// 인증번호 검증 메서드
 	@PostMapping("/verify")
 	public ResponseEntity<?> verifyCode(@RequestBody UserDTO dto) {
