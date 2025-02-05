@@ -82,7 +82,7 @@ const PostRegist = () => {
 
       <form onSubmit={handleSubmit}>
         <div className="formDiv">
-          <label>사진(/4)</label>
+          <label>사진({selectedImages.length}/4)</label>
           <div className="photoContainer"> {/* 추가된 div */}
             <button
               type="button"
