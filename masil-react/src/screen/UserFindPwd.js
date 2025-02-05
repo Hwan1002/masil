@@ -65,7 +65,7 @@ const UserFindPwd = () => {
         }
     }
 
-    //비밀번호 재설정 put요청청
+    //비밀번호 재설정 put요청
     const resetpassword = async () => {
         if (password.trim() === "" || pwdConfirm.trim() === "") {
             openModal({

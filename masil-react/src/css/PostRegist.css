@@ -2,28 +2,31 @@
 .postRegist{
   box-shadow: 0 0px 2px #999, 0px 0px 10px #999;
   padding:2.5em;
+  width: 40em;
 }
 .postRegist form{
   display: flex;
   flex-direction: column;
 }
-.postRegist .formDiv{
-  margin-bottom: 2em;
-}
+
+/* 타이틀 */
+.postRegist h2{
+  text-align: center;
+ }
 
 /* 제목, 가격 인풋 */
 .postRegist .formDiv input{
   border-radius: 5px;
   width:100%;
   height:3em;
-  margin-bottom: 1.5em;
   padding: 10px;
+  margin-bottom: 1.5em;
 }
 
 /* 제목, 가격 */
 .postRegist .formDiv label{
   border-radius: 5px;
-  margin-bottom: 0.5em;
+  margin-bottom: 0.2em;
   width:100%;
 }
 
@@ -43,18 +46,22 @@
   width:100%;
 }
 
+/* 폼컨테이너 */
 .formDiv{
   display: flex;
   flex-direction: column; 
   width: 100%;
 }
 
+/* 뒤로가기, 등록하기 버튼 */
 .registnavigate{
   display: flex;
   justify-content: space-between;
 }
 
+/* 가격 에러 */
 .registerror{
+  margin-bottom: 1.5em;
   color: red;
 }
 
@@ -63,4 +70,71 @@
   display: flex;  
   flex-direction: row;  
   flex-wrap: wrap; 
+  gap: 10px; /* 이미지 간 간격 */
+}
+
+/* 사진 가로정렬배치 */
+.photoContainer {
+  display: flex; /* 가로 정렬 */
+  gap: 10px; /* 버튼과 이미지 사이 간격 */
+}
+
+/* 미리보기 이미지 */
+.previewImage {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+/* 이미지 미리보기 컨테이너 */
+.imageWrapper {
+  position: relative;
+  display: inline-block;
+}
+
+/* 삭제버튼 */
+.deleteButton {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  background: none;
+  color: red;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease-in-out;
+}
+
+/* 삭제버튼 호버효과 */
+.deleteButton:hover {
+  background: none;
+  transform: scale(1.2);
+}
+
+.registdescription{
+  width: 100%;
+  min-height: 10em;
+  margin-bottom: 1.5em;
+  border-radius: 5px;
+  text-align: left;
+  padding: 0.5em;
+  white-space: normal;
+  resize: none;
+  border: 2px solid #333;
+  font-family: Pretendard-Regular;
+}
+
+/* 플레이스홀더(placeholder)를 가로 + 세로 중앙 정렬 */
+.registdescription::placeholder {
+  text-align: center;
+  display: flex;
+  justify-content: center; 
+  line-height: 8.5em; 
 }

@@ -19,7 +19,6 @@ const DatePicker = () => {
           onChange={setStartDate}
           renderInput={(params) => <TextField {...params} />}
           inputFormat="yyyy/MM/dd hh:mm a"
-          style={{marginBottom:"2em"}}
         />
       </div>
       <div className="endTime">
