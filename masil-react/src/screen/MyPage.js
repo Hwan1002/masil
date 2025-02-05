@@ -83,7 +83,7 @@ const MyPage = () => {
           </div>
           <div className='inputAll'>
             {/* <input type="text" name="user_name" className="form-input" placeholder='이름을 입력하세요.'onChange={handleInputChange}/> */}
-            <input type="text" name="userId" className="form-input"placeholder='아이디를 입력하세요'/>
+            <input type="text" name="userId" className="form-input" value={formData.userId}/>
             <input type="text" name="userNickName" className="form-input"placeholder='닉네임을 입력하세요'/>
             <input type="email" name="email" className="form-input"placeholder='아이디를 입력하세요'/>
             <input type="password" name="password" className="form-input" placeholder="비밀번호를 입력하세요."/>
@@ -91,8 +91,8 @@ const MyPage = () => {
           </div>
         </div>
         <div className='signUp_button'>
-          <button type="button">수정하기</button>
           <button type="button" onClick={()=> navigate("/")}>돌아가기</button>
+          <button type="button">수정하기</button>
         </div>
       </form>
         

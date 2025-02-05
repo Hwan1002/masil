@@ -7,7 +7,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  /* border-radius: 1em; */
+  height: auto;
   box-shadow: 0 0px 2px #999, 0px 0px 10px #999;
 }
 .signup_form form{
@@ -72,5 +72,14 @@
   width:100%;
   object-fit: cover;
 }
-
+.signUp_button {
+  margin-bottom: 1em;
+}
 .signUp_button button:first-child{margin-right: 1em;}
+
+.timer {
+  display: flex;
+  justify-content: flex-end;
+  color:red;
+  font-size: 0.7rem;
+}
