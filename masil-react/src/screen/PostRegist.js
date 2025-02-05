@@ -82,7 +82,7 @@ const PostRegist = () => {
 
       <form onSubmit={handleSubmit}>
         <div className="formDiv">
-          <label>사진</label>
+          <label>사진(/4)</label>
           <div className="photoContainer"> {/* 추가된 div */}
             <button
               type="button"
@@ -130,9 +130,9 @@ const PostRegist = () => {
         <div className="formDiv">
           <DatePicker />
         </div>
-        <div>
+        <div className="formDiv">
           <label>설명</label>
-          <input type="text" placeholder="등록할 물건의 설명을 작성해주세요."  className="registdescription" />
+          <textarea  placeholder="등록할 물건의 설명을 작성해주세요."  className="registdescription" />
         </div>
       </form>
       <div className="registnavigate">
