@@ -288,12 +288,29 @@ userId만 사용하는 jwtFilter와 securityConfig 작성완료 .
 
 
 TODO :
-access만료시 refresh토큰을통한 access토큰 재발급 
-refresh토큰 만료시점에대해서 . 어떻게 알수있는지 공부필요함 
-소셜로그인 도입 , (filter 필요함 ) config 수정
+access만료시 refresh토큰을통한 access토큰 재발급  // 완료  
+refresh토큰 만료시점에대해서 . 어떻게 알수있는지 공부필요함 (토큰의 exp를 통해 만료시점알수있음 )
+소셜로그인 도입 , (filter 필요함 ) config 수정 
 naverAPI location 회원가입에 도입 .
 소셜로그인 사용자에대한 데이터처리 구성
 DB설계
+
+
+
+refreshToken을 이용한 accessToken 재발급 .
+refreshToken은 access토큰처럼 로그인시 발급되고 로그아웃시 삭제된다 .
+그렇다는건 로그인이 15일동안 지속되고 그이후에 만료가된다는뜻이다 .
+
+클라이언트(front-end)는 accessToken만료시간을 서버에서 전송한 accessToken의 exp를 추출하여 토큰의 만료시간 설정 .
+
+
+refreshToken을통한 access토큰 발급은 클라이언트가 AuthController의 "/auth/refresh-token" 엔드포인트로 헤더에 쿠키를담아 요청하면 서버는
+accessToken을 재발급후 클라이언트에게 Json객체의 accessToken 속성에 재발급된토큰을담아 응답한다 .  
+refreshToken이 유효하지않거나 만료되었을경우 서버는  "refreshToken이 유효하지않습니다 ." 라는 예외를던지고 전역예외처리핸들러는 이를 클라이언트에 Json객체로 401상태코드와 에러메세지를 응답한다 .
+
+
+
+TODO : 로그아웃메서드 (리프레쉬토큰을 db에서 삭제해야함 .)
 
 
 

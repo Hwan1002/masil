@@ -8,11 +8,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import project.masil.security.JwtAuthenticationFilter;
 
 @Configuration
-public class WebSecurityConfig {
+public class WebSecurityConfig implements WebMvcConfigurer {
 	
 	
 
@@ -44,4 +46,19 @@ public class WebSecurityConfig {
 	public JwtAuthenticationFilter jwtAuthenticationFilter() {
 		return new JwtAuthenticationFilter();
 	}
+	
+	
+	  @Override
+	   public void addResourceHandlers(ResourceHandlerRegistry registry) {
+	      registry.addResourceHandler("/uploads/**")
+	              .addResourceLocations("file:uploads/"); // 파일 시스템에서 'uploads' 디렉토리의 파일을 서빙
+	   }
+	
+	
+	
+	
+	
+	
+	
+	
 }

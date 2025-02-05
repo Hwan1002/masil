@@ -1,11 +1,10 @@
 package project.masil.controller;
 
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -56,10 +55,26 @@ public class UserController {
 
 	// 로그인 메서드
 	@PostMapping("/login")
-	public ResponseEntity<?> signin(@RequestBody UserDTO dto , HttpServletResponse response) {
-		
-		return ResponseEntity.ok(service.signin(dto,response));
+	public ResponseEntity<?> signin(@RequestBody UserDTO dto, HttpServletResponse response) {
+
+		return ResponseEntity.ok(service.signin(dto, response));
 	}
+
+//	@PostMapping("/logout")
+//	public ResponseEntity<?> logout(@CookieValue(value = "refreshToken", required = false) String refreshToken,
+//			HttpServletResponse response) {
+//		authService.logout(refreshToken);
+//
+//		// 클라이언트 쿠키 삭제
+//		Cookie cookie = new Cookie("refreshToken", null);
+//		cookie.setHttpOnly(true);
+//		cookie.setSecure(true); // HTTPS 환경에서만 전송
+//		cookie.setPath("/");
+//		cookie.setMaxAge(0); // 쿠키 즉시 만료
+//		response.addCookie(cookie);
+//
+//		return ResponseEntity.ok("Successfully logged out");
+//	}
 
 	// 이메일 전송 메서드 (회원가입)
 	@PostMapping("/send-email")
@@ -73,33 +88,23 @@ public class UserController {
 		service.validateEmailExists(dto.getEmail());
 		return ResponseEntity.ok(emailService.sendEmail(dto.getEmail()));
 	}
-	
+
 	// 인증번호 검증 메서드
 	@PostMapping("/verify")
 	public ResponseEntity<?> verifyCode(@RequestBody UserDTO dto) {
 		return ResponseEntity.ok(emailService.verifyCode(dto.getEmail(), dto.getVerifyCode()));
 	}
 
-	// 아이디 찾기 메서드 
+	// 아이디 찾기 메서드
 	@PostMapping("/findUserId")
 	public ResponseEntity<?> findId(@RequestBody UserDTO dto) {
-		return ResponseEntity.ok(service.findUserId(dto.getEmail())) ;
+		return ResponseEntity.ok(service.findUserId(dto.getEmail()));
 	}
-	
+
 	// 비밀번호 재설정 메서드 (이메일 인증번호 요청과 검증후 재설정로직)
 	@PutMapping("/ResetPassword")
-	public ResponseEntity<?> resetPassword(@RequestBody UserDTO dto ){
-		return ResponseEntity.ok(service.resetPassword(dto)) ;
+	public ResponseEntity<?> resetPassword(@RequestBody UserDTO dto) {
+		return ResponseEntity.ok(service.resetPassword(dto));
 	}
-	
-	
-	// refreshToken을 통한 AccessToken 재발급메서드
-	// 쿠키에 저장되어있는 refresh토큰을 어떻게 매개변수로 받을것인지에 대한 생각을 해봐야함 .
-//	@PostMapping("/refresh")
-//	public ResponseEntity<?> refresh(@AuthenticationPrincipal ){
-//		String refreshToken = cookieUtil.getCookie(request, "refresh_token").getValue()
-//	}
-	
-
 
 }

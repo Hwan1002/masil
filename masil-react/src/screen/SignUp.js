@@ -221,7 +221,10 @@ const SignUp = () => {
         })
       }
     } catch (error) {
-      console.log(error.response.data.error);
+      openModal({
+        message:error.response.data.error
+      })
+      
     }
   }
   return (
