@@ -4,37 +4,44 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import project.masil.security.JwtAuthenticationFilter;
+
 @Configuration
 public class WebSecurityConfig {
+	
+	
 
-   @Bean
-   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-       http
-           .csrf().disable() // CSRF 비활성화
-           .cors().configurationSource(corsConfigurationSource()) // CORS 설정 추가
-           .and()
-           .authorizeHttpRequests()
-               .anyRequest().permitAll() // 모든 요청 허용
-           .and()
-           .httpBasic(); // HTTP Basic 인증 (테스트용)
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		http.csrf().disable().cors().configurationSource(corsConfigurationSource()) // CORS 설정 추가
+				.and().authorizeHttpRequests().requestMatchers("/user/**").permitAll() // 로그인 및 회원가입 엔드포인트 허용
+				.anyRequest().authenticated() // 나머지 요청은 인증 필요
+				.and().addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class); // JWT 필터
+																												// 등록
 
-       return http.build();
-   }
+		return http.build();
+	}
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("http://localhost:3000"); // React 개발 서버 Origin 허용
-        configuration.addAllowedMethod("*"); // 모든 HTTP 메서드 허용 (GET, POST, PUT, DELETE 등)
-        configuration.addAllowedHeader("*"); // 모든 헤더 허용
-        configuration.setAllowCredentials(true); // 쿠키 및 인증 정보 허용
+	@Bean
+	public CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
+		configuration.addAllowedOrigin("http://localhost:3000"); // React 개발 서버 Origin 허용
+		configuration.addAllowedMethod("*"); // 모든 HTTP 메서드 허용 (GET, POST, PUT, DELETE 등)
+		configuration.addAllowedHeader("*"); // 모든 헤더 허용
+		configuration.setAllowCredentials(true); // 쿠키 및 인증 정보 허용
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // 모든 경로에 대해 CORS 설정 적용
-        return source;
-    }
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration); // 모든 경로에 대해 CORS 설정 적용
+		return source;
+	}
+
+	@Bean
+	public JwtAuthenticationFilter jwtAuthenticationFilter() {
+		return new JwtAuthenticationFilter();
+	}
 }

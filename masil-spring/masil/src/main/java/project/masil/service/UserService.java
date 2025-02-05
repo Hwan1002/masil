@@ -6,6 +6,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import project.masil.common.FileUploadUtil;
 import project.masil.dto.ResponseDTO;
 import project.masil.dto.UserDTO;
@@ -17,6 +19,9 @@ public class UserService {
 
 	@Autowired // repository 의존성 주입
 	private UserRepository userRepository;
+
+	@Autowired // tokenProvider 의존성주입
+	private JwtTokenProvider tokenProvider;
 
 	PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -34,8 +39,7 @@ public class UserService {
 
 	}
 
-	// 회원가입 ( 추후 예외처리 로직 추가예정 .)
-	// 예외처리 : 이메일 중복일시에 예외
+	// 회원가입
 	public ResponseDTO<String> signUp(UserDTO dto, MultipartFile profilePhoto) {
 		// 사진을 저장하고 사진의 경로를 얻는 stirng 반환받은후 그 반환받은 값을 profilePhoto에 직접 넣어준다 .
 		if (userRepository.existsByEmail(dto.getEmail())) {
@@ -55,7 +59,7 @@ public class UserService {
 	}
 
 	// 로그인
-	public ResponseDTO<String> signin(UserDTO dto) {
+	public ResponseDTO<String> signin(UserDTO dto , HttpServletResponse response) {
 		UserEntity user = userRepository.findByUserId(dto.getUserId());
 		if (user == null) {
 			throw new IdIsNotExistsException("아이디가 일치하지않습니다.");
@@ -64,8 +68,26 @@ public class UserService {
 		if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
 			throw new PasswordMismatchException("비밀번호가 일치하지않습니다.");
 		}
-
-		return ResponseDTO.<String>builder().status(200).value("환영합니다").build();
+		
+		String accessToken = tokenProvider.generateAccessToken(user.getUserId());
+		String refreshToken = tokenProvider.generateRefreshToken(user.getUserId());		
+		
+		user.setRefreshToken(refreshToken);
+		userRepository.save(user); // DB에 RefreshToken 업데이트 
+		
+		// 쿠키 객체생성 
+	    Cookie refreshCookie = new Cookie("refreshToken", refreshToken);
+        refreshCookie.setHttpOnly(true); // HttpOnly 설정
+        refreshCookie.setSecure(false);  // HTTPS에서만 전송 (배포 환경에서 필수 true로 변환해주기)
+        refreshCookie.setPath("/");     // 쿠키의 경로 설정 (루트 경로)
+        refreshCookie.setMaxAge(7 * 24 * 60 * 60); // 유효기간: 7일
+        
+        
+        // 
+        
+        response.addCookie(refreshCookie); // 응답에 쿠키 추가
+		
+		return ResponseDTO.<String>builder().status(200).value("환영합니다").accessToken(accessToken).build();
 
 	}
 
@@ -78,7 +100,7 @@ public class UserService {
 		return ResponseDTO.<String>builder().status(200).value(user.getUserId()).build();
 
 	}
-	
+
 	// 비밀번호 재설정
 	public ResponseDTO<String> resetPassword(UserDTO dto) {
 		UserEntity user = userRepository.findByEmail(dto.getEmail());
@@ -86,7 +108,6 @@ public class UserService {
 		userRepository.save(user);
 		return ResponseDTO.<String>builder().status(200).value("새로운 비밀번호로 로그인해주세요").build();
 	}
-	
 
 	// entity -> dto
 	public UserDTO toDTO(UserEntity entity) {
@@ -125,11 +146,21 @@ public class UserService {
 		}
 	}
 
+	
+
 	// 이메일 불일치 예외 내부클래스
 	public static class EmailIsNotExistsException extends RuntimeException {
 		public EmailIsNotExistsException(String message) {
 			super(message);
 		}
 	}
+	
+	
+	
+	
+	
+	
+	
+	
 
 }

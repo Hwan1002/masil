@@ -18,7 +18,13 @@ const MyPage = () => {
     
     useEffect(() => {
       const getUserInfo = async()=>{
-        const response = await axios.get(`http://localhost:9090/user/master`)
+        const response = await axios.get(`http://localhost:9090/user/userInfo`,
+           {
+            headers: {
+              Authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjMiLCJpYXQiOjE3MzgwNTcxNjcsImV4cCI6MTczODA1ODA2N30.l2RC6FMrbga5Ldyg80hxAEpFPSR_iCKfs3Ix_OtiMYQ" // Bearer 토큰 형식
+            }
+          });
+
         if(response){
           setFormData(response.data);
         }
