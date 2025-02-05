@@ -9,16 +9,19 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    visibility: hidden;
     opacity: 0;
-    transform: scale(0.5);
-    transition: opacity 0.5s ease, visibility 0.5s ease;
+    visibility: hidden;
+    transition: opacity 0.5s ease, transform 0.5s ease, visibility 0s linear 0.5s;
+    transform: scale(0.1);
+    z-index: 11;
 }
 .modal-backdrop.open {
+    visibility: visible;
     opacity: 1;
     transform: scale(1);
-    visibility: visible;
 }
+
+
 /* 모달창 기본 공통 css */
 .modal-content {
     display: flex;
@@ -31,14 +34,13 @@
     min-width: 20em;
     width: auto;
     height: auto;
-    opacity: 0;
-    transform: scale(0.5);
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    /* opacity: 0;
+    transition: opacity 0.5s ease, transform 0.5s ease; */
 }
-.modal-content.open {
+/* .modal-content.open {
     opacity: 1;
     transform: scale(1);
-}
+} */
 .modal-content h2{
     margin: 0;
     font-size: 1.1rem;
@@ -53,15 +55,20 @@
 }
 
 .modal-actions button {
-    background-color: #22a800;
+    background-color: #a9ddb7;
     color: white;
     width: 5em;
     height: 2em;
+    margin-right: 1rem;
 }
-
+.modal-actions button:last-child{
+    margin-right: 0;
+}
 .modal-actions button[type="submit"] {
     background-color: #4caf50;
     color: white;
 }
-
+.modal-actions button:hover{
+    background-color: #4caf50;
+}
 

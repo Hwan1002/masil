@@ -5,7 +5,7 @@ import useModal from '../context/useModal';
 import { ProjectContext } from "../context/MasilContext";
 
 const Header = () => {
-    const {loginSuccess} = useContext(ProjectContext);
+    const {loginSuccess, setLoginSuccess} = useContext(ProjectContext);
     const navigate = useNavigate();
     const scrollToSection = (sectionId) => {
         const element = document.getElementById(sectionId);
@@ -36,7 +36,7 @@ const Header = () => {
             <div>
               {loginSuccess? (
                 <>
-                  <button onClick={()=>openModal({message:"로그아웃 하시겠습니까?",actions:[{label:"확인",onClick:()=>{closeModal();navigate("/login")}}]})}>LOGOUT</button>
+                  <button onClick={()=>openModal({message:"로그아웃 하시겠습니까?",actions:[{label:"확인",onClick:()=>{closeModal();setLoginSuccess(false);navigate("/login")}},{label:"취소", onClick:closeModal}]})}>LOGOUT</button>
                   <button onClick={()=>navigate("/mypage")}>MYPAGE</button>
                 </>
               ):(

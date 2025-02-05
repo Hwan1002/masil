@@ -319,10 +319,8 @@ const SignUp = () => {
           </div>
         </div>
         <div className="signUp_button">
+        <button type="button" onClick={() => navigate("/")}>돌아가기</button>
           <button type="submit">회원가입</button>
-          <button type="button" onClick={() => navigate("/")}>
-            돌아가기
-          </button>
         </div>
       </form>
       <Modal
