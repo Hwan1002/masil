@@ -85,12 +85,12 @@ const PostRegist = () => {
           <label>사진({selectedImages.length}/4)</label>
           <div className="photoContainer"> {/* 추가된 div */}
             <button
-              type="button"
+             type="button"
               className="registPhoto"
               onClick={triggerFileInput}
             >
               <img src={camera} alt="사진 등록" />
-            </button>
+            </button> 
 
             <input
               id="fileInput"
@@ -115,7 +115,7 @@ const PostRegist = () => {
           </div>
 
           <label>제목</label>
-          <input name="title" type="text" placeholder="게시물 제목" />
+          <input name="title" type="text" placeholder="게시물 제목" maxlength="40"/>
           <label>가격</label>
           <input
             name="price"
@@ -123,6 +123,7 @@ const PostRegist = () => {
             placeholder="가격 입력"
             onChange={handleChange}
             value={price}
+            maxlength="12"
           />
           {/* 에러 메시지 표시 */}
           {errorMessage && <div className="registerror">{errorMessage}</div>}
