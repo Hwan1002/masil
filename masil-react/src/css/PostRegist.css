@@ -2,6 +2,7 @@
 .postRegist{
   box-shadow: 0 0px 2px #999, 0px 0px 10px #999;
   padding:2.5em;
+  width: 40em;
 }
 .postRegist form{
   display: flex;
@@ -122,11 +123,15 @@
   height: 20em;
   margin-bottom: 1.5em;
   border-radius: 5px;
-  text-align: left;
+  text-align: center;
+  padding: 0.5em;
 }
 
-/* 플레이스홀더(placeholder)만 중앙 정렬 */
+/* 플레이스홀더(placeholder)를 가로 + 세로 중앙 정렬 */
 .registdescription::placeholder {
-  text-align: center; /* 가운데 정렬 */
-  vertical-align: middle; /* 세로 중앙 정렬 (textarea에는 적용 안 될 수도 있음) */
+  text-align: center;
+  display: flex;
+  justify-content: center; 
+  height: 100%; 
+  line-height: 18em; 
 }

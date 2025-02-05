@@ -39,8 +39,8 @@ const PostRegist = () => {
     //selectedImages (이미 선택된 이미지 개수) + 새로 선택한 files 개수 가 5가 안넘는지 확인
     //5를 초과하면 경고메시지 띄움
     //return을 사용하여 함수 실행을 중단 / 실행을 중단하지 않으면 추가등록을 할 수 있는걸 사전에 방지함함
-    if (selectedImages.length + files.length > 5) {
-      alert("최대 5개의 사진만 등록할 수 있습니다.");
+    if (selectedImages.length + files.length > 4) {
+      alert("최대 4개의 사진만 등록할 수 있습니다.");
       return;
     }
 
@@ -132,7 +132,7 @@ const PostRegist = () => {
         </div>
         <div>
           <label>설명</label>
-          <textarea type="text" placeholder="등록할 물건의 설명을 작성해주세요."  className="registdescription" />
+          <input type="text" placeholder="등록할 물건의 설명을 작성해주세요."  className="registdescription" />
         </div>
       </form>
       <div className="registnavigate">

@@ -31,14 +31,16 @@ const UserFindPwd = () => {
             message: <LoadingModal />,
         });
         try {
-            const response = await axios.post(`http://localhost:9090/user/send-email`, { email: email });
+            const response = await axios.post(`http://localhost:9090/user/findPassword`, { email: email });
             if (response) {
                 openModal({
                     message: response.data.value
                 })
             }
         } catch (error) {
-            console.log(error.response.data.error);
+            openModal({
+                message:error.response.data.error
+            })
         }
     }
 
