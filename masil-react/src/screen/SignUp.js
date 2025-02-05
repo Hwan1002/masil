@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext,useEffect } from "react";
+import React, { useState, useRef, useContext, useEffect} from "react";
 import "../css/SignUp.css";
 import { ProjectContext } from "../context/MasilContext";
 import { useNavigate } from "react-router-dom";
@@ -66,6 +66,7 @@ const SignUp = () => {
       });
       return;
     }
+  
     // if(!certifiedBtn){
     //   openModal({
     //     message: "이메일 인증을 해주세요.",
@@ -129,7 +130,7 @@ const SignUp = () => {
     e.preventDefault();
     const file = e.target.files[0];
     if (file) {
-      setProfilePhoto(file); // File 객체로 설정
+      setProfilePhoto(file);
       const reader = new FileReader();
       reader.onload = () => {
         setImagePreview(reader.result);
@@ -149,7 +150,6 @@ const SignUp = () => {
       const response = await axios.get("http://localhost:9090/user", {
         params: { userId: formData.userId },
       });
-      console.log(response.data);
       if (response.data) {
         openModal({
           message: "중복된 아이디입니다.",
@@ -319,7 +319,7 @@ const SignUp = () => {
           </div>
         </div>
         <div className="signUp_button">
-        <button type="button" onClick={() => navigate("/")}>돌아가기</button>
+        {/* <button type="button" onClick={() => navigate("/")}>돌아가기</button> */}
           <button type="submit">회원가입</button>
         </div>
       </form>

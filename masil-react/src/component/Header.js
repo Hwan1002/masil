@@ -36,6 +36,7 @@ const Header = () => {
             <div>
               {loginSuccess? (
                 <>
+                  {/* 로그아웃시 쿠키랑 토큰 삭제 시키는 axios 함수 추가로 인해 onClick안에 하나의 함수로 묶어서 정의 */}
                   <button onClick={()=>openModal({message:"로그아웃 하시겠습니까?",actions:[{label:"확인",onClick:()=>{closeModal();setLoginSuccess(false);navigate("/login")}},{label:"취소", onClick:closeModal}]})}>LOGOUT</button>
                   <button onClick={()=>navigate("/mypage")}>MYPAGE</button>
                 </>
