@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import project.masil.dto.ResponseDTO;
+import project.masil.service.AuthService;
 import project.masil.service.EmailService;
 import project.masil.service.UserService;
 
@@ -57,6 +58,14 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 	}
 	
+
+	// InvalidTokenException (유효하지 않은 토큰 예외처리) 
+	@ExceptionHandler(AuthService.InvalidTokenException.class)
+	public ResponseEntity<ResponseDTO<String>> InvalidTokenException(AuthService.InvalidTokenException ex) {
+		ResponseDTO<String> response = ResponseDTO.<String>builder().status(HttpStatus.UNAUTHORIZED.value()) // 기본 상태 코드
+				.error(ex.getMessage()).build();
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+	}
 	
 	
 	
