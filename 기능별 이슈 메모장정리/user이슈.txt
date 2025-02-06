@@ -319,11 +319,13 @@ addResourceLocations() 에 명시된 경로가 상대경로이기떄문에 생�
 .addResourceLocations("file:/uploads/")
 이었던 부분을  
 .addResourceLocations("file:" + System.getProperty("user.dir") + "/uploads/"); 
+registry.addResourceHandler("/default/**")
+.addResourceLocations("classpath:/static/default/");
 이렇게 변경하고 
 filterChain의 
 requestMatchers("/user/**",).permitAll() 
 이 부분의 사진폴더 접근이 가능하게 
-requestMatchers("/user/**","/uploads/**").permitAll() 이렇게 변경. 
+requestMatchers("/user/**","/uploads/**",/default/**).permitAll() 이렇게 변경. 
 해결완료 
 
 
