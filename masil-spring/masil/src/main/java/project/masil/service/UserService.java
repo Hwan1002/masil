@@ -106,7 +106,7 @@ public class UserService {
 			user.setProfilePhotoPath(dto.getProfilePhotoPath());
 		} else {
 			String uploadDir = System.getProperty("user.dir") + "/uploads";
-			user.setProfilePhotoPath("/uploads" + FileUploadUtil.saveFile(profilePhoto, uploadDir, "profilePhotos"));
+			user.setProfilePhotoPath(FileUploadUtil.saveFile(profilePhoto, uploadDir, "profilePhotos"));
 		}
 		user.setUserNickName(dto.getUserNickName());
 		userRepository.save(user);
