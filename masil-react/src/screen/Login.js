@@ -59,7 +59,8 @@ const Login = () => {
       }
       const response = await axios.post(
         "http://localhost:9090/user/login",
-        loginInfo
+        loginInfo,
+        {withCredentials : true} // 쿠키포함 
       );
       if (response) {
         setLoginSuccess(true);
