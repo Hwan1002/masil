@@ -164,13 +164,13 @@ const MyPage = () => {
               <div className='photoImg'>
                 <img
                   src={imagePreview ? imagePreview : `http://localhost:9090${formData.profilePhotoPath}`}
-                  alt="프로필 사진"
+                  alt="image"
                 />
               </div>
             ) : (
               <div className="photoImgPlaceholder">프로필 사진 없음</div>  // 사진이 없을 때의 대체 이미지
             )}
-            <button type="button" className='profileChangeBtn' onClick={handleProfileClick}>프로필 사진 변경</button>
+            <button type="button" className='profileChangeBtn' onClick={handleProfileClick}>프로필 사진</button>
             <input
               name="profilePhoto"
               type="file"
