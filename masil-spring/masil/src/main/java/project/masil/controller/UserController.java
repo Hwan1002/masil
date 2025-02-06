@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import jakarta.servlet.http.HttpServletResponse;
 import project.masil.dto.ResponseDTO;
 import project.masil.dto.UserDTO;
+import project.masil.service.AuthService;
 import project.masil.service.EmailService;
 import project.masil.service.UserService;
 
@@ -31,6 +32,8 @@ public class UserController {
 	private UserService service;
 	@Autowired
 	private EmailService emailService;
+	@Autowired
+	private AuthService authService ;
 
 	// 마이페이지에서의 유저정보조회 게시판에대한 내용이들어왔을때 수정예정
 	@GetMapping("/userInfo")
@@ -60,21 +63,12 @@ public class UserController {
 		return ResponseEntity.ok(service.signin(dto, response));
 	}
 
-//	@PostMapping("/logout")
-//	public ResponseEntity<?> logout(@CookieValue(value = "refreshToken", required = false) String refreshToken,
-//			HttpServletResponse response) {
-//		authService.logout(refreshToken);
-//
-//		// 클라이언트 쿠키 삭제
-//		Cookie cookie = new Cookie("refreshToken", null);
-//		cookie.setHttpOnly(true);
-//		cookie.setSecure(true); // HTTPS 환경에서만 전송
-//		cookie.setPath("/");
-//		cookie.setMaxAge(0); // 쿠키 즉시 만료
-//		response.addCookie(cookie);
-//
-//		return ResponseEntity.ok("Successfully logged out");
-//	}
+	// 로그아웃 메서드 
+	@PostMapping("/logout")
+	public ResponseEntity<?> logout(@CookieValue(value = "refreshToken", required = false) String refreshToken,
+			HttpServletResponse response) {
+		return ResponseEntity.ok(authService.logout(refreshToken , response));
+	}
 
 	// 이메일 전송 메서드 (회원가입)
 	@PostMapping("/send-email")

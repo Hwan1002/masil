@@ -327,8 +327,10 @@ requestMatchers("/user/**","/uploads/**").permitAll() 이렇게 변경.
 해결완료 
 
 
+로그아웃메서드와  사진전달에대한 오류해결 완료 
 
 
+location 도입
 
 
 
