@@ -9,9 +9,42 @@
   align-items: center;
   box-shadow: 0 0px 2px #999, 0px 0px 10px #999;
 }
-.myPage_form form{
-  width:100%;
+
+.myPage_form form {
+  width: 100%;
 }
+
 .myPage_form .form_input {
   margin: 1em 0;
 }
+
+.inputWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.inputWrapper input {
+  width: 100%;
+  padding: 10px 40px 10px 10px;  /* 오른쪽 여백을 추가하여 버튼 공간 확보 */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.myPageSetPasswordBtn {
+  position: absolute;
+  right: 10px; /* 버튼을 오른쪽에 위치시킴 */
+  top: 50%; /* 버튼을 세로 중앙에 위치시킴 */
+  transform: translateY(-50%); /* 정확히 중앙에 맞추기 */
+  padding: 5px 15px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+}
+
+.myPageSetPasswordBtn:hover {
+  background-color: #45a049;
+}
+
+
