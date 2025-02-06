@@ -21,7 +21,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.csrf().disable().cors().configurationSource(corsConfigurationSource()) // CORS 설정 추가
-				.and().authorizeHttpRequests().requestMatchers("/user/**").permitAll() // 로그인 및 회원가입 엔드포인트 허용
+				.and().authorizeHttpRequests().requestMatchers("/user/**","/uploads/**").permitAll() // 로그인 및 회원가입 엔드포인트 허용
 				.anyRequest().authenticated() // 나머지 요청은 인증 필요
 				.and().addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class); // JWT 필터
 																												// 등록
@@ -51,7 +51,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 	  @Override
 	   public void addResourceHandlers(ResourceHandlerRegistry registry) {
 	      registry.addResourceHandler("/uploads/**")
-	              .addResourceLocations("file:C:/Users/admin/Desktop/project/masil/masil-spring/masil/uploads/");
+	      .addResourceLocations("file:" + System.getProperty("user.dir") + "/uploads/");
 	   }
 	
 	

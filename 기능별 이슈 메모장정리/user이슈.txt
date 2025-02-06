@@ -311,9 +311,20 @@ refreshToken이 유효하지않거나 만료되었을경우 서버는  "refreshT
 
 
 TODO : 로그아웃메서드 (리프레쉬토큰을 db에서 삭제해야함 .)
+사진 업로드는되지만 , 클라이언트에 사진전달이 안되는중 . 
 
-
-
+문제점이 정확하게는 무엇인지 모르겠지만 . 
+가능성있는 문제점은 config파일에 
+addResourceLocations() 에 명시된 경로가 상대경로이기떄문에 생기는문제일 가능성이있다 . 
+.addResourceLocations("file:/uploads/")
+이었던 부분을  
+.addResourceLocations("file:" + System.getProperty("user.dir") + "/uploads/"); 
+이렇게 변경하고 
+filterChain의 
+requestMatchers("/user/**",).permitAll() 
+이 부분의 사진폴더 접근이 가능하게 
+requestMatchers("/user/**","/uploads/**").permitAll() 이렇게 변경. 
+해결완료 
 
 
 

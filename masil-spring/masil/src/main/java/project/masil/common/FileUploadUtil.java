@@ -31,6 +31,7 @@ public class FileUploadUtil {
 			File directory = new File(fullUploadDir);
 			if (!directory.exists()) {
 				directory.mkdirs(); // 디렉토리 생성
+				
 			}
 
 			// 고유한 파일 이름 생성

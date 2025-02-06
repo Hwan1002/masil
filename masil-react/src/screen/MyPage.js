@@ -18,7 +18,7 @@ const MyPage = () => {
             Authorization: `Bearer ${accessToken}` // Bearer 토큰 형식
           }
         });
-
+        console.log(response.data.value)
       if(response){
         setFormData(response.data.value);
         

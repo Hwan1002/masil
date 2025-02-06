@@ -15,8 +15,6 @@ import project.masil.service.JwtTokenProvider;
 public class AuthController {
 
 	@Autowired
-	private JwtTokenProvider jwtTokenProvider; // JWT 생성 및 검증 서비스
-	@Autowired
 	private AuthService authService; // 사용자 데이터베이스 접근
 
 	// refreshToken을 통한 access토큰 재발급 메서드
