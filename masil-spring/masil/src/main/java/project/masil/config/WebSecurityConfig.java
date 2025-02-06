@@ -19,7 +19,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.csrf().disable().cors().configurationSource(corsConfigurationSource()) // CORS 설정 추가
-				.and().authorizeHttpRequests().requestMatchers("/user/**", "/uploads/**").permitAll() // 로그인 및 회원가입 , 사진폴더접근
+				.and().authorizeHttpRequests().requestMatchers("/user/**", "/uploads/**","/default/**").permitAll() // 로그인 및 회원가입 , 사진폴더접근 , 기본사진폴더접근
 																										// 엔드포인트 허용
 				.anyRequest().authenticated() // 나머지 요청은 인증 필요
 				.and().addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class); // JWT 필터
@@ -54,6 +54,9 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 		registry.addResourceHandler("/uploads/**")
 				.addResourceLocations("file:" + System.getProperty("user.dir") + "/uploads/");
 
+		// 기본이미지 경로매핑
+		 registry.addResourceHandler("/default/**")
+         .addResourceLocations("classpath:/static/default/");
 	}
 
 }

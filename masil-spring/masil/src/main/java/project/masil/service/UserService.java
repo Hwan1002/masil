@@ -1,5 +1,7 @@
 package project.masil.service;
 
+import java.nio.file.Paths;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,6 +18,9 @@ import project.masil.repository.UserRepository;
 
 @Service
 public class UserService {
+
+	// 기본프로필 경로 
+	public static final String DEFAULT_PROFILE_PHOTO = "/default/userDefault.svg";
 
 	@Autowired // repository 의존성 주입
 	private UserRepository userRepository;
@@ -47,9 +52,12 @@ public class UserService {
 		}
 		;
 
-		String uploadDir = System.getProperty("user.dir") + "/uploads";
-		dto.setProfilePhotoPath("/uploads" +FileUploadUtil.saveFile(profilePhoto, uploadDir, "profilePhotos"));
-
+		if (profilePhoto == null || profilePhoto.isEmpty()) {
+			dto.setProfilePhotoPath(DEFAULT_PROFILE_PHOTO);
+		} else {
+			String uploadDir = System.getProperty("user.dir") + "/uploads";
+			dto.setProfilePhotoPath(FileUploadUtil.saveFile(profilePhoto, uploadDir, "profilePhotos"));
+		}
 		dto.setPassword(passwordEncoder.encode(dto.getPassword()));
 
 		userRepository.save(toEntity(dto));
@@ -87,6 +95,19 @@ public class UserService {
 		response.addCookie(refreshCookie); // 응답에 쿠키 추가
 
 		return ResponseDTO.<String>builder().status(200).value("환영합니다").accessToken(accessToken).build();
+
+	}
+
+	// 회원정보수정
+	public ResponseDTO<String> modify(String userId, MultipartFile profilePhoto, UserDTO dto) {
+		UserEntity user = userRepository.findByUserId(userId);
+
+		String uploadDir = System.getProperty("user.dir") + "/uploads";
+		user.setProfilePhotoPath("/uploads" + FileUploadUtil.saveFile(profilePhoto, uploadDir, "profilePhotos"));
+		user.setUserNickName(dto.getUserNickName());
+		userRepository.save(user);
+
+		return ResponseDTO.<String>builder().status(200).value("회원정보가 수정되었습니다 . ").build();
 
 	}
 
