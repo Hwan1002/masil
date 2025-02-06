@@ -19,7 +19,7 @@ import project.masil.repository.UserRepository;
 @Service
 public class UserService {
 
-	// 기본프로필 경로 
+	// 기본프로필 경로
 	public static final String DEFAULT_PROFILE_PHOTO = "/default/userDefault.svg";
 
 	@Autowired // repository 의존성 주입
@@ -102,8 +102,12 @@ public class UserService {
 	public ResponseDTO<String> modify(String userId, MultipartFile profilePhoto, UserDTO dto) {
 		UserEntity user = userRepository.findByUserId(userId);
 
-		String uploadDir = System.getProperty("user.dir") + "/uploads";
-		user.setProfilePhotoPath("/uploads" + FileUploadUtil.saveFile(profilePhoto, uploadDir, "profilePhotos"));
+		if (profilePhoto == null || profilePhoto.isEmpty()) {
+			user.setProfilePhotoPath(dto.getProfilePhotoPath());
+		} else {
+			String uploadDir = System.getProperty("user.dir") + "/uploads";
+			user.setProfilePhotoPath("/uploads" + FileUploadUtil.saveFile(profilePhoto, uploadDir, "profilePhotos"));
+		}
 		user.setUserNickName(dto.getUserNickName());
 		userRepository.save(user);
 
