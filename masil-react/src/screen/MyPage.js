@@ -23,6 +23,7 @@ const MyPage = () => {
 
   useEffect(() => {
     const getUserInfo = async () => {
+      if (!accessToken) return; 
       const response = await axios.get(`http://localhost:9090/user/userInfo`, {
         headers: {
           Authorization: `Bearer ${accessToken}` // Bearer 토큰 형식
@@ -39,7 +40,7 @@ const MyPage = () => {
       }
     };
     getUserInfo();
-  }, []);
+  }, [accessToken]);
   
 
   const putUserInfo = async () => {

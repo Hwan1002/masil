@@ -1,8 +1,13 @@
 import '../css/Main.css';
 // import { useNavigate } from 'react-router-dom';
-
+import { useContext } from 'react';
+import { ProjectContext } from '../context/MasilContext';
 const Main = () => {
+
+  const {accessToken} = useContext(ProjectContext);
   // const navigate = useNavigate();
+
+  console.log(accessToken)
   return(
     <>
     <div className="mainContents">
