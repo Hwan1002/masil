@@ -8,7 +8,8 @@ import axios from 'axios';
 const MyPage = () => {
 
   const [formData, setFormData] = useState({});
-  const {imagePreview, setImagePreview, accessToken} = useContext(ProjectContext); 
+  const {imagePreview, setImagePreview, accessToken} = useContext(ProjectContext);
+  const [profilePhoto, setProfilePhoto] = useState(null);
 
   useEffect(() => {
     const getUserInfo = async()=>{
@@ -21,12 +22,12 @@ const MyPage = () => {
 
       if(response){
         setFormData(response.data.value);
-        
+        // setImagePreview(`http://localhost:9090/${response.data.value.profilePhotoPath}`);
       }
     }
     getUserInfo();
-  },[])
-    setImagePreview(`http://localhost:9090/${formData.profilePhotoPath}`)
+  },[accessToken])
+
    //프로필 사진
     const inputImgRef = useRef(null); 
     
@@ -50,8 +51,9 @@ const MyPage = () => {
       if (file) {
           setFormData((prev) => ({
               ...prev,
-              profile_Photo: file.name,
+              profilePhoto: file.name,
           }));
+          setProfilePhoto(file);
           const reader = new FileReader();
           reader.onload = () => {
               setImagePreview(reader.result);
@@ -66,11 +68,14 @@ const MyPage = () => {
       <form>
         <div className='form_input'>
           <div className='profilePhoto'>
-            {imagePreview !== null? (
+            <div className='photoImg'>
+                <img src={imagePreview} alt="강병준사진"/>
+            </div> 
+            {/* {imagePreview? (
               <div className='photoImg'>
                 <img src={imagePreview} alt="강병준사진"/>
               </div>    
-              ) : ''}
+              ) : ''} */}
                 <button type="button" className='profileChangeBtn' onClick={handleProfileClick}>프로필 사진</button>
                 <input name="profilePhoto" type="file" accept="image/*" ref={inputImgRef} onChange={ImageUpload} style={{display:"none"}}/>
           </div>

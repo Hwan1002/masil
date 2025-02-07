@@ -27,6 +27,7 @@ const SignUp = () => {
     userNickName: "",
     password: "",
     email: "",
+    profilePhoto : null,
   });
   const {isLoading,setIsLoading} = useContext(ProjectContext);
   const navigate = useNavigate();
@@ -41,63 +42,7 @@ const SignUp = () => {
     closeModal,
   } = useModal();
 
-  //회원가입 버튼 클릭 함수
-  const submitFormData = async (e) => {
-    e.preventDefault();
-    //빈값확인
-    const isEmpty = Object.values(formData).some((value) => !value);
-    if (isEmpty) {
-      openModal({
-        message: "빈칸을 입력해주세요.",
-      });
-      return;
-    }
-    //중복체크 눌렀는지
-    if (!duplicateBtn) {
-      openModal({
-        message: "아이디 중복 확인해주세요.",
-      });
-      return;
-    }
-    //비밀번호 불일치
-    if (pwdConfirm !== formData.password) {
-      openModal({
-        message: "비밀번호가 일치하지 않습니다.",
-      });
-      return;
-    }
   
-    // if(!certifiedBtn){
-    //   openModal({
-    //     message: "이메일 인증을 해주세요.",
-    //   });
-    //   return;
-    // }
-    try {
-      const data = new FormData();
-      if (profilePhoto) {
-        data.append("profilePhoto", profilePhoto);
-      }
-      data.append("dto", new Blob([JSON.stringify(formData)], { type: "application/json" }));
-      const response = await axios.post("http://localhost:9090/user", data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      if (response) {
-        openModal({
-          title: "회원가입",
-          message: response.data.value,
-          actions: [{label: "확인", onClick:()=>{ closeModal(); navigate("/login"); }}],
-        });
-      }
-    } catch (error) {
-      openModal({
-        title: "회원가입",
-        message: error.response.data.error,
-      });
-    }
-  };
 
   //프로필 사진
   const inputImgRef = useRef(null);
@@ -130,6 +75,10 @@ const SignUp = () => {
     e.preventDefault();
     const file = e.target.files[0];
     if (file) {
+      setFormData((prev) => ({
+        ...prev,
+        profilePhoto: file.name,
+      }));
       setProfilePhoto(file);
       const reader = new FileReader();
       reader.onload = () => {
@@ -226,6 +175,63 @@ const SignUp = () => {
       })
     }
   }
+  //회원가입 버튼 클릭 함수
+  const submitFormData = async (e) => {
+    e.preventDefault();
+    //빈값확인
+    const isEmpty = Object.values(formData).some((value) => !value);
+    if (isEmpty) {
+      openModal({
+        message: "빈칸을 입력해주세요.",
+      });
+      return;
+    }
+    //중복체크 눌렀는지
+    if (!duplicateBtn) {
+      openModal({
+        message: "아이디 중복 확인해주세요.",
+      });
+      return;
+    }
+    //비밀번호 불일치
+    if (pwdConfirm !== formData.password) {
+      openModal({
+        message: "비밀번호가 일치하지 않습니다.",
+      });
+      return;
+    }
+  
+    // if(!certifiedBtn){
+    //   openModal({
+    //     message: "이메일 인증을 해주세요.",
+    //   });
+    //   return;
+    // }
+    try {
+      const data = new FormData();
+      if (profilePhoto) {
+        data.append("profilePhoto", profilePhoto);
+      }
+      data.append("dto", new Blob([JSON.stringify(formData)], { type: "application/json" }));
+      const response = await axios.post("http://localhost:9090/user", data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      if (response) {
+        openModal({
+          title: "회원가입",
+          message: response.data.value,
+          actions: [{label: "확인", onClick:()=>{ closeModal(); navigate("/login"); }}],
+        });
+      }
+    } catch (error) {
+      openModal({
+        title: "회원가입",
+        message: error.response.data.error,
+      });
+    }
+  };
   return (
     <div className="signup_form">
       <h2>회원가입</h2>
