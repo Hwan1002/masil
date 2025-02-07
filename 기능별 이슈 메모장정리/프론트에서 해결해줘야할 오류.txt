@@ -12,3 +12,16 @@
 3. 쿠키의 리프레쉬토큰 만료시 세션이 만료되었습니다 재로그인해주세요 . 메세지와 강제로그아웃
 
 4. 로그아웃시 로그아웃 요청 메서드 작성 .
+
+
+5. 
+
+
+마이페이지 들어갔을때 
+내정보수정에서 수정하기 버튼을 눌렀을때 axios로 put 요청을 보내야한다 .
+
+header : accessToken 
+body : multipartFile (사진) Json객체 : 닉네임(userNickName) ,비밀번호(password) ,사진경로(profilePhotoPath) 
+
+
+

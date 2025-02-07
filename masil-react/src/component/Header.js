@@ -28,12 +28,15 @@ const logoutClicked = (e) => {
   debugger;
   try {
     const logout = async() => {
-      const response = await axios.post('http://localhost:9090/user/logout')
+      const response = await axios.post('http://localhost:9090/user/logout',
+        {}, // 요청 본문은 비워둠 
+        {withCredentials: true} // 옵션객체에 httpOnly 쿠키 포함  
+      )
       if(response){
         setLoginSuccess(false);
         openModal({
           message : response.data.value,
-          actions : [{label:"확인", onclick:()=>{closeModal();navigate("/login")}}]
+          actions : [{label:"확인", onclick:()=>{closeModal();window.location.href="/";}}]
         })
       }
     }
