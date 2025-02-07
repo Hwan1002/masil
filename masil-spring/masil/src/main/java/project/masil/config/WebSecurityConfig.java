@@ -15,13 +15,12 @@ import project.masil.security.JwtAuthenticationFilter;
 
 @Configuration
 public class WebSecurityConfig implements WebMvcConfigurer {
-	
-
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.csrf().disable().cors().configurationSource(corsConfigurationSource()) // CORS 설정 추가
-				.and().authorizeHttpRequests().requestMatchers("/user/**").permitAll() // 로그인 및 회원가입 엔드포인트 허용
+				.and().authorizeHttpRequests().requestMatchers("/user/**", "/uploads/**","/default/**").permitAll() // 로그인 및 회원가입 , 사진폴더접근 , 기본사진폴더접근
+																										// 엔드포인트 허용
 				.anyRequest().authenticated() // 나머지 요청은 인증 필요
 				.and().addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class); // JWT 필터
 																												// 등록
@@ -46,19 +45,18 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 	public JwtAuthenticationFilter jwtAuthenticationFilter() {
 		return new JwtAuthenticationFilter();
 	}
+
 	
-	
-	  @Override
-	   public void addResourceHandlers(ResourceHandlerRegistry registry) {
-	      registry.addResourceHandler("/uploads/**")
-	              .addResourceLocations("file:C:/Users/admin/Desktop/project/masil/masil-spring/masil/uploads/");
-	   }
-	
-	
-	
-	
-	
-	
-	
-	
+	// 실제 파일이 저장된 디렉토리 경로지정 , 
+	// 지정된 파일시스템 디렉토리에서 정적리소스 제공하도록 매핑 .
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		registry.addResourceHandler("/uploads/**")
+				.addResourceLocations("file:" + System.getProperty("user.dir") + "/uploads/");
+
+		// 기본이미지 경로매핑
+		 registry.addResourceHandler("/default/**")
+         .addResourceLocations("classpath:/static/default/");
+	}
+
 }

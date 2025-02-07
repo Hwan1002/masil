@@ -3,6 +3,7 @@ import {useNavigate} from 'react-router-dom';
 import Modal from './Modal';
 import useModal from '../context/useModal';
 import { ProjectContext } from "../context/MasilContext";
+import axios from 'axios';
 
 const Header = () => {
     const {loginSuccess, setLoginSuccess} = useContext(ProjectContext);
@@ -21,6 +22,33 @@ const Header = () => {
       openModal,
       closeModal,
     } = useModal();
+
+const logoutClicked = (e) => {
+  e.preventDefault();
+  debugger;
+  try {
+    const logout = async() => {
+      const response = await axios.post('http://localhost:9090/user/logout',
+        {}, // 요청 본문은 비워둠 
+        {withCredentials: true} // 옵션객체에 httpOnly 쿠키 포함  
+      )
+      if(response){
+        setLoginSuccess(false);
+        openModal({
+          message : response.data.value,
+          actions : [{label:"확인", onclick:()=>{closeModal();window.location.href="/";}}]
+        })
+      }
+    }
+   logout();
+  } catch (error) {
+    openModal({
+      message: error.response.data.error,
+    })
+  }
+
+}
+
     return(
         <>
         <header className='header'>
@@ -37,7 +65,7 @@ const Header = () => {
               {loginSuccess? (
                 <>
                   {/* 로그아웃시 쿠키랑 토큰 삭제 시키는 axios 함수 추가로 인해 onClick안에 하나의 함수로 묶어서 정의 */}
-                  <button onClick={()=>openModal({message:"로그아웃 하시겠습니까?",actions:[{label:"확인",onClick:()=>{closeModal();setLoginSuccess(false);navigate("/login")}},{label:"취소", onClick:closeModal}]})}>LOGOUT</button>
+                  <button onClick={()=>openModal({message:"로그아웃 하시겠습니까?",actions:[{label:"확인",onClick:(e)=>{logoutClicked(e)}},{label:"취소", onClick:closeModal}]})}>LOGOUT</button>
                   <button onClick={()=>navigate("/mypage")}>MYPAGE</button>
                 </>
               ):(
