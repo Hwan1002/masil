@@ -19,7 +19,7 @@ const MyPage = () => {
             Authorization: `Bearer ${accessToken}` // Bearer 토큰 형식
           }
         });
-
+        console.log(response.data.value)
       if(response){
         setFormData(response.data.value);
         // setImagePreview(`http://localhost:9090/${response.data.value.profilePhotoPath}`);
@@ -73,7 +73,7 @@ const MyPage = () => {
             </div> 
             {/* {imagePreview? (
               <div className='photoImg'>
-                <img src={imagePreview} alt="강병준사진"/>
+                <img src={`http://localhost:9090${formData.profilePhotoPath}`} alt="강병준사진"/>
               </div>    
               ) : ''} */}
                 <button type="button" className='profileChangeBtn' onClick={handleProfileClick}>프로필 사진</button>

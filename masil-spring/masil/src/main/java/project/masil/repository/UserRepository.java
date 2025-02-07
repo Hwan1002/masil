@@ -17,4 +17,5 @@ public interface UserRepository  extends JpaRepository<UserEntity,Integer >{
 	
 	UserEntity findByEmail(String email) ;
 
+	UserEntity findByRefreshToken(String refreshToken) ;
 }

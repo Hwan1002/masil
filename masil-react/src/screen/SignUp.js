@@ -171,8 +171,9 @@ const SignUp = () => {
       }
     } catch (error) {
       openModal({
-        message:error.reponse.data.error
+        message:error.response.data.error
       })
+      
     }
   }
   //회원가입 버튼 클릭 함수

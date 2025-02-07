@@ -1,5 +1,7 @@
 package project.masil.service;
 
+import java.nio.file.Paths;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,12 +19,14 @@ import project.masil.repository.UserRepository;
 @Service
 public class UserService {
 
+	// 기본프로필 경로
+	public static final String DEFAULT_PROFILE_PHOTO = "/default/userDefault.svg";
+
 	@Autowired // repository 의존성 주입
 	private UserRepository userRepository;
 
 	@Autowired // tokenProvider 의존성주입
 	private JwtTokenProvider tokenProvider;
-
 
 	PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -48,9 +52,12 @@ public class UserService {
 		}
 		;
 
-		String uploadDir = System.getProperty("user.dir") + "/uploads";
-		dto.setProfilePhotoPath(FileUploadUtil.saveFile(profilePhoto, uploadDir, "profilePhotos"));
-
+		if (profilePhoto == null || profilePhoto.isEmpty()) {
+			dto.setProfilePhotoPath(DEFAULT_PROFILE_PHOTO);
+		} else {
+			String uploadDir = System.getProperty("user.dir") + "/uploads";
+			dto.setProfilePhotoPath(FileUploadUtil.saveFile(profilePhoto, uploadDir, "profilePhotos"));
+		}
 		dto.setPassword(passwordEncoder.encode(dto.getPassword()));
 
 		userRepository.save(toEntity(dto));
@@ -60,7 +67,7 @@ public class UserService {
 	}
 
 	// 로그인
-	public ResponseDTO<String> signin(UserDTO dto , HttpServletResponse response) {
+	public ResponseDTO<String> signin(UserDTO dto, HttpServletResponse response) {
 		UserEntity user = userRepository.findByUserId(dto.getUserId());
 		if (user == null) {
 			throw new IdIsNotExistsException("아이디가 일치하지않습니다.");
@@ -69,30 +76,46 @@ public class UserService {
 		if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
 			throw new PasswordMismatchException("비밀번호가 일치하지않습니다.");
 		}
-		
+
 		String accessToken = tokenProvider.generateAccessToken(user.getUserId());
-		String refreshToken = tokenProvider.generateRefreshToken(user.getUserId());		
-		
+		String refreshToken = tokenProvider.generateRefreshToken(user.getUserId());
+
 		user.setRefreshToken(refreshToken);
-		userRepository.save(user); // DB에 RefreshToken 업데이트 
-		
-		// 쿠키 객체생성 
-	    Cookie refreshCookie = new Cookie("refreshToken", refreshToken);
-        refreshCookie.setHttpOnly(true); // HttpOnly 설정
-        refreshCookie.setSecure(false);  // HTTPS에서만 전송 (배포 환경에서 필수 true로 변환해주기)
-        refreshCookie.setPath("/");     // 쿠키의 경로 설정 (루트 경로)
-        refreshCookie.setMaxAge(7 * 24 * 60 * 60); // 유효기간: 7일
-        
-        
-        // 
-        
-        response.addCookie(refreshCookie); // 응답에 쿠키 추가
-		
+		userRepository.save(user); // DB에 RefreshToken 업데이트
+
+		// 쿠키 객체생성
+		Cookie refreshCookie = new Cookie("refreshToken", refreshToken);
+		refreshCookie.setHttpOnly(true); // HttpOnly 설정
+		refreshCookie.setSecure(false); // HTTPS에서만 전송 (배포 환경에서 필수 true로 변환해주기)
+		refreshCookie.setPath("/"); // 쿠키의 경로 설정 (루트 경로)
+		refreshCookie.setMaxAge(7 * 24 * 60 * 60); // 유효기간: 7일
+
+		//
+
+		response.addCookie(refreshCookie); // 응답에 쿠키 추가
+
 		return ResponseDTO.<String>builder().status(200).value("환영합니다").accessToken(accessToken).build();
 
 	}
 
-	// 아이디 찾기 
+	// 회원정보수정
+	public ResponseDTO<String> modify(String userId, MultipartFile profilePhoto, UserDTO dto) {
+		UserEntity user = userRepository.findByUserId(userId);
+
+		if (profilePhoto == null || profilePhoto.isEmpty()) {
+			user.setProfilePhotoPath(dto.getProfilePhotoPath());
+		} else {
+			String uploadDir = System.getProperty("user.dir") + "/uploads";
+			user.setProfilePhotoPath("/uploads" + FileUploadUtil.saveFile(profilePhoto, uploadDir, "profilePhotos"));
+		}
+		user.setUserNickName(dto.getUserNickName());
+		userRepository.save(user);
+
+		return ResponseDTO.<String>builder().status(200).value("회원정보가 수정되었습니다 . ").build();
+
+	}
+
+	// 아이디 찾기
 	public ResponseDTO<String> findUserId(String email) {
 		UserEntity user = userRepository.findByEmail(email);
 		if (user == null) {
@@ -101,15 +124,15 @@ public class UserService {
 		return ResponseDTO.<String>builder().status(200).value(user.getUserId()).build();
 
 	}
-	
+
 	// 비밀번호 재설정 전 이메일 검증메서드
-	public void validateEmailExists(String email){
+	public void validateEmailExists(String email) {
 		// repository에 이메일이 없을시 예외처리 .(userService에 있는 예외처리생성자 사용)
-		if(!userRepository.existsByEmail(email)) {
-            throw new UserService.EmailIsNotExistsException("등록되지 않은 이메일입니다. ");
-		};
+		if (!userRepository.existsByEmail(email)) {
+			throw new UserService.EmailIsNotExistsException("등록되지 않은 이메일입니다. ");
+		}
+		;
 	}
-	
 
 	// 비밀번호 재설정
 	public ResponseDTO<String> resetPassword(UserDTO dto) {
@@ -122,8 +145,8 @@ public class UserService {
 	// entity -> dto
 	public UserDTO toDTO(UserEntity entity) {
 
-		return UserDTO.builder().userId(entity.getUserId()).password(entity.getPassword())
-				.userName(entity.getUserName()).userNickName(entity.getUserNickName()).email(entity.getEmail())
+		return UserDTO.builder().userId(entity.getUserId()).userName(entity.getUserName())
+				.userNickName(entity.getUserNickName()).email(entity.getEmail())
 				.profilePhotoPath(entity.getProfilePhotoPath()).location(entity.getLocation())
 				.authProvider(entity.getAuthProvider()).build();
 	}
@@ -156,22 +179,11 @@ public class UserService {
 		}
 	}
 
-	
-
 	// 이메일 불일치 예외 내부클래스
 	public static class EmailIsNotExistsException extends RuntimeException {
 		public EmailIsNotExistsException(String message) {
 			super(message);
 		}
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
 }

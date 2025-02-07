@@ -288,26 +288,58 @@ userId만 사용하는 jwtFilter와 securityConfig 작성완료 .
 
 
 TODO :
-access만료시 refresh토큰을통한 access토큰 재발급 
-refresh토큰 만료시점에대해서 . 어떻게 알수있는지 공부필요함 
-소셜로그인 도입 , (filter 필요함 ) config 수정
+access만료시 refresh토큰을통한 access토큰 재발급  // 완료  
+refresh토큰 만료시점에대해서 . 어떻게 알수있는지 공부필요함 (토큰의 exp를 통해 만료시점알수있음 )
+소셜로그인 도입 , (filter 필요함 ) config 수정 
 naverAPI location 회원가입에 도입 .
 소셜로그인 사용자에대한 데이터처리 구성
 DB설계
 
 
 
+refreshToken을 이용한 accessToken 재발급 .
+refreshToken은 access토큰처럼 로그인시 발급되고 로그아웃시 삭제된다 .
+그렇다는건 로그인이 15일동안 지속되고 그이후에 만료가된다는뜻이다 .
+
+클라이언트(front-end)는 accessToken만료시간을 서버에서 전송한 accessToken의 exp를 추출하여 토큰의 만료시간 설정 .
+
+
+refreshToken을통한 access토큰 발급은 클라이언트가 AuthController의 "/auth/refresh-token" 엔드포인트로 헤더에 쿠키를담아 요청하면 서버는
+accessToken을 재발급후 클라이언트에게 Json객체의 accessToken 속성에 재발급된토큰을담아 응답한다 .  
+refreshToken이 유효하지않거나 만료되었을경우 서버는  "refreshToken이 유효하지않습니다 ." 라는 예외를던지고 전역예외처리핸들러는 이를 클라이언트에 Json객체로 401상태코드와 에러메세지를 응답한다 .
 
 
 
+TODO : 로그아웃메서드 (리프레쉬토큰을 db에서 삭제해야함 .)
+사진 업로드는되지만 , 클라이언트에 사진전달이 안되는중 . 
+
+문제점이 정확하게는 무엇인지 모르겠지만 . 
+가능성있는 문제점은 config파일에 
+addResourceLocations() 에 명시된 경로가 상대경로이기떄문에 생기는문제일 가능성이있다 . 
+.addResourceLocations("file:/uploads/")
+이었던 부분을  
+.addResourceLocations("file:" + System.getProperty("user.dir") + "/uploads/"); 
+registry.addResourceHandler("/default/**")
+.addResourceLocations("classpath:/static/default/");
+이렇게 변경하고 
+filterChain의 
+requestMatchers("/user/**",).permitAll() 
+이 부분의 사진폴더 접근이 가능하게 
+requestMatchers("/user/**","/uploads/**",/default/**).permitAll() 이렇게 변경. 
+해결완료 
 
 
+로그아웃메서드와  사진전달에대한 오류해결 완료 
 
 
+location 도입
 
 
+내위치 설정하기 버튼 회원가입시에 생성 
+HTML5 geoLocation을통한 실시간 위치정보얻기 가능 .
+하지만 https와같은 보안컨텍스트에서만 작동 .. localhost환경에서는 예외적으로 정상적 사용이 가능한경우가있음 .
 
-
+https 설정을 springboot에 한다하더라도 실제로 위치를 요청하는환경은 localhost3000 (리액트 개발서버 ) 이기떄문에 springboot의 locathost9090 서버에 https를 도입하는것은 크게 의미가없다 .
 
 
 
