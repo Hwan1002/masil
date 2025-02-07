@@ -25,7 +25,6 @@ const Header = () => {
 
 const logoutClicked = (e) => {
   e.preventDefault();
-  debugger;
   try {
     const logout = async() => {
       const response = await axios.post('http://localhost:9090/user/logout',
@@ -36,7 +35,7 @@ const logoutClicked = (e) => {
         setLoginSuccess(false);
         openModal({
           message : response.data.value,
-          actions : [{label:"확인", onclick:()=>{closeModal();window.location.href="/";}}]
+          actions : [{label:"확인", onClick:()=>{closeModal();window.location.href="/";}}]
         })
       }
     }
