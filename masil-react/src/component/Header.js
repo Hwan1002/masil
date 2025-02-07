@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import {useNavigate} from 'react-router-dom';
 import Modal from './Modal';
 import useModal from '../context/useModal';
@@ -6,7 +6,7 @@ import { ProjectContext } from "../context/MasilContext";
 import axios from 'axios';
 
 const Header = () => {
-    const {loginSuccess, setLoginSuccess} = useContext(ProjectContext);
+    const {loginSuccess, setLoginSuccess,accessToken,  setAccessToken} = useContext(ProjectContext);
     const navigate = useNavigate();
     const scrollToSection = (sectionId) => {
         const element = document.getElementById(sectionId);
@@ -33,6 +33,7 @@ const logoutClicked = (e) => {
       )
       if(response){
         setLoginSuccess(false);
+        setAccessToken(null) ;
         openModal({
           message : response.data.value,
           actions : [{label:"확인", onClick:()=>{closeModal();window.location.href="/";}}]
@@ -45,8 +46,9 @@ const logoutClicked = (e) => {
       message: error.response.data.error,
     })
   }
-
 }
+
+
 
     return(
         <>
