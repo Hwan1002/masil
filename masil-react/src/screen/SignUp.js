@@ -239,13 +239,9 @@ const SignUp = () => {
       <form onSubmit={(e) => submitFormData(e)}>
         <div className="form_input">
           <div className="profilePhoto">
-            {imagePreview !== null ? (
-              <div className="photoImg">
-                <img src={imagePreview} alt="preview" />
-              </div>
-            ) : (
-              ""
-            )}
+            <div className="photoImg">
+              <img src={imagePreview} alt="preview" />
+            </div>
             <button
               type="button"
               className="profileChangeBtn"

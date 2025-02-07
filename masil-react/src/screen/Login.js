@@ -42,7 +42,6 @@ const Login = () => {
 
   const loginSubmit = async (e) => {
     e.preventDefault();
-   
     try {
       const isEmpty = Object.values(loginInfo).some((value) => !value);
       if (isEmpty) {
@@ -59,7 +58,7 @@ const Login = () => {
       }
       const response = await axios.post(
         "http://localhost:9090/user/login",
-        loginInfo
+        loginInfo,
       );
       if (response) {
         setLoginSuccess(true);

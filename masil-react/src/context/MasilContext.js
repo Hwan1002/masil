@@ -1,6 +1,5 @@
 import React, { createContext, useState } from "react";
 import userDefault from "../css/img/userDefault.svg";
-
 export const ProjectContext = createContext();
 
 export const ProjectProvider = ({ children }) => {
