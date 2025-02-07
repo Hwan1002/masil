@@ -1,3 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable jsx-a11y/img-redundant-alt */
+/* eslint-disable react/jsx-no-comment-textnodes */
 
 import React, { useState, useRef, useContext, useEffect } from 'react';
 import { ProjectContext } from '../context/MasilContext';
@@ -8,9 +11,8 @@ import axios from 'axios';
 const MyPage = () => {
   const navigate = useNavigate();
   const inputImgRef = useRef(null); 
-  const {imagePreview, setImagePreview, accessToken,setAccessToken} = useContext(ProjectContext);
+  const {imagePreview, setImagePreview, accessToken, setAccessToken} = useContext(ProjectContext);
   const [formData, setFormData] = useState({});
-  const [profilePhoto, setProfilePhoto] = useState(null);
   const [password, setPassWord] = useState(''); // 새 비밀번호 입력값 관리: 사용자가 입력하는 새 비밀번호
   const [pwdConfirm, setPwdConfirm] = useState(""); // 비밀번호 확인 입력값 관리: 새 비밀번호와 일치하는지 확인
   
@@ -41,7 +43,7 @@ const MyPage = () => {
         }
     }
     getUserInfo();
-  },[accessToken,setAccessToken])
+  },[accessToken, setAccessToken])
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -59,7 +61,6 @@ const MyPage = () => {
             ...prev,
             profilePhoto: file.name,
         }));
-        setProfilePhoto(file);
         const reader = new FileReader();
         reader.onload = () => {
             setImagePreview(reader.result);
@@ -168,22 +169,10 @@ const MyPage = () => {
             <input type="password" name="password" className="form-input" value={password} placeholder='비밀번호' onChange={(e) => setPassWord(e.target.value)} />
 
             <div className="inputAndBtn">
-              <input
-                type="password"
-                placeholder="비밀번호 확인"
-                value={pwdConfirm}
-                onChange={(e) => setPwdConfirm(e.target.value)}
-              />
-              <button type="button" className="myPageSetPasswordBtn" onClick={resetpassword}>
-                확인
-              </button>
+              <input type="password" placeholder="비밀번호 확인" value={pwdConfirm} onChange={(e) => setPwdConfirm(e.target.value)}/>
+              <button type="button" className="myPageSetPasswordBtn" onClick={resetpassword}>확인</button>
             </div>
           </div>
-
-
-
-
-
 
         </div>
         <div className='signUp_button'>

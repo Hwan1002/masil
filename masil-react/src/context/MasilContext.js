@@ -1,6 +1,7 @@
 import React, { createContext, useEffect, useState } from "react";
 import userDefault from "../css/img/userDefault.svg";
 import axios from "axios";
+
 export const ProjectContext = createContext();
 
 export const ProjectProvider = ({ children }) => {
@@ -28,8 +29,6 @@ export const ProjectProvider = ({ children }) => {
     const value = {
       loginSuccess, setLoginSuccess,
       accessToken, setAccessToken,
-      // tokenTimer, setTokenTimer,
-      // timeText, setTimeText,
       imagePreview, setImagePreview,
       isLoading, setIsLoading,
     };

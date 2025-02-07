@@ -7,14 +7,16 @@ import Modal from "../component/Modal";
 import useModal from "../context/useModal";
 import LoadingModal from "../component/LoadingModal";
 import axios from "axios";
-import useGeolocation from "react-hook-geolocation";
 import CryptoJS from "crypto-js";
+
+
 const SignUp = () => {
   //프로필사진 상태
   const [profilePhoto, setProfilePhoto] = useState(null);
   //중복체크 & 이메일 인증 버튼 눌렀는지
   const [duplicateBtn, setDuplicateBtn] = useState(false);
   const [certifiedBtn, setCertifiedBtn] = useState(false);
+  const [verifyCodeConfirm, setVerifyCodeConfirm] = useState(false);
   //비밀번호 확인  & 인증코드 상태 따로 관리
   const [pwdConfirm, setPwdConfirm] = useState("");
   const [verifyCode, setVerifyCode] = useState("");
@@ -30,9 +32,8 @@ const SignUp = () => {
     password: "",
     email: "",
   });
-  const geolocation = useGeolocation();
   
-  const {isLoading,setIsLoading} = useContext(ProjectContext);
+  const {setIsLoading} = useContext(ProjectContext);
   const navigate = useNavigate();
  
   //모달 기능 사용
@@ -168,6 +169,7 @@ const SignUp = () => {
       email:formData.email,verifyCode:verifyCode});
       if(response){
         setCertifiedBtn(false);
+        setVerifyCodeConfirm(true);
         openModal({
           message:response.data.value
         })
@@ -205,12 +207,12 @@ const SignUp = () => {
       return;
     }
   
-    // if(!certifiedBtn){
-    //   openModal({
-    //     message: "이메일 인증을 해주세요.",
-    //   });
-    //   return;
-    // }
+    if(!verifyCodeConfirm){
+      openModal({
+        message: "이메일 인증을 해주세요.",
+      });
+      return;
+    }
     try {
       const data = new FormData();
       if (profilePhoto) {

@@ -48,6 +48,7 @@ button{
     width: 6em;
     height: 2em;
     border-radius: 10px;
+    transition: 0.5s;
 }
 button:hover{
     background: #00a32c;
@@ -69,7 +70,7 @@ button:hover{
     transition: opacity .3s linear;
 }
 .navBar button{
-    font-size: 20px;
+    font-size: 1rem;
     padding: 0 1rem;
     transition: color .5s ease;
 }
