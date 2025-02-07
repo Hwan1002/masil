@@ -9,7 +9,6 @@ const MyPage = () => {
   const navigate = useNavigate();
   const {imagePreview, setImagePreview, accessToken} = useContext(ProjectContext);
   const [formData, setFormData] = useState({});
-
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [password, setPassWord] = useState(''); // 새 비밀번호 입력값 관리: 사용자가 입력하는 새 비밀번호
   const [pwdConfirm, setPwdConfirm] = useState(""); // 비밀번호 확인 입력값 관리: 새 비밀번호와 일치하는지 확인
@@ -34,7 +33,7 @@ const MyPage = () => {
         console.log(response.data.value)
       if(response){
         setFormData(response.data.value);
-        // setImagePreview(`http://localhost:9090/${response.data.value.profilePhotoPath}`);
+        setImagePreview(`http://localhost:9090/${response.data.value.profilePhotoPath}`);
       }
     }
     getUserInfo();
@@ -149,23 +148,19 @@ const MyPage = () => {
         <div className='form_input'>
           <div className='profilePhoto'>
             <div className='photoImg'>
-                <img src={imagePreview} alt="강병준사진"/>
+                <img src={imagePreview} alt="프로필이미지"/>
             </div> 
-            {/* {imagePreview? (
-              <div className='photoImg'>
-                <img src={`http://localhost:9090${formData.profilePhotoPath}`} alt="강병준사진"/>
-              </div>    
-              ) : ''} */}
-                <button type="button" className='profileChangeBtn' onClick={handleProfileClick}>프로필 사진</button>
-                <input name="profilePhoto" type="file" accept="image/*" ref={inputImgRef} onChange={ImageUpload} style={{display:"none"}}/>
+            <button type="button" className='profileChangeBtn' onClick={handleProfileClick}>프로필 사진</button>
+            <input name="profilePhoto" type="file" accept="image/*" ref={inputImgRef} onChange={ImageUpload} style={{display:"none"}}/>
           </div>
 
           <div className='inputAll'>
-            <input type="text" name="user_name" className="form-input" value={formData.email || ''} readOnly />
+            <input type="text" name="userName" className="form-input" value={formData.userName}/>
             <input type="text" name="userNickName" className="form-input" value={formData.userNickName || ''} placeholder='닉네임을 입력하세요' onChange={(e) => { handleInputChange(e) }} />
+            <input type="text" name="email" className="form-input" value={formData.email || ''} readOnly />
             <input type="password" name="password" className="form-input" value={password} placeholder='비밀번호' onChange={(e) => setPassWord(e.target.value)} />
 
-            <div className="inputWrapper">
+            <div className="inputAndBtn">
               <input
                 type="password"
                 placeholder="비밀번호 확인"
