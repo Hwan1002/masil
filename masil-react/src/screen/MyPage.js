@@ -6,11 +6,22 @@ import Modal from '../component/Modal';
 import useModal from '../context/useModal';
 import axios from 'axios';
 const MyPage = () => {
-
-  const [formData, setFormData] = useState({});
-<<<<<<< HEAD
+  const navigate = useNavigate();
   const {imagePreview, setImagePreview, accessToken} = useContext(ProjectContext);
+  const [formData, setFormData] = useState({});
+
   const [profilePhoto, setProfilePhoto] = useState(null);
+  const [password, setPassWord] = useState(''); // 새 비밀번호 입력값 관리: 사용자가 입력하는 새 비밀번호
+  const [pwdConfirm, setPwdConfirm] = useState(""); // 비밀번호 확인 입력값 관리: 새 비밀번호와 일치하는지 확인
+
+  const {
+    isModalOpen,
+    modalTitle,
+    modalMessage,
+    modalActions,
+    openModal,
+    closeModal,
+  } = useModal();
 
   useEffect(() => {
     const getUserInfo = async()=>{
@@ -31,46 +42,13 @@ const MyPage = () => {
 
    //프로필 사진
     const inputImgRef = useRef(null); 
-    
-    const navigate = useNavigate();
     const handleInputChange = (event) => {
       const { name, value } = event.target;
       setFormData({
         ...formData,
         [name]: value,
-=======
-  const { imagePreview, setImagePreview, accessToken } = useContext(ProjectContext);
-  const [password, setPassWord] = useState(''); // 새 비밀번호 입력값 관리: 사용자가 입력하는 새 비밀번호
-  const [pwdConfirm, setPwdConfirm] = useState(""); // 비밀번호 확인 입력값 관리: 새 비밀번호와 일치하는지 확인
-  const {
-    isModalOpen,
-    modalTitle,
-    modalMessage,
-    modalActions,
-    openModal,
-    closeModal,
-  } = useModal();
-
-
-  useEffect(() => {
-    const getUserInfo = async () => {
-      const response = await axios.get(`http://localhost:9090/user/userInfo`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}` // Bearer 토큰 형식
-        }
->>>>>>> CDU
       });
-      console.log(response.data.value);
-      if (response && response.data.value) {
-        setFormData(response.data.value);
-  
-        // profilePhotoPath가 있을 경우 미리보기 설정
-        if (response.data.value.profilePhotoPath) {
-          setImagePreview(`http://localhost:9090${response.data.value.profilePhotoPath}`);
-        }
-      }
     };
-<<<<<<< HEAD
     const ImageUpload = (e) => {
       e.preventDefault();
       const file = e.target.files[0];
@@ -85,10 +63,8 @@ const MyPage = () => {
               setImagePreview(reader.result);
           };
           reader.readAsDataURL(file);
-=======
-    getUserInfo();
-  }, []);
-  
+      }
+    }
 
   const putUserInfo = async () => {
     const data = new FormData();
@@ -114,7 +90,6 @@ const MyPage = () => {
           message: response.data.value,
           actions: [{ label: "확인", onClick: () => navigate('/') }]
         });
->>>>>>> CDU
       }
     } catch (error) {
       openModal({ message: "정보 수정에 실패했습니다. 다시 시도해주세요." });
@@ -161,47 +136,11 @@ const MyPage = () => {
     }
   };
 
-
-
-
-  //프로필 사진
-  const inputImgRef = useRef(null);
-
-  const navigate = useNavigate();
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
   const handleProfileClick = () => {
     if (inputImgRef.current) {
       inputImgRef.current.click();
     }
   };
-
-  // 프로필사진업로드
-  const ImageUpload = (e) => {
-    e.preventDefault();
-    const file = e.target.files[0];
-    if (file) {
-      // 선택한 파일을 formData에 추가
-      setFormData((prev) => ({
-        ...prev,
-        profile_Photo: file.name,  // 파일의 이름을 formData에 저장
-      }));
-
-      // 미리보기 이미지를 업데이트
-      const reader = new FileReader();
-      reader.onload = () => {
-        setImagePreview(reader.result);  // 미리보기 이미지 업데이트
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
 
   return (
     <div className='signup_form'>
@@ -209,7 +148,6 @@ const MyPage = () => {
       <form>
         <div className='form_input'>
           <div className='profilePhoto'>
-<<<<<<< HEAD
             <div className='photoImg'>
                 <img src={imagePreview} alt="강병준사진"/>
             </div> 
@@ -220,27 +158,6 @@ const MyPage = () => {
               ) : ''} */}
                 <button type="button" className='profileChangeBtn' onClick={handleProfileClick}>프로필 사진</button>
                 <input name="profilePhoto" type="file" accept="image/*" ref={inputImgRef} onChange={ImageUpload} style={{display:"none"}}/>
-=======
-            {imagePreview || formData.profilePhotoPath ? (
-              <div className='photoImg'>
-                <img
-                  src={imagePreview ? imagePreview : `http://localhost:9090${formData.profilePhotoPath}`}
-                  alt="image"
-                />
-              </div>
-            ) : (
-              <div className="photoImgPlaceholder">프로필 사진 없음</div>  // 사진이 없을 때의 대체 이미지
-            )}
-            <button type="button" className='profileChangeBtn' onClick={handleProfileClick}>프로필 사진</button>
-            <input
-              name="profilePhoto"
-              type="file"
-              accept="image/*"
-              ref={inputImgRef}
-              onChange={ImageUpload}
-              style={{ display: "none" }}
-            />
->>>>>>> CDU
           </div>
 
           <div className='inputAll'>
