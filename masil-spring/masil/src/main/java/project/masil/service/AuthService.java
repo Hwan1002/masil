@@ -29,8 +29,6 @@ public class AuthService {
 		};
 	     // refreshToken을 통한 userId추출
         String userId = tokenProvider.getUserIdFromToken(refreshToken);
-        
-        
 
         // 데이터베이스에서 사용자 조회 및 토큰 일치 여부 확인
         UserEntity user = userRepository.findByUserId(userId);

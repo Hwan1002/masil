@@ -20,7 +20,6 @@ public class AuthController {
 	// refreshToken을 통한 access토큰 재발급 메서드
 	@PostMapping("/refresh-token")
 	public ResponseEntity<?> refreshAccessToken(@CookieValue("refreshToken") String refreshToken) {
-		System.out.println(refreshToken);
 		return ResponseEntity.ok(authService.ReissuanceAccessToken(refreshToken));
 	}
 }

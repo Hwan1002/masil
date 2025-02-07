@@ -8,7 +8,7 @@ import axios from 'axios';
 const MyPage = () => {
   const navigate = useNavigate();
   const inputImgRef = useRef(null); 
-  const {imagePreview, setImagePreview, accessToken} = useContext(ProjectContext);
+  const {imagePreview, setImagePreview, accessToken,setAccessToken} = useContext(ProjectContext);
   const [formData, setFormData] = useState({});
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [password, setPassWord] = useState(''); // 새 비밀번호 입력값 관리: 사용자가 입력하는 새 비밀번호
@@ -25,6 +25,7 @@ const MyPage = () => {
 
   useEffect(() => {
     const getUserInfo = async()=>{
+      if(!accessToken) return;
       const response = await axios.get(`http://localhost:9090/user/userInfo`,
           {
           headers: {
@@ -40,7 +41,7 @@ const MyPage = () => {
         }
     }
     getUserInfo();
-  },[])
+  },[accessToken,setAccessToken])
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -67,7 +68,8 @@ const MyPage = () => {
     }
   }
 
-  const putUserInfo = async () => {
+  const putUserInfo = async(e) => {
+    e.preventDefault();
     const data = new FormData();
     // 프로필 사진이 선택되었다면 FormData에 추가
     if (imagePreview) {
@@ -186,7 +188,7 @@ const MyPage = () => {
         </div>
         <div className='signUp_button'>
           <button type="button" onClick={() => navigate("/")}>돌아가기</button>
-          <button type="button" onClick={putUserInfo} >수정하기</button>
+          <button type="button" onClick={(e)=>putUserInfo(e)} >수정하기</button>
         </div>
       </form>
       <Modal

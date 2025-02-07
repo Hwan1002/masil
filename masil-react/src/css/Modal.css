@@ -1,5 +1,5 @@
 /* Modal.css */
-.modal-backdrop {
+.modal-backdrop{
     position: fixed;
     top: 0;
     left: 0;
@@ -11,9 +11,10 @@
     align-items: center;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.5s ease, transform 0.5s ease, visibility 0s linear 0.5s;
+    transition: opacity 0.5s ease, transform 0.5s ease, visibility 0.5s linear 0.5s;
     transform: scale(0.1);
-    z-index: 11;
+    z-index: 11; 
+    /* 헤더영역이 z-index 10 이여서 */
 }
 .modal-backdrop.open {
     visibility: visible;

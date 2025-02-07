@@ -15,16 +15,16 @@ export const ProjectProvider = ({ children }) => {
     useEffect(() => {
       const refreshAccessToken = async () => {
         try {
-          debugger;
           const response = await axios.post('http://localhost:9090/auth/refresh-token', {}, { withCredentials: true });
           setAccessToken(response.data.accessToken);
+          setLoginSuccess(true);
         } catch (error) {
           console.error('Failed to refresh token:', error);
         }
       };
       refreshAccessToken();
-      return { accessToken, setAccessToken };
     }, []);
+
     const value = {
       loginSuccess, setLoginSuccess,
       accessToken, setAccessToken,
