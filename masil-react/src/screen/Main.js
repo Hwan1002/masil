@@ -7,7 +7,6 @@ const Main = () => {
   const {accessToken} = useContext(ProjectContext);
   // const navigate = useNavigate();
 
-  console.log(accessToken)
   return(
     <>
     <div className="mainContents">

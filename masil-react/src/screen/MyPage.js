@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import Modal from '../component/Modal';
 import useModal from '../context/useModal';
 import axios from 'axios';
+import { api } from '../context/useAxiosInterceptor';
 const MyPage = () => {
 
   const [formData, setFormData] = useState({});
@@ -19,16 +20,12 @@ const MyPage = () => {
     openModal,
     closeModal,
   } = useModal();
-
-
+  
   useEffect(() => {
     const getUserInfo = async () => {
       if (!accessToken) return; 
-      const response = await axios.get(`http://localhost:9090/user/userInfo`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}` // Bearer 토큰 형식
-        }
-      });
+      console.log(accessToken)
+      const response = await api.get(`/user/userInfo`);
       console.log(response.data.value);
       if (response && response.data.value) {
         setFormData(response.data.value);
