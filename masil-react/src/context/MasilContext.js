@@ -1,37 +1,24 @@
 import React, { createContext, useEffect, useState } from "react";
 import userDefault from "../css/img/userDefault.svg";
 import axios from "axios";
-import { useAxiosInterceptor } from "./useAxiosInterceptor";
 
-export const ProjectContext = createContext(
-  // {
-  // loginSuccess: false,
-  // setLoginSuccess: () => {},
-  // accessToken: null,
-  // setAccessToken: () => {},
-  // imagePreview: null,
-  // setImagePreview: () => {},
-  // isLoading: false,
-  // setIsLoading: () => {},
-  // }
-);
+export const ProjectContext = createContext();
+
+// Axios 인스턴스 생성
+export const api = axios.create({
+  baseURL: "http://localhost:9090",
+  withCredentials: true,
+});
+
+
 export const ProjectProvider = ({ children }) => {
   //로그인 상태
   const [loginSuccess, setLoginSuccess] = useState(false);
   const [accessToken, setAccessToken] = useState(null);
-
   //프로필사진
   const [imagePreview, setImagePreview] = useState(userDefault);
   //로딩중 상태
   const [isLoading, setIsLoading] = useState(false);
-
-  // Axios 인터셉터 초기화
-  useAxiosInterceptor();
-
-
-
-
-
 
   // 새로고침시 refreshToken(httpOnlyCookie) 를통한 accessToken 갱신요청 
   useEffect(() => {
@@ -46,11 +33,58 @@ export const ProjectProvider = ({ children }) => {
         setLoginSuccess(false); // 로그인 상태 초기화
       }
     };
-
-    refreshAccessToken(); // 컴포넌트 마운트 시 실행
+      refreshAccessToken();
   }, []);
 
+  // Axios Interceptor 설정
+  useEffect(() => {
+    // 요청 인터셉터
+    const requestInterceptor = api.interceptors.request.use(
+      (config) => {
+        if (accessToken) {
+          config.headers.Authorization = `Bearer ${accessToken}`;
+        }
+        return config;
+      },
+      (error) => Promise.reject(error)
+    );
 
+    // 응답 인터셉터
+    const responseInterceptor = api.interceptors.response.use(
+      (response) => response,
+      async (error) => {
+        const originalRequest = error.config;
+
+        if (error.response?.status === 401 && !originalRequest._retry) {
+          originalRequest._retry = true;
+
+          try {
+            const refreshResponse = await axios.post(
+              "http://localhost:9090/auth/refresh-token",
+              {},
+              { withCredentials: true }
+            );
+            const newAccessToken = refreshResponse.data.accessToken;
+            setAccessToken(newAccessToken); // 새로운 토큰 저장
+            originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+            return api(originalRequest); // 원래 요청 재시도
+          } catch (refreshError) {
+            setAccessToken(null);
+            setLoginSuccess(false);
+            return Promise.reject(refreshError);
+          }
+        }
+
+        return Promise.reject(error);
+      }
+    );
+
+    // 컴포넌트 언마운트 시 인터셉터 제거
+    return () => {
+      api.interceptors.request.eject(requestInterceptor);
+      api.interceptors.response.eject(responseInterceptor);
+    };
+  }, [accessToken]);
 
 
 

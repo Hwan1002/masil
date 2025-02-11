@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import Modal from '../component/Modal';
 import useModal from '../context/useModal';
 import axios from 'axios';
-import { api } from '../context/useAxiosInterceptor';
+import { api } from '../context/MasilContext';
 const MyPage = () => {
 
   const [formData, setFormData] = useState({});
@@ -20,25 +20,28 @@ const MyPage = () => {
     openModal,
     closeModal,
   } = useModal();
-  
+
   useEffect(() => {
     const getUserInfo = async () => {
-      if (!accessToken) return; 
-      console.log(accessToken)
+
+      //accessToken이 없으면 요청하지않음. 
+      if (!accessToken) return;
+
       const response = await api.get(`/user/userInfo`);
       console.log(response.data.value);
       if (response && response.data.value) {
         setFormData(response.data.value);
-  
+
         // profilePhotoPath가 있을 경우 미리보기 설정
         if (response.data.value.profilePhotoPath) {
           setImagePreview(`http://localhost:9090${response.data.value.profilePhotoPath}`);
         }
       }
+
     };
     getUserInfo();
   }, [accessToken]);
-  
+
 
   const putUserInfo = async () => {
     const data = new FormData();

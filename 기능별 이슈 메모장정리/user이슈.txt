@@ -345,6 +345,36 @@ https 설정을 springboot에 한다하더라도 실제로 위치를 요청하�
 
 
 
+새로고침시에는 -> accessToken
+
+
+새로고침시에 accessToken 유지시키는방법 : interceptor 사용으로 refreshToken을 이용한 accessToken 자동재발급,갱신요청 
+로그아웃시에는 refreshToken(httpOnlyCookie) 가 삭제되기떄문에 새로고침되었을때
+
+인터셉터 사용시에는 어느곳에서 새로고침을하던 accessToken 이 초기화되지않고 
+
+
+인터셉터 구현 
+geolocation을통한 lat lng 좌표를얻고 얻은좌표를 기준으로 반경 구하는 알고리즘 구현 . 
+좌표반경으로 필터를거쳐 사용자에게 보여주거나 , 채팅권한 부여 
+
+DB설계 .
+
+인천광역시 부평구 부평4동
+
+
+
+
+
+GET/ https://geolocation.apigw.ntruss.com/geolocation/v2/geoLocation?ip=58.232.99.137&ext=t&enc=utf8&responseFormatType=json + TimeStamp + accessKey 
+
+secret 키를통해서 HMAC -SHA256 으로 암호화후 Base64 인코딩 
+
+
+클라이언트 : 위치설정하기버튼클릭 ->  
+서버 : 클라이언트가 사용자의 IP를 본문에 포함하여 서버에 주소요청 -> IP를받으면 저 위에 양식에따라서 요청양식 가공 후 GeolocationAPI에 좌표와 주소요청 -> 요청한 주소에서 r3 필드에 해당하는 동 클라이언트에 전송
+좌표를통한 반경구하는 알고리즘 구현 . 
+
 
 
 
