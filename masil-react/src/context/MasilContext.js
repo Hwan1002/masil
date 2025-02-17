@@ -5,7 +5,7 @@ import axios from "axios";
 export const ProjectContext = createContext();
 
 // Axios 인스턴스 생성
-export const api = axios.create({
+export const Api = axios.create({
   baseURL: "http://localhost:9090",
   withCredentials: true,
 });
@@ -21,68 +21,83 @@ export const ProjectProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   // 새로고침시 refreshToken(httpOnlyCookie) 를통한 accessToken 갱신요청 
+  const refreshToken = async () => {
+    try {
+      const { data } = await Api.post(
+        '/auth/refresh-token',
+        {},
+        { withCredentials: true }
+      );
+      console.log(data)
+      setAccessToken(data.accessToken);
+      setLoginSuccess(true);
+      return data.accessToken;
+    } catch (error) {
+      console.log(error.response.data.error);
+      setAccessToken(null);
+      setLoginSuccess(false);
+    }
+  };
+
+  // 최초 렌더링시 토큰갱신시도 
   useEffect(() => {
-    const refreshAccessToken = async () => {
-      try {
-        const response = await axios.post('http://localhost:9090/auth/refresh-token', {}, { withCredentials: true });
-        setAccessToken(response.data.accessToken); // 새로운 Access Token 저장
-        setLoginSuccess(true); // 로그인 상태 업데이트
-      } catch (error) {
-        console.log(error.response.data.error);
-        setAccessToken(null); // Access Token 초기화
-        setLoginSuccess(false); // 로그인 상태 초기화
-      }
-    };
-      refreshAccessToken();
+    if (!accessToken) refreshToken();
   }, []);
 
-  // Axios Interceptor 설정
+  // 인터셉터 설정
   useEffect(() => {
+    let isRefreshing = false;
+
     // 요청 인터셉터
-    const requestInterceptor = api.interceptors.request.use(
-      (config) => {
-        if (accessToken) {
-          config.headers.Authorization = `Bearer ${accessToken}`;
-        }
-        return config;
-      },
-      (error) => Promise.reject(error)
-    );
+    const reqInterceptor = Api.interceptors.request.use(config => {
+      if (accessToken) {
+        config.headers.Authorization = `Bearer ${accessToken}`;
+      }
+      return config;
+    });
 
     // 응답 인터셉터
-    const responseInterceptor = api.interceptors.response.use(
-      (response) => response,
-      async (error) => {
+    const resInterceptor = Api.interceptors.response.use(
+      response => response,
+      async error => {
         const originalRequest = error.config;
 
-        if (error.response?.status === 401 && !originalRequest._retry) {
+        // 401/403 에러 & 첫 재시도
+        if ([401, 403].includes(error.response?.status) && !originalRequest._retry) {
           originalRequest._retry = true;
 
-          try {
-            const refreshResponse = await axios.post(
-              "http://localhost:9090/auth/refresh-token",
-              {},
-              { withCredentials: true }
-            );
-            const newAccessToken = refreshResponse.data.accessToken;
-            setAccessToken(newAccessToken); // 새로운 토큰 저장
-            originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-            return api(originalRequest); // 원래 요청 재시도
-          } catch (refreshError) {
-            setAccessToken(null);
-            setLoginSuccess(false);
-            return Promise.reject(refreshError);
+          // 중복 갱신 방지
+          if (!isRefreshing) {
+            isRefreshing = true;
+            try {
+              const { data } = await Api.post('/auth/refresh-token', {}, { withCredentials: true });
+              setAccessToken(data.accessToken);
+              setLoginSuccess(true);
+              // 새 config 생성
+              return Api({
+                ...originalRequest,
+                headers: {
+                  ...originalRequest.headers,
+                  Authorization: `Bearer ${data.accessToken}`
+                }
+              });
+
+            } catch (refreshError) {
+              setAccessToken(null);
+              setLoginSuccess(false);
+              return Promise.reject(refreshError);
+            } finally {
+              isRefreshing = false;
+            }
           }
         }
-
         return Promise.reject(error);
       }
     );
 
-    // 컴포넌트 언마운트 시 인터셉터 제거
     return () => {
-      api.interceptors.request.eject(requestInterceptor);
-      api.interceptors.response.eject(responseInterceptor);
+      Api.interceptors.request.eject(reqInterceptor);
+      Api.interceptors.response.eject(resInterceptor);
     };
   }, [accessToken]);
 
