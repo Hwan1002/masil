@@ -47,10 +47,8 @@ const MyPage = () => {
         if (error.response?.statues === 401) {
         }
       };
-      console.log("내토큰", accessToken)
-      if (accessToken) {
-        getUserInfo();
-      }
+      getUserInfo();
+
     }
   }, [accessToken]);
 
