@@ -47,8 +47,8 @@ const MyPage = () => {
         if (error.response?.statues === 401) {
         }
       }
-      getUserInfo();
     }
+    getUserInfo();
 },[accessToken]);
 
 
@@ -173,12 +173,12 @@ const MyPage = () => {
             <input type="text" name="userName" className="form-input" value={formData.userName}/>
             <input type="text" name="userNickName" className="form-input" value={formData.userNickName || ''} placeholder='닉네임을 입력하세요' onChange={(e) => { handleInputChange(e) }} />
             <input type="text" name="email" className="form-input" value={formData.email || ''} readOnly />
-            <input type="password" name="password" className="form-input" value={password} placeholder='비밀번호' onChange={(e) => setPassWord(e.target.value)} />
+            {/* <input type="password" name="password" className="form-input" value={password} placeholder='비밀번호' onChange={(e) => setPassWord(e.target.value)} />
 
             <div className="inputAndBtn">
               <input type="password" placeholder="비밀번호 확인" value={pwdConfirm} onChange={(e) => setPwdConfirm(e.target.value)}/>
               <button type="button" className="myPageSetPasswordBtn" onClick={resetpassword}>확인</button>
-            </div>
+            </div> */}
           </div>
 
         </div>

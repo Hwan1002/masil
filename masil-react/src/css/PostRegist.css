@@ -64,6 +64,7 @@
   display: flex;
   flex-direction: column; 
   width: 100%;
+  margin-bottom: 2rem;
 }
 
 /* 뒤로가기, 등록하기 버튼 */
