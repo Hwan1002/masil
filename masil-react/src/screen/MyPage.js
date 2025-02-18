@@ -5,12 +5,17 @@ import { useNavigate } from 'react-router-dom';
 import Modal from '../component/Modal';
 import useModal from '../context/useModal';
 import axios from 'axios';
+import LoadingModal from '../component/LoadingModal';
+import '../css/MyPage.css'
 const MyPage = () => {
 
   const [formData, setFormData] = useState({});
   const { imagePreview, setImagePreview, accessToken } = useContext(ProjectContext);
+  const [isVerified, setIsVerified] = useState(false); // 인증 상태: 이메일 인증 완료 여부
+  const [email, setEmail] = useState(''); // 이메일 입력값 관리: 사용자가 입력하는 이메일
   const [password, setPassWord] = useState(''); // 새 비밀번호 입력값 관리: 사용자가 입력하는 새 비밀번호
   const [pwdConfirm, setPwdConfirm] = useState(""); // 비밀번호 확인 입력값 관리: 새 비밀번호와 일치하는지 확인
+  const [verifyCode, setVerifyCode] = useState(""); // 인증 코드 입력값 관리: 사용자가 입력한 인증 코드
   const {
     isModalOpen,
     modalTitle,
@@ -23,24 +28,106 @@ const MyPage = () => {
 
   useEffect(() => {
     const getUserInfo = async () => {
-      const response = await axios.get(`http://localhost:9090/user/userInfo`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}` // Bearer 토큰 형식
+      try {
+        const response = await axios.get(`http://localhost:9090/user/userInfo`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
+        });
+
+        if (response?.data?.value) {
+          setFormData(response.data.value);
+          if (response.data.value.profilePhotoPath) {
+            setImagePreview(`http://localhost:9090${response.data.value.profilePhotoPath}`);
+          }
         }
-      });
-      console.log(response.data.value);
-      if (response && response.data.value) {
-        setFormData(response.data.value);
-  
-        // profilePhotoPath가 있을 경우 미리보기 설정
-        if (response.data.value.profilePhotoPath) {
-          setImagePreview(`http://localhost:9090${response.data.value.profilePhotoPath}`);
-        }
+      } catch (error) {
+        console.error("사용자 정보를 불러오는 중 오류 발생:", error);
       }
     };
-    getUserInfo();
-  }, []);
-  
+    console.log("내토큰",accessToken)
+    if (accessToken) {
+      getUserInfo();
+    }
+  }, [accessToken]);
+
+
+  //이메일 인증번호 전송 요청
+  const sendCertifyNumber = async (e) => {
+    e.preventDefault();
+    openModal({
+      title: "전송 중",
+      message: <LoadingModal />,
+    });
+    try {
+      const response = await axios.post(`http://localhost:9090/user/findPassword`, { email: email });
+      if (response) {
+        openModal({
+          message: response.data.value
+        })
+      }
+    } catch (error) {
+      openModal({
+        message: error.response.data.error
+      })
+    }
+  }
+
+  //인증번호 일치여부
+  const emailCertified = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(`http://localhost:9090/user/verify`, {
+        email: email, verifyCode: verifyCode
+      });
+      if (response) {
+        setIsVerified(true);
+        openModal({
+          message: response.data.value,
+          message: "비밀번호 설정 페이지로 넘어갑니다."
+        })
+      }
+    } catch (error) {
+      openModal({
+        message: error.response.data.error
+      })
+    }
+  }
+
+  // 엔터 키 전송
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+
+      if (e.target.name === "email") {
+        sendCertifyNumber(e); // 이메일 전송 버튼 기능 실행
+      } else if (e.target.name === "verifyCode") {
+        emailCertified(e); // 인증번호 확인 버튼 기능 실행
+      } else if (isVerified && e.target.name === "passwordConfirm") {
+        handleSubmit(e); // 비밀번호 변경 제출 실행
+      }
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault(); // 기본 동작 방지
+
+    if (pwdConfirm !== password) {
+      openModal({
+        message: "비밀번호가 일치하지 않습니다.",
+      });
+      return;
+    }
+
+    if (email.trim() === '') {
+      openModal({
+        title: `이메일 입력`,
+        message: `이메일을 입력해주세요.`,
+      });
+      return;
+    }
+  };
+
 
   const putUserInfo = async () => {
     const data = new FormData();
@@ -184,26 +271,75 @@ const MyPage = () => {
           <div className='inputAll'>
             <input type="text" name="user_name" className="form-input" value={formData.email || ''} readOnly />
             <input type="text" name="userNickName" className="form-input" value={formData.userNickName || ''} placeholder='닉네임을 입력하세요' onChange={(e) => { handleInputChange(e) }} />
-            <input type="password" name="password" className="form-input" value={password} placeholder='비밀번호' onChange={(e) => setPassWord(e.target.value)} />
 
-            <div className="inputWrapper">
-              <input
-                type="password"
-                placeholder="비밀번호 확인"
-                value={pwdConfirm}
-                onChange={(e) => setPwdConfirm(e.target.value)}
-              />
-              <button type="button" className="myPageSetPasswordBtn" onClick={resetpassword}>
-                확인
-              </button>
-            </div>
+
+            {!isVerified ? (
+              <>
+                <div className="myPageEmailContainer">
+                  <div className="myPageEmailInput">
+                    <input
+                      className='FindId_input'
+                      type='email'
+                      name='email'
+                      placeholder='이메일 입력'
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      onKeyDown={handleKeyPress}
+                    />
+                    <button
+                      type="submit"
+                      className='myPageSendBtn'
+                      onClick={(e) => sendCertifyNumber(e)}
+                    >
+                      전송
+                    </button>
+                  </div>
+                </div>
+
+                <div className="myPageEmailContainer">
+                  <div className="myPageEmailInput">
+                    <input
+                      className='FindId_input'
+                      type='text'
+                      name='verifyCode'
+                      placeholder='인증번호 입력'
+                      value={verifyCode}
+                      onChange={(e) => setVerifyCode(e.target.value)}
+                      onKeyDown={handleKeyPress}
+                    />
+                    <button
+                      type="submit"
+                      className='myPageSendBtn'
+                      onClick={(e) => emailCertified(e)}
+                    >
+                      인증
+                    </button>
+                  </div>
+                </div>
+
+              </>
+            ) : (
+              <div className='myPageEmailContainer'>
+                <input type="password" name="password" value={password} placeholder='비밀번호' onChange={(e) => setPassWord(e.target.value)} />
+                <div className='myPageEmailInput'>
+                  <input
+                    type="password"
+                    placeholder="비밀번호 확인"
+                    value={pwdConfirm}
+                    onChange={(e) => setPwdConfirm(e.target.value)}
+                  />
+                  <button
+                    type="submit"
+                    className='myPageSendBtn'
+                    onClick={resetpassword}
+                  >
+                    변경
+                  </button>
+                </div>
+              </div>
+            )}
+
           </div>
-
-
-
-
-
-
         </div>
         <div className='signUp_button'>
           <button type="button" onClick={() => navigate("/")}>돌아가기</button>
