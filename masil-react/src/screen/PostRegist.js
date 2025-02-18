@@ -7,6 +7,7 @@ import axios from "axios";
 
 const PostRegist = () => {
   const navigate = useNavigate();
+  const [commaPrice, setCommaPrice] = useState("");
   const [price, setPrice] = useState(""); // 가격 상태 초기화
   const [errorMessage, setErrorMessage] = useState(""); // 에러 메시지 상태 추가
   const [selectedImages, setSelectedImages] = useState([]); // 여러 이미지를 저장하는 배열
@@ -36,14 +37,18 @@ const PostRegist = () => {
 
   //가격 인풋창 변경상태
   const handleChange = (e) => {
-    const value = e.target.value;
-
-    // 한글이 포함되어 있는지 확인 (정규식 사용)
-    if (/[^0-9]/.test(value)) {
+    // const value = e.target.value;
+    const rawValue = e.target.value.replace(/,/g, "");
+    // 숫자인 경우만 상태 업데이트
+    if (!isNaN(rawValue)) {
+      setCommaPrice(Number(rawValue).toLocaleString()); // 천 단위 콤마 추가
+      setPrice(rawValue);
+    }
+    if (/[^0-9]/.test(price)) {
       setErrorMessage("가격 입력란에는 숫자만 입력 가능합니다.");
     } else {
       setErrorMessage(""); // 에러 메시지 초기화
-      setPrice(value); // 숫자만 상태에 저장
+      setPrice(rawValue); // 숫자만 상태에 저장
     }
   };
 
@@ -138,7 +143,7 @@ const PostRegist = () => {
             type="text"
             placeholder="가격 입력"
             onChange={handleChange}
-            value={price}
+            value={commaPrice}
             maxlength="12"
           />
           {/* 에러 메시지 표시 */}

@@ -70,7 +70,11 @@
 /* 뒤로가기, 등록하기 버튼 */
 .registnavigate{
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+}
+
+.registnavigate:first-child{
+  margin-right: 1rem;
 }
 
 /* 가격 에러 */
