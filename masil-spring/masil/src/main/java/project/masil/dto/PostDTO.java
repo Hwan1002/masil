@@ -1,5 +1,7 @@
 package project.masil.dto;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +16,7 @@ public class PostDTO {
 
 	private Integer idx; //게시물 식별자
 	
-	private String postPhotoPath; // 프로필사진
+	private List<String> postPhotoPath; // 프로필사진
 	
 	private String postTitle; //게시글 제목
 

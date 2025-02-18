@@ -8,28 +8,41 @@ import axios from "axios";
 const PostRegist = () => {
   const navigate = useNavigate();
   const [commaPrice, setCommaPrice] = useState("");
-  const [price, setPrice] = useState(""); // 가격 상태 초기화
-  const [errorMessage, setErrorMessage] = useState(""); // 에러 메시지 상태 추가
   const [selectedImages, setSelectedImages] = useState([]); // 여러 이미지를 저장하는 배열
 
   //DatePicker 에서 값 받아옴
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
 
+  const [formData, setFormData] = useState({
+    postTitle : "",
+    postPrice : "",
+    postStartDate : startDate,
+    postEndDate : endDate,
+    description : "",
+  })
   const handleSubmit = async(e) => {
-    e.preventDefault();  // 기본 폼 제출을 방지
-    debugger;
+    e.preventDefault();  
+    // 기본 폼 제출을 방지
     // 여기에 폼 제출 후 처리 로직 추가
-    console.log("대여 시작 시간:", startDate);
-    console.log("대여 종료 시간:", endDate);
-    try {
-      const data = new FormData();
-      if (selectedImages) {
-        data.append("postPhoto", selectedImages);
-      }
-      const response = await axios.post('http://localhost:9090/post/upload',)
-    } catch (error) {
+    console.log(JSON.stringify(formData));
+    const data = new FormData();
       
+    data.append("dto", new Blob([JSON.stringify(formData)], { type: "application/json" }));
+    for (let i = 0; i < selectedImages.length; i++) {
+      data.append("postPhotoPath", selectedImages[i]); // 파일 직접 추가
+    }
+    try {
+      const response = await axios.post("http://localhost:9090/post", data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      if(response){
+        console.log(response.data.value)
+      }
+    } catch (error) {
+        console.log(error.response.data.value);
     }
     console.log('폼 제출');
   };
@@ -37,19 +50,20 @@ const PostRegist = () => {
 
   //가격 인풋창 변경상태
   const handleChange = (e) => {
-    // const value = e.target.value;
-    const rawValue = e.target.value.replace(/,/g, "");
-    // 숫자인 경우만 상태 업데이트
-    if (!isNaN(rawValue)) {
-      setCommaPrice(Number(rawValue).toLocaleString()); // 천 단위 콤마 추가
-      setPrice(rawValue);
-    }
-    if (/[^0-9]/.test(price)) {
-      setErrorMessage("가격 입력란에는 숫자만 입력 가능합니다.");
+    const {name, value} = e.target;
+    if (name === "postPrice") {
+      //숫자만 입력할 수 있도록 필터링
+      const numericValue = value.replace(/[^0-9]/g, "");
+     
+      //천 단위 콤마 추가된 값 설정
+      setCommaPrice(Number(numericValue).toLocaleString());
+
+      setFormData({ ...formData, [name]: numericValue });
     } else {
-      setErrorMessage(""); // 에러 메시지 초기화
-      setPrice(rawValue); // 숫자만 상태에 저장
+      setFormData({ ...formData, [name]: value });
     }
+   
+
   };
 
   const handleFileChange = (e) => {
@@ -68,8 +82,6 @@ const PostRegist = () => {
 
     //files.map((file) => URL.createObjectURL(file)); 각 파일을 브라우저에서 미리볼 수 있도록 URL 생성성
     const imageUrls = files.map((file) => URL.createObjectURL(file));
-
-
     setSelectedImages((prevImages) => [...prevImages, ...imageUrls]);
 
     // 파일 선택 창 초기화 방지
@@ -101,7 +113,6 @@ const PostRegist = () => {
   return (
     <div className="postRegist">
       <h2>게시물 등록</h2>
-
       <form onSubmit={(e)=>handleSubmit(e)}>
         <div className="formDiv">
           <label>사진({selectedImages.length}/4)</label>
@@ -144,10 +155,7 @@ const PostRegist = () => {
             placeholder="가격 입력"
             onChange={handleChange}
             value={commaPrice}
-            maxlength="12"
           />
-          {/* 에러 메시지 표시 */}
-          {errorMessage && <div className="registerror">{errorMessage}</div>}
         </div>
         <div className="formDiv">
           <DatePicker />
