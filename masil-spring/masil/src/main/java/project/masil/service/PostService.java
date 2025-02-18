@@ -24,7 +24,7 @@ public class PostService {
 	    List<String> savedPaths = new ArrayList<>();
 
 	    for (MultipartFile file : postPhotos) {
-	        String filePath = FileUploadUtil.saveFile(file, uploadDir, "postPhotoPath");
+	        String filePath = FileUploadUtil.saveFile(file, uploadDir, "postPhotos");
 	        savedPaths.add(filePath);
 	    }
 

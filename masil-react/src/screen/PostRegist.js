@@ -30,7 +30,7 @@ const PostRegist = () => {
       
     data.append("dto", new Blob([JSON.stringify(formData)], { type: "application/json" }));
     for (let i = 0; i < selectedImages.length; i++) {
-      data.append("postPhotoPath", selectedImages[i]); // 파일 직접 추가
+      data.append("postPhotos", selectedImages[i]); // 파일 직접 추가
     }
     try {
       const response = await axios.post("http://localhost:9090/post", data, {
