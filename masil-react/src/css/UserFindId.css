@@ -17,8 +17,8 @@
 
 /* 입력 필드와 버튼을 감싸는 컨테이너 */
 .FindId_inputWrapper {
-    position: relative; /* 버튼의 위치를 입력 필드 내부로 조정 */
-    width: 100%; /* 입력 필드가 버튼과 함께 맞춰질 수 있도록 */
+    position: relative; 
+    width: 100%;
 }
 
 /* 이메일 div 왼쪽정렬 */
@@ -39,7 +39,7 @@
 /* 입력 필드 스타일 */
 .FindId_input {
     width: 100%;
-    padding: 10px 50px 10px 10px; /* 버튼 크기만큼 오른쪽 패딩 추가 */
+    padding: 10px 50px 10px 10px; 
     font-size: 1rem;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -55,8 +55,8 @@
 .FindId_sendBtn {
     position: absolute;
     top: 50%;
-    right: 5px; /* 입력 필드 오른쪽에 버튼 위치 */
-    transform: translateY(-50%); /* 버튼을 수직 중앙 정렬 */
+    right: 5px; 
+    transform: translateY(-50%); 
     padding: 5px 10px;
     font-size: 0.9rem;
     border: none;
