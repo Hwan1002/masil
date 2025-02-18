@@ -8,6 +8,10 @@ const Main = () => {
     <>
     <div className="mainContents">
       <div>메인페이지 디자인 예정</div>
+      <div>메인페이지 디자인 예정</div>
+      <div>메인페이지 디자인 예정</div>
+      <div>메인페이지 디자인 예정</div>
+      <div>메인페이지 디자인 예정</div>
       <button onClick={()=>navigate("/postRegist")}>+</button>
     </div>
       
