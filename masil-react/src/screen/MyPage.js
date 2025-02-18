@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import Modal from '../component/Modal';
 import useModal from '../context/useModal';
 import axios from 'axios';
-import { api } from '../context/useAxiosInterceptor';
+import { Api } from '../context/MasilContext';
 const MyPage = () => {
   const navigate = useNavigate();
   const inputImgRef = useRef(null); 
@@ -27,43 +27,30 @@ const MyPage = () => {
   } = useModal();
 
   useEffect(() => {
-    const getUserInfo = async()=>{
-      if(!accessToken) return;
-      const response = await axios.get(`http://localhost:9090/user/userInfo`,
-          {
-          headers: {
-            Authorization: `Bearer ${accessToken}` // Bearer 토큰 형식
-          }
-        });
+    const getUserInfo = async () => {
+      //accessToken이 없으면 요청하지않음. 
+      if (!accessToken) return;
+
+      try {
+        const response = await Api.get(`/user/userInfo`);
+        console.log(response.data.value);
         if (response && response.data.value) {
           setFormData(response.data.value);
+
           // profilePhotoPath가 있을 경우 미리보기 설정
           if (response.data.value.profilePhotoPath) {
             setImagePreview(`http://localhost:9090${response.data.value.profilePhotoPath}`);
           }
         }
+      } catch (error) {
+        console.log(error.response.data.error);
+        if (error.response?.statues === 401) {
+        }
+      }
+      getUserInfo();
     }
-    getUserInfo();
-  },[accessToken, setAccessToken])
-  
-  // useEffect(() => {
-  //   const getUserInfo = async () => {
-  //     if (!accessToken) return; 
-  //     console.log(accessToken)
-  //     const response = await api.get(`/user/userInfo`);
-  //     console.log(response.data.value);
-  //     if (response && response.data.value) {
-  //       setFormData(response.data.value);
-  
-  //       // profilePhotoPath가 있을 경우 미리보기 설정
-  //       if (response.data.value.profilePhotoPath) {
-  //         setImagePreview(`http://localhost:9090${response.data.value.profilePhotoPath}`);
-  //       }
-  //     }
-  //   };
-  //   getUserInfo();
-  // }, [accessToken]);
-  
+},[accessToken]);
+
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;

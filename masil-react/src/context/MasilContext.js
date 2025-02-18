@@ -1,56 +1,105 @@
 import React, { createContext, useEffect, useState } from "react";
 import userDefault from "../css/img/userDefault.svg";
 import axios from "axios";
-import { useAxiosInterceptor } from "./useAxiosInterceptor";
 
-export const ProjectContext = createContext(
-  // {
-  // loginSuccess: false,
-  // setLoginSuccess: () => {},
-  // accessToken: null,
-  // setAccessToken: () => {},
-  // imagePreview: null,
-  // setImagePreview: () => {},
-  // isLoading: false,
-  // setIsLoading: () => {},
-  // }
-);
+export const ProjectContext = createContext();
+
+// Axios 인스턴스 생성
+export const Api = axios.create({
+  baseURL: "http://localhost:9090",
+  withCredentials: true,
+});
+
+
 export const ProjectProvider = ({ children }) => {
   //로그인 상태
   const [loginSuccess, setLoginSuccess] = useState(false);
   const [accessToken, setAccessToken] = useState(null);
-
   //프로필사진
   const [imagePreview, setImagePreview] = useState(userDefault);
   //로딩중 상태
   const [isLoading, setIsLoading] = useState(false);
 
-  // Axios 인터셉터 초기화
-  // useAxiosInterceptor();
-
-
-
-
-
-
   // 새로고침시 refreshToken(httpOnlyCookie) 를통한 accessToken 갱신요청 
-  useEffect(() => {
-    const refreshAccessToken = async () => {
-      try {
-        const response = await axios.post('http://localhost:9090/auth/refresh-token', {}, { withCredentials: true });
-        setAccessToken(response.data.accessToken); // 새로운 Access Token 저장
-        setLoginSuccess(true); // 로그인 상태 업데이트
-      } catch (error) {
-        console.log(error.response.data.error);
-        setAccessToken(null); // Access Token 초기화
-        setLoginSuccess(false); // 로그인 상태 초기화
-      }
-    };
+  const refreshToken = async () => {
+    try {
+      const { data } = await Api.post(
+        '/auth/refresh-token',
+        {},
+        { withCredentials: true }
+      );
+      console.log(data)
+      setAccessToken(data.accessToken);
+      setLoginSuccess(true);
+      return data.accessToken;
+    } catch (error) {
+      console.log(error.response.data.error);
+      setAccessToken(null);
+      setLoginSuccess(false);
+    }
+  };
 
-    refreshAccessToken(); // 컴포넌트 마운트 시 실행
+  // 최초 렌더링시 토큰갱신시도 
+  useEffect(() => {
+    if (!accessToken) refreshToken();
   }, []);
 
+  // 인터셉터 설정
+  useEffect(() => {
+    let isRefreshing = false;
 
+    // 요청 인터셉터
+    const reqInterceptor = Api.interceptors.request.use(config => {
+      if (accessToken) {
+        config.headers.Authorization = `Bearer ${accessToken}`;
+      }
+      return config;
+    });
+
+    // 응답 인터셉터
+    const resInterceptor = Api.interceptors.response.use(
+      response => response,
+      async error => {
+        const originalRequest = error.config;
+
+        // 401/403 에러 & 첫 재시도
+        if ([401, 403].includes(error.response?.status) && !originalRequest._retry) {
+          originalRequest._retry = true;
+
+          // 중복 갱신 방지
+          if (!isRefreshing) {
+            isRefreshing = true;
+            try {
+              const { data } = await Api.post('/auth/refresh-token', {}, { withCredentials: true });
+              setAccessToken(data.accessToken);
+              setLoginSuccess(true);
+              // 새 config 생성
+              return Api({
+                ...originalRequest,
+                headers: {
+                  ...originalRequest.headers,
+                  Authorization: `Bearer ${data.accessToken}`
+                }
+              });
+
+            } catch (refreshError) {
+              setAccessToken(null);
+              setLoginSuccess(false);
+              return Promise.reject(refreshError);
+            } finally {
+              isRefreshing = false;
+            }
+          }
+        }
+        return Promise.reject(error);
+      }
+    );
+
+    return () => {
+      Api.interceptors.request.eject(reqInterceptor);
+      Api.interceptors.response.eject(resInterceptor);
+    };
+  }, [accessToken]);
 
 
 
