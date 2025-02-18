@@ -38,7 +38,7 @@ public class UserController {
 	// 마이페이지에서의 유저정보조회 게시판에대한 내용이들어왔을때 수정예정
 	@GetMapping("/userInfo")
 	public ResponseEntity<?> getInfo(@AuthenticationPrincipal String userId) {
-		System.out.println(userId);
+
 		if(userId==null){
 			return ResponseEntity.status(401).build();
 		}
