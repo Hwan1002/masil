@@ -129,7 +129,7 @@ const SignUp = () => {
     e.preventDefault();
     const file = e.target.files[0];
     if (file) {
-      setProfilePhoto(file); // File 객체로 설정
+      setProfilePhoto(file); 
       const reader = new FileReader();
       reader.onload = () => {
         setImagePreview(reader.result);
