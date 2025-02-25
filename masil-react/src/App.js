@@ -12,7 +12,7 @@ import PostRegist from './screen/PostRegist';
 import RentalItem from "./screen/RentalItem";
 
 //잔디를 심어보자
-//홀리몰리 과까몰리 
+
 function App() {
   return (
     <ProjectProvider>
