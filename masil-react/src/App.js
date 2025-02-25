@@ -10,8 +10,7 @@ import UserFindId from './screen/UserFindId';
 import UserFindPwd from './screen/UserFindPwd';
 import PostRegist from './screen/PostRegist';
 import RentalItem from "./screen/RentalItem";
-//다시 잔디를 심으려 왔다
-//구뤠구뤠 아주 잘 심어지는구만!
+
 function App() {
   return (
     <ProjectProvider>
