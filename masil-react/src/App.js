@@ -13,7 +13,7 @@ import UserFindPwd from './screen/UserFindPwd';
 import PostRegist from './screen/PostRegist';
 import RentalItem from "./screen/RentalItem";
 //잔디심기중
-//얼마나 잘심어지려나
+
 function App() {
   const {
     isModalOpen,
