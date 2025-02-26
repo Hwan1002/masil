@@ -13,10 +13,6 @@ import RentalItem from "./screen/RentalItem";
 //잔디심기
 
 function App() {
-  //테스트
-
-
- 
   return (
     <ProjectProvider>
     <div className="App">
