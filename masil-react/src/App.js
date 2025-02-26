@@ -14,10 +14,7 @@ import RentalItem from "./screen/RentalItem";
 
 function App() {
   //테스트
-  function sayHello(name, callback){
-    
-   
-  }
+
 
  
   return (
