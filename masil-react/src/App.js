@@ -18,10 +18,8 @@ function App() {
     const word = `안녕하세요 ${name}님.`;
     callback(word);
   }
-  sayHello('JHS', function(){console.log()})
-  function test = () => {
-  console.log("callback");
-  }
+  sayHello('JHS', function(name){console.log(name);})
+ 
   return (
     <ProjectProvider>
     <div className="App">
