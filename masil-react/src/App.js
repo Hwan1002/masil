@@ -17,8 +17,7 @@ function App() {
   function sayHello(name, callback){
     const word = `안녕하세요 ${name}님.`;
     callback(word);
-  }
-  sayHello('JHS', function(name){console.log(name);})
+
  
   return (
     <ProjectProvider>
