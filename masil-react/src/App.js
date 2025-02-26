@@ -16,7 +16,7 @@ function App() {
   //테스트
   function sayHello(name, callback){
     const word = `안녕하세요 ${name}님.`;
-    callback(word);
+   
   }
 
  
