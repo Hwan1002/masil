@@ -15,7 +15,7 @@ import RentalItem from "./screen/RentalItem";
 function App() {
   function test = () => {
   console.log("callback");
-}
+  }
   return (
     <ProjectProvider>
     <div className="App">
