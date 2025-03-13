@@ -345,6 +345,261 @@ https 설정을 springboot에 한다하더라도 실제로 위치를 요청하�
 
 
 
+새로고침시에는 -> accessToken
+
+
+새로고침시에 accessToken 유지시키는방법 : interceptor 사용으로 refreshToken을 이용한 accessToken 자동재발급,갱신요청 
+로그아웃시에는 refreshToken(httpOnlyCookie) 가 삭제되기떄문에 새로고침되었을때
+
+인터셉터 사용시에는 어느곳에서 새로고침을하던 accessToken 이 초기화되지않고 
+
+
+인터셉터 구현 
+geolocation을통한 lat lng 좌표를얻고 얻은좌표를 기준으로 반경 구하는 알고리즘 구현 . 
+좌표반경으로 필터를거쳐 사용자에게 보여주거나 , 채팅권한 부여 
+
+DB설계 .
+
+인천광역시 부평구 부평4동
+
+
+
+
+
+GET/ https://geolocation.apigw.ntruss.com/geolocation/v2/geoLocation?ip=58.232.99.137&ext=t&enc=utf8&responseFormatType=json + TimeStamp + accessKey 
+
+secret 키를통해서 HMAC -SHA256 으로 암호화후 Base64 인코딩 
+
+
+클라이언트 : 위치설정하기버튼클릭 ->  
+서버 : 클라이언트가 사용자의 IP를 본문에 포함하여 서버에 주소요청 -> IP를받으면 저 위에 양식에따라서 요청양식 가공 후 GeolocationAPI에 좌표와 주소요청 -> 요청한 주소에서 r3 필드에 해당하는 동 클라이언트에 전송
+좌표를통한 반경구하는 알고리즘 구현 . 
+
+
+
+axios interceptor 문제점 .
+
+새로고침시에 accessToken이 재발급되는로직이 정상작동할텐데 이상하게 마이페이지에서 정상적으로 작동하지않는다 . .
+
+로그인을 하지않은상태에서 새로고침시는 정상적으로 작동한다 .
+refresh-token 컨트롤러에서 반환되는 error메세지를 정상적으로 받고있음 .
+새로고침시 메인페이지에서 accessToken은 정상적으로 재발급되고있음 .
+마이페이지 최초이동시도 정상적으로 마이페이지의 데이터조회 정상작동 
+
+새로고침을 했을시에는 정상적으로 accessToken이 발급되고있으나 mypage에서 재발급된 accessToken을받기전에 서버로 get요청을 보내서 403에러 발생. 
+이러한이유때문에 서버에서는 springContextHoler의 저장되지않은 userEntity.getId() 메서드에서  nullpointException 발생 .
+이런 에러가 발생시에는 커스텀 예외처리기를 거쳐 정상적인 에러반환이아닌 필터계층에서 예외를 반환하여 403으로 에러를 반환한다 .
+이를 해결하기위해서는 axiosInterceptor에서 403에러에대한 응답부의 수정 혹은 서버에서의 AuthenticationEntryPoint  커스터마이징을 하여 해결할 수 있다 .
+
+
+근데도 계속안되고있다 ..
+이유는 axiosInterceptor의 문제점이 있는거같다 .
+axios인스턴스의 baseURL : "http://localhost:9090 , withCredentials : true , 로 생성해놨다 .여기까지 문제가있는지 점검 .
+instance를 만드는 이유 : 객체지향 프로그래밍의 클래스와 인스턴스에 대한 개념이해가 필요하다 .
+객체지향프로그래밍이란 ? 
+
+소프트웨어를 개발하는데 사용되는 프로그래밍 패러다임중 하나 .
+프로그램을 객체 (Object) 중심으로 설계하고 구성하는 방법론 
+목표:  코드를 더 모듈화하고 추상화하여 프로그램의 복잡성을 줄이고 유지보수를 쉽게만드는것 .
+
+
+클래스 / 인스턴스 .
+클래스는 객체를 만들기위한 일종의 청사진 또는 템플릿 . 클래스는 객체가 가져야할 속성과 메서드를 정의
+인스턴스 : 클래스를 기반으로 만들어진 실제 객체 . 클래스의 인스턴스는 클래스에 정의된 속성과 메서드를 가지며 , 서로 다른 인스턴스는 독립적으로 상태를 관리할 수 있다 .
+
+클래스의 를 기반으로 객체를 만들어 클래스에 정의되어있는 속성,  메서드를 사용하며 각각의 인스턴스를 독립적으로 상태를 관리할수있다 
+.
+내가만든 axios 인스턴스에 baseURL에 url 값을  , withCredentials옵션을 true로 지정하여 요청의 인증을 포함하고
+요청과 응답을 가로채는 Interceptor.request.use() 와 , Interceptor.response.use() 메서드를 사용해서 
+요청,응답시의 accessToken의 관한 유효성검증 , 재발급요청 모든로직통과후 원래의 요청구성 복제 , 새로운 accessToken을 instance헤더에 포함 해야한다 .
+
+
+요청메서드부터 다시 작성해보자 . 
+
+axios instance를 다시만들고 그에대한 accessToken만료시의 refershToken(httpOnly Cookie) 를 요청헤더에 포함 요청하여 accessToken재발급 로직을 구현하려고한다 . instance의 intercepto.request.use() , interceptor.response.use() 메서드를 사용할것이다 .
+
+
+예를들면 AccessToken을 항상 필요시하는 http요청을 보내야하는상황에서
+클라이언트(react)는 accessToken 을 클라이언트 메모리 (useState() 변수) 에 저장하여서 사용하기때문에 새로고침시에는 재발급하는 로직이 필요했다 .
+// 새로고침시 refreshToken(httpOnlyCookie) 를통한 accessToken 갱신요청
+useEffect(() => {
+const refreshAccessToken = async () => {
+try {
+const response = await axios.post('http://localhost:9090/auth/refresh-token', {}, { withCredentials: true });
+setAccessToken(response.data.accessToken); // 새로운 Access Token 저장
+setLoginSuccess(true); // 로그인 상태 업데이트
+console.log(response.data.accessToken);
+} catch (error) {
+console.log(error.response.data.error);
+setAccessToken(null); // Access Token 초기화
+setLoginSuccess(false); // 로그인 상태 초기화
+}
+};
+refreshAccessToken();
+}, []);
+
+이런식으로 최상위컴포넌트에 최초마운트시 항상 새로운 accessToken을 발급받아 사용하여 contextAPI인스턴스를 사용하여 모든 컴포넌트에서 AccessToken을 필요시할경우에 뿌려줄수 있게되었다 ,
+
+하지만 새로고침을해서 클라이언트 메모리가초기화 되는것이아닌
+accessToken의 시간만료에대해서 매번 요청부에 조건문을사용해서 만료가 되었다면 서버에 재발급요청 -> accessToken 재발급 후에 원래요청을 다시 요청하는 이런 번거로운방식보다는 axios 인스턴스를 만들어서 baseURL 지정과 withCredentials를 true 로 기본속성을 지정한 후 axios의 메서드인 요청,응답을 가로채서 accessToken의 만료파악후 만료되었을시에 재요청을 보내고 응답에 재발급받은 accessToken을 useState() 상태변수에 저장 후 모든 컴포넌트에서 사용할수있게끔
+커스텀 interceptor를 만들려고한다
+
+
+
+
+ // Axios Interceptor 설정
+  useEffect(() => {
+    // 요청 인터셉터
+    const requestInterceptor = api.interceptors.request.use(
+      (config) => {
+        const token = accessToken;
+        console.log(token);
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+      },
+      (error) => Promise.reject(error)
+    );
+
+    // 응답 인터셉터
+    const responseInterceptor = api.interceptors.response.use(
+      (response) => response,
+      async (error) => {
+        const originalRequest = error.config;
+
+        if ([401, 403].includes(error.response?.status) && !originalRequest._retry) {
+          originalRequest._retry = true;
+
+          try {
+            const refreshResponse = await axios.post(
+              "http://localhost:9090/auth/refresh-token",
+              {},
+              { withCredentials: true }
+            );
+
+            const newAccessToken = refreshResponse.data.accessToken;
+            
+            // 1. API 인스턴스 기본헤더 업데이트 
+            api.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
+
+            // 2. 원래 요청 구성복제 + 새 헤더적용 .
+            const retryConfig ={
+              ...originalRequest,
+              headers:{
+                ...originalRequest.headers,
+                Authorization: `Bearer ${newAccessToken}`
+              }
+            };
+            setAccessToken(newAccessToken); // 새로운 토큰 저장
+            // 3. API 인스턴스로 재요청
+            return api(retryConfig);
+
+          } catch (refreshError) {
+            setAccessToken(null);
+            setLoginSuccess(false);
+            return Promise.reject(refreshError);
+          }
+        }
+
+        return Promise.reject(error);
+      }
+    );
+
+    // 컴포넌트 언마운트 시 인터셉터 제거
+    return () => {
+      api.interceptors.request.eject(requestInterceptor);
+      api.interceptors.response.eject(responseInterceptor);
+    };
+  }, [accessToken]);
+
+
+accessToken이 유효할떄에 대한 인터셉터는 정상적으로 작동을하는것같다 , 그렇기떄문에 mypage가 정상적으로 접근이가능한것이고 ,
+하지만 1분이지나 accessToken이 만료되었을때는 정상적으로 작동을하지않고있다 .
+
+
+mypage에서 새로고침시에 오류가나더라도401을 반환할수있게끔 작성해보자 . 
+401이나왔을때는 인터셉팅이 되는지 확인을 먼저해야할거같다 . 
+403이나오는 이유 :  spring securtiycontext에서 403을 반환하기때문. 
+
+
+새로고침시 : accessToken이 재발급된다 . contextAPI가 token뿌려줌 . 뿌려지기전의 token을가지고 mypage요청이 서버에 요청하게됨 그렇기에 403이 나옴
+해결방법은 뿌려지고난후에 token을 mypage에서 서버에 요청해야함. 
+
+axios 인터셉터는 동기적으로 동작하지만 리엑트의 상태변수는 비동기로 업데이트된다 .
+인터셉터가 요청을 가로채는시점에서 accessToken이 아직 갱신되지않았다면 잘못된 헤더를포함한 요청이 서버로 전송될 수 있다 .
+
+초기요청차단을 하는방법에대해서 작성해보자 .
+
+요청인터셉터 : 모든요청에대해 현재 accessToken을 헤더에 추가 (react 상태에서 관리하는 최신 accessToken을 참조 .)
+응답인터셉터 : 서버에서 401, 또는 403 응답을 반환하면 , 해당요청을 가로채서 refreshToken()을 호출
+
+마이페이지속에서 새로고침을했을때도 refreshToken 호출 , 인터셉터에서도 refreshToken을 호출 충돌의 위험성이짙음
+
+인터셉터에 큐(대기열) 을 사용하여 첫번쨰 요청이 토큰 갱신을 완료한 후 대기중인 다른요청들이 새로운토큰으로 재요청되도록 해야한다 . 
+그리고 새로고침시 최상위컴포넌트가 아직 새로운 토큰을 발급받기전에 하위컴포넌트가 API 요청을 보내는경우를 방지하기 위해서 refreshToken() 호출이 완료된이후 
+하위컴포넌트가 렌더링되도록 보장해야한다 . (isLoading과 같은 상태변수를 추가) 로딩상태를통한 하위컴포넌트렌더링 핸들링 
+
+
+
+
+
+
+
+
+메인페이지에서 새로고침시 : 정상적으로 console에 새로운 accessToken 재발급되는것 확인 .
+그 accessToken을통한 mypage조회 : 정상적으로 작동되는것 확인. 
+새로고침시 : accessToken재발급되는건 확인되었으나 , mypage요청부에서 403에러출력 .
+
+
+현재코드에서 최초로 마이페이지접근시 정상작동 , 처음 새로고침시 정상작동 . 두번쨰 새로고침부터 403에러 
+401로왔을떄 정상처리가되는지 확인해보자 . 된다면 401을 반환하게 해보자 
+
+401에러가 나오게끔하는데에는 성공했음 .
+securityConfig를 확장하여 401이반환되게 수정.
+인터셉터에서 401에러가나왔을때의 대한 코드로 리액트코드수정해보자 .
+
+
+서버에서 accessToken 만료시에 401에러를 보내야한다 . 모든 accessToken을 검증하는방식을 @AuthenticationPrincipal 어노테이션을 통해서 시큐리티컨텍스트홀더에 저장되어있는 userId를 추출해온다 . 이부분에대해서
+어떻게 시큐리티쪽에서 401을보낼것인지 , 그리고 userId가 어떻게 저장되는지 좀 더 세세하게 알아야한다 .
+
+
+
+
+현재상황 : 최초에러401 -> 응답인터셉터 : 401을받았기에 accssToken재요청후 newAccessToken변수에 저장 -> 원래요청헤더에 newAccessToken 추가해서 원래요청 재시도 -> 근데도 에러가나왔음 .
+에러로그는 최초에 한번 나와야된다 . 그이후에 응답인터셉터를동해 새로운 엑세스토큰을 발급받고 원래요청헤더에 새로운엑세스토큰을 추가해서 보내기때문에 서버와 클라이언트에 에러로그는 한번씩만나와야함 .
+서버 : 최초에러401 반환 -> 토큰재발급됐다는콘솔 확인 , 그후에 두번의 401에러 (시큐리티컨텍스트홀더에 등록된 아이디가없다라는 에러나옴 (잘못된 토큰을통한 요청이왔기때문 , 그리고 요청이 한번만오는게아니라 두번왔음 .) 
+클라이언트 : 에러 세번반환됨 .
+그 이후에 다시한번 메인페이지에서 마이페이지 버튼을 클릭했을때는 정상적으로 작동함 .
+
+
+현재상황 : 최초에러 401 -> 응답인터셉터 : 401을받고 accessToken 재요청후 newAccessToken 변수에 새토큰저장 -> 원래요청헤더에 newAccessToken 추가해서 원래요청 재시도 -> 에러로그출력-> 정상작동 
+서버 : 최초에러401 반환 -> 토큰재발급됐다는콘솔 확인 , 그후에 두번의 401에러 (시큐리티컨텍스트홀더에 등록된 아이디가없다라는 에러나옴 (잘못된 토큰을통한 요청이왔기때문 , 그리고 요청이 한번만오는게아니라 두번왔음 .)-> 정상 데이터 반환
+클라이언트 : 에러 두번반환됨 .  
+
+
+
+일단 얼추해결이 됐다 .
+서버에서는 인증에러를 
+401에러를 반환하게끔 securityConfig쪽에서의 인증에러가나왔을때 401에러를 반환하게수정하였고 , 리프레시토큰을이용한 엑세스토큰 재발급시에 즉시
+인증객체를 저장하게 로직을 수정하여 해결하였다 . 
+
+
+지금문제는 최초에러(accessToken만료) -> 응답인터셉터작동 , refresh-Token에 AccessToken 재발급요청 -> 새로운토큰을 기존요청헤더의 추가 -> 정상작동 의 로직에서
+최초에러(accessToken만료) -> 응답인터셉터작동 , refresh-Token에 AccessToken 재발급요청 -> 새로운토큰을 기존요청헤더의 추가 -> 401에러발생 (Security contextHolder 에서 인증객체를 찾을수없음 ) -> 재요청 ->정상작동
+의 로직으로 진행되고있다는점이다 . 
+AccessToken만료시 두번쨰 요청에서는 한번 더 에러가나고   accessToken이 변경됨을 감지했을때 세번째 요청을보낸후 정상작동한다는점인데 .
+accessToken을 react state상태변수로 관리하고있기에 비동기처리에대한 이유때문인거같은데 해결방법이 필요하다 . 
+
+
+
+
+
+
+
+
+
+
 
 
 

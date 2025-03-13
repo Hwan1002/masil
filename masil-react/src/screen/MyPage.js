@@ -7,6 +7,7 @@ import useModal from '../context/useModal';
 import axios from 'axios';
 import LoadingModal from '../component/LoadingModal';
 import '../css/MyPage.css'
+import { Api } from '../context/MasilContext';
 const MyPage = () => {
 
   const [formData, setFormData] = useState({});
@@ -25,18 +26,19 @@ const MyPage = () => {
     closeModal,
   } = useModal();
 
-
   useEffect(() => {
     const getUserInfo = async () => {
-      try {
-        const response = await axios.get(`http://localhost:9090/user/userInfo`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
-        });
+      //accessToken이 없으면 요청하지않음. 
+      if (!accessToken) return;
 
-        if (response?.data?.value) {
+      try {
+        const response = await Api.get(`/user/userInfo`);
+
+        console.log(response.data.value);
+        if (response && response.data.value) {
           setFormData(response.data.value);
+
+          // profilePhotoPath가 있을 경우 미리보기 설정
           if (response.data.value.profilePhotoPath) {
             setImagePreview(`http://localhost:9090${response.data.value.profilePhotoPath}`);
           }
@@ -127,7 +129,6 @@ const MyPage = () => {
       return;
     }
   };
-
 
   const putUserInfo = async () => {
     const data = new FormData();

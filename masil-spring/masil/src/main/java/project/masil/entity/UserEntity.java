@@ -41,4 +41,8 @@ public class UserEntity {
 	
 	private String refreshToken ; // refreshToken 
 
+	private String lat ;
+	
+	private String lng ;
+	
 }
