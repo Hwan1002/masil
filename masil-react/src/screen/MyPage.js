@@ -142,12 +142,7 @@ const MyPage = () => {
     data.append("dto", new Blob([JSON.stringify(formData)], { type: "application/json" }));
 
     try {
-      const response = await axios.put(`http://localhost:9090/user/modify`, data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          "Authorization": `Bearer ${accessToken}`,
-        }
-      });
+      const response = await Api.put(`/user/modify`, data,);
 
       if (response.status === 200) {
         openModal({
