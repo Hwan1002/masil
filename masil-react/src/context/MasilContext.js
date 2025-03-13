@@ -7,13 +7,13 @@ export const ProjectContext = createContext();
 // Axios 인스턴스 생성
 export const Api = axios.create({
   baseURL: "http://localhost:9090",
-  withCredentials: true,
+  withCredentials: true, //쿠키포함
 });
 
 // 새로고침 axios 인스턴스 
 const refreshInstance = axios.create({
   baseURL: "http://localhost:9090",
-  withCredentials: true,
+  withCredentials: true, //쿠키포함
 });
 
 export const ProjectProvider = ({ children }) => {

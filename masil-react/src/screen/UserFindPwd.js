@@ -244,9 +244,13 @@ const UserFindPwd = () => {
                         >
                             아이디 찾기
                         </button>
-                        <button type="button" className='FindId_button' onClick={(e) => resetpassword()}>
-                            비밀번호 재설정
-                        </button>
+                        <button
+                                type="submit"
+                                className='FindId_sendBtn'
+                                onClick={(e) => resetpassword()}
+                            >
+                                인증
+                            </button>
                     </div>
                 </>
             )}
