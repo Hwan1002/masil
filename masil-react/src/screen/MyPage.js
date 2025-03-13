@@ -28,6 +28,7 @@ const MyPage = () => {
 
       try {
         const response = await Api.get(`/user/userInfo`);
+
         console.log(response.data.value);
         if (response && response.data.value) {
           setFormData(response.data.value);
@@ -39,8 +40,6 @@ const MyPage = () => {
         }
       } catch (error) {
         console.log(error.response.data.error);
-        if (error.response?.statues === 401) {
-        }
       }
     };
     getUserInfo();

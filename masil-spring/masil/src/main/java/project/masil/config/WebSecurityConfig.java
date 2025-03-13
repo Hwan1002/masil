@@ -12,6 +12,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import jakarta.servlet.http.HttpServletResponse;
 import project.masil.security.JwtAuthenticationFilter;
 
 @Configuration
@@ -19,13 +20,20 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http.csrf().disable().cors().configurationSource(corsConfigurationSource()) // CORS 설정 추가
-				.and().authorizeHttpRequests().requestMatchers("/auth/refresh-token",
+		http.csrf().disable()
+		.cors().configurationSource(corsConfigurationSource()) // CORS 설정 추가
+		.and()
+		.authorizeHttpRequests(authz -> authz.requestMatchers("/auth/refresh-token",
 						"/user/**",
 						"/uploads/**",
 						"/default/**").permitAll() // 로그인 및 회원가입 , 사진폴더접근 , 기본사진폴더접근 엔드포인트 허용
-				.anyRequest().authenticated() // 나머지 요청은 인증 필요
-				.and().addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class); // JWT 필터등록 
+				.anyRequest().authenticated()// 나머지 요청은 인증 필요
+				)
+				.exceptionHandling(ex -> ex.authenticationEntryPoint((request,response,authException) -> {
+					response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+				})
+				)
+				.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class); // JWT 필터등록 
 		
 		
 		return http.build();
