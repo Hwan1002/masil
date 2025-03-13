@@ -41,13 +41,10 @@ export const ProjectProvider = ({ children }) => {
     try {
       const { data } = await refreshInstance.post('/auth/refresh-token',{});
       const newAccessToken = data.accessToken;
+
+      Api.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
       setAccessToken(newAccessToken);
       setLoginSuccess(true);
-      Api.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
-      setAccessToken(prev => {
-        if (prev !== newAccessToken) return newAccessToken;
-        return prev;
-      });
       console.log(newAccessToken)
       return newAccessToken;
     } catch (error) {
