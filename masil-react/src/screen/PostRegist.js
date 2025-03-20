@@ -4,6 +4,7 @@ import camera from '../css/img/photo/camera.png';
 import DatePicker from "../component/DatePicker";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Api } from "../context/MasilContext";
 
 const PostRegist = () => {
   const navigate = useNavigate();
@@ -17,20 +18,18 @@ const PostRegist = () => {
 
   const handleSubmit = async(e) => {
     e.preventDefault();  // 기본 폼 제출을 방지
-    debugger;
     // 여기에 폼 제출 후 처리 로직 추가
-    console.log("대여 시작 시간:", startDate);
-    console.log("대여 종료 시간:", endDate);
+    // console.log("대여 시작 시간:", startDate);
+    // console.log("대여 종료 시간:", endDate);
     try {
       const data = new FormData();
       if (selectedImages) {
         data.append("postPhoto", selectedImages);
       }
-      const response = await axios.post('http://localhost:9090/post/upload',)
+      const response = await Api.post('/post/upload',)
     } catch (error) {
       
     }
-    console.log('폼 제출');
   };
   
 

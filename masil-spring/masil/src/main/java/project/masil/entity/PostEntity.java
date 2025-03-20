@@ -1,9 +1,18 @@
 package project.masil.entity;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,16 +29,25 @@ public class PostEntity {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Integer idx; 
+	private Integer postIdx; // 게시글 식별자 
 
 	private String postTitle; //게시글 제목
 
-	private String postPrice; //게시글 제품 렌탈가격
-
-	private String postStartDate; //제품 빌리는 시작 날짜,시간
+	private Long postPrice; //게시글 제품 렌탈가격
 	
-	private String postEndDate; //제품 빌리는 끝 날짜,시간
+    @ElementCollection
+    @CollectionTable(name = "post_photos", joinColumns = @JoinColumn(name = "postIdx"))
+    @Column(name = "photoPath")
+    private List<String> postPhotoPaths = new ArrayList<>(); // 게시글사진경로 
+
+	private LocalDateTime postStartDate; //제품 빌리는 시작 날짜,시간
+	
+	private LocalDateTime postEndDate; //제품 빌리는 끝 날짜,시간
 
 	private String description; //제품 설명
 
+	@ManyToOne
+	@JoinColumn(name = "userId" , nullable =false) 
+	private UserEntity user ; // 게시글 작성자 정보 , 부모참조 
+	
 }
