@@ -117,6 +117,10 @@ public class UserService {
 		if(!existingPhoto.equals(user.getProfilePhotoPath())){
 			FileUploadUtil.deleteFile(existingPhoto);
 		}
+		else if(dto.getProfilePhotoPath() == "default") { // 기본이미지로 변경시 기존 프로필사진 삭제 및 기본이미지 경로로 업데이트
+			user.setProfilePhotoPath(DEFAULT_PROFILE_PHOTO);
+			FileUploadUtil.deleteFile(existingPhoto);
+		}
 		
 		userRepository.save(user);
 
