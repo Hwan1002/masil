@@ -61,7 +61,6 @@ public class FileUploadUtil {
 	 * @param filePath 삭제할 파일의 전체 경로
 	 */
 	public static void deleteFile(String filePath) {
-		System.out.println(filePath);
 		if (filePath == null || filePath.isEmpty()) {
 			return; // 삭제할 파일 경로가 없으면 아무 작업도 하지 않음
 		}
