@@ -67,12 +67,13 @@ const SignUp = () => {
       return;
     }
   
-    // if(!certifiedBtn){
-    //   openModal({
-    //     message: "이메일 인증을 해주세요.",
-    //   });
-    //   return;
-    // }
+    // 이메일인증번호 확인 .
+    if(certifiedBtn){
+      openModal({
+        message: "이메일 인증을 해주세요.",
+      });
+      return;
+    }
     try {
       const data = new FormData();
       if (profilePhoto) {
@@ -221,6 +222,7 @@ const SignUp = () => {
         })
       }
     } catch (error) {
+      setCertifiedBtn(true);
       openModal({
         message:error.response.data.error
       })

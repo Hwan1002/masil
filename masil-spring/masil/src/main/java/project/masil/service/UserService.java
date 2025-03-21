@@ -102,6 +102,9 @@ public class UserService {
 	public ResponseDTO<String> modify(String userId, MultipartFile profilePhoto, UserDTO dto) {
 		UserEntity user = userRepository.findByUserId(userId);
 
+		// 기존 프로필사진경로
+		String existingPhoto =user.getProfilePhotoPath();
+			
 		if (profilePhoto == null || profilePhoto.isEmpty()) {
 			user.setProfilePhotoPath(dto.getProfilePhotoPath());
 		} else {
@@ -109,6 +112,12 @@ public class UserService {
 			user.setProfilePhotoPath(FileUploadUtil.saveFile(profilePhoto, uploadDir, "profilePhotos"));
 		}
 		user.setUserNickName(dto.getUserNickName());
+		
+		// 프로필사진 변경시 기존프로필사진 삭제 .
+		if(!existingPhoto.equals(user.getProfilePhotoPath())){
+			FileUploadUtil.deleteFile(existingPhoto);
+		}
+		
 		userRepository.save(user);
 
 		return ResponseDTO.<String>builder().status(200).value("회원정보가 수정되었습니다 . ").build();

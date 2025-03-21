@@ -24,7 +24,7 @@ const PostRegist = () => {
     try {
       const data = new FormData();
       if (selectedImages) {
-        data.append("postPhoto", selectedImages);
+        data.append("postPhoto", selectedImages ,{ type: "application/json" });
       }
       const response = await Api.post('/post/upload',)
     } catch (error) {
