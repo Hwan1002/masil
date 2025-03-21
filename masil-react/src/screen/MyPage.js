@@ -9,7 +9,6 @@ import Modal from "../component/Modal";
 import useModal from "../context/useModal";
 import axios from "axios";
 import { api } from "../context/MasilContext";
-import LoadingModal from "../component/LoadingModal";
 
 const MyPage = () => {
   const navigate = useNavigate();
