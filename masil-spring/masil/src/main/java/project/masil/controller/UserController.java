@@ -39,8 +39,8 @@ public class UserController {
 	@GetMapping("/userInfo")
 	public ResponseEntity<?> getInfo(@AuthenticationPrincipal String userId) {
 		System.out.println(userId);
-		if(userId==null){
-			return ResponseEntity.status(401).build();
+		if(userId.isEmpty() || userId==null){
+			return ResponseEntity.ok(ResponseDTO.<String>builder().error("accessToken 누락").build());
 		}
 		ResponseDTO response = service.getInfo(userId);
 		return ResponseEntity.ok(response);
