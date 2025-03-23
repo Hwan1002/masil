@@ -72,3 +72,17 @@
     transition: background-color 0.3s ease;
 }
 
+.profilePhoto{
+  display: flex;
+  flex-direction: column;
+}
+
+.photoImg{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.profileChangeBtn{
+  margin-bottom: 5px;
+}
