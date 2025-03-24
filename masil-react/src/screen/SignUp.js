@@ -13,6 +13,8 @@ const SignUp = () => {
   //중복체크 & 이메일 인증 버튼 눌렀는지
   const [duplicateBtn, setDuplicateBtn] = useState(false);
   const [certifiedBtn, setCertifiedBtn] = useState(false);
+  //이메일 인증 완료 여부
+  const [isEmailVerified, setIsEmailVerified] = useState(false); 
   //비밀번호 확인  & 인증코드 상태 따로 관리
   const [pwdConfirm, setPwdConfirm] = useState("");
   const [verifyCode, setVerifyCode] = useState("");
@@ -216,12 +218,14 @@ const SignUp = () => {
       const response = await axios.post('http://localhost:9090/user/verify',{
       email:formData.email,verifyCode:verifyCode});
       if(response){
+        setIsEmailVerified(true);
         setCertifiedBtn(false);
         openModal({
           message:response.data.value
         })
       }
     } catch (error) {
+      setIsEmailVerified(false);
       setCertifiedBtn(true);
       openModal({
         message:error.response.data.error
@@ -325,7 +329,15 @@ const SignUp = () => {
         </div>
         <div className="signUp_button">
         {/* <button type="button" onClick={() => navigate("/")}>돌아가기</button> */}
+
+        {isEmailVerified  ? (
           <button type="submit">회원가입</button>
+        ) : (
+          <div>
+            <div>모든 칸을 입력하면 회원가입 버튼이 활성화됩니다.</div>
+            <div>※이메일 인증 필수</div>
+          </div>
+        )}
         </div>
       </form>
       <Modal
