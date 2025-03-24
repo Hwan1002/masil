@@ -76,6 +76,13 @@ const SignUp = () => {
       });
       return;
     }
+
+    if(isEmailVerified == false){
+      openModal({
+        message: "인증번호를 입력하지 않았습니다.",
+      });
+      return;
+    }
     try {
       const data = new FormData();
       if (profilePhoto) {
@@ -329,15 +336,7 @@ const SignUp = () => {
         </div>
         <div className="signUp_button">
         {/* <button type="button" onClick={() => navigate("/")}>돌아가기</button> */}
-
-        {isEmailVerified  ? (
           <button type="submit">회원가입</button>
-        ) : (
-          <div>
-            <div>모든 칸을 입력하면 회원가입 버튼이 활성화됩니다.</div>
-            <div>※이메일 인증 필수</div>
-          </div>
-        )}
         </div>
       </form>
       <Modal
