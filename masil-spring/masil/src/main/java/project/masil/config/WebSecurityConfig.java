@@ -26,6 +26,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 		.cors().configurationSource(corsConfigurationSource()) // CORS 설정 추가
 		.and()
 		.authorizeHttpRequests(authz -> authz.requestMatchers(
+				"/post",
 				"/user", // 회원가입, 중복 체크
 		        "/user/login",
 		        "/user/send-email",
