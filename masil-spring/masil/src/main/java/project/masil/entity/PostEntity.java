@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.annotation.CreatedDate;
+
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -31,6 +33,9 @@ public class PostEntity {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer postIdx; // 게시글 식별자 
 
+	@CreatedDate
+	private LocalDateTime registrationDate; // 등록날짜 
+	
 	private String postTitle; //게시글 제목
 
 	private Long postPrice; //게시글 제품 렌탈가격
@@ -45,6 +50,8 @@ public class PostEntity {
 	private LocalDateTime postEndDate; //제품 빌리는 끝 날짜,시간
 
 	private String description; //제품 설명
+	
+	
 
 	@ManyToOne
 	@JoinColumn(name = "userId" , nullable =false) 

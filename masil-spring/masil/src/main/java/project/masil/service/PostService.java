@@ -1,6 +1,8 @@
 package project.masil.service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,9 @@ public class PostService {
 	@Autowired 
 	private UserRepository userRepository;
 	
+
+	
+	// 게시글 업로드
 	public ResponseDTO<String> upload(String userId,PostDTO dto,List<MultipartFile> postPhotos) {
 		UserEntity user = userRepository.findByUserId(userId) ;
 		
@@ -38,6 +43,10 @@ public class PostService {
 	}
 	
 	
+	// 게시글 조회 
+	public List<PostDTO>  retrievePost() {	
+	    return postRepository.findAll().stream().map(this::toDTO).collect(Collectors.toList());
+	    }
 	
 	
 	// 게시글에 사진이 없는경우 예외처리내부클래스 
@@ -48,30 +57,32 @@ public class PostService {
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	// entity -> dto
 	public PostDTO toDTO(PostEntity entity) {
 	
-		return PostDTO.builder().postIdx(entity.getPostIdx()).postTitle(entity.getPostTitle()).postPrice(entity.getPostPrice())
-				.postPhotoPaths(entity.getPostPhotoPaths()).postStartDate(entity.getPostStartDate()).postEndDate(entity.getPostEndDate()).description(entity.getDescription())
+		return PostDTO.builder()
+				.postIdx(entity.getPostIdx())
+				.registrationDate(entity.getRegistrationDate())
+				.postTitle(entity.getPostTitle())
+				.postPrice(entity.getPostPrice())
+				.postPhotoPaths(entity.getPostPhotoPaths())
+				.postStartDate(entity.getPostStartDate())
+				.postEndDate(entity.getPostEndDate())
+				.description(entity.getDescription())
+				.userNickName(entity.getUser().getUserNickName())
 				.build();
 	}
 
 	// dto -> entity
 	public PostEntity toEntity(PostDTO dto) {
-		return PostEntity.builder().postIdx(dto.getPostIdx()).postTitle(dto.getPostTitle()).postPrice(dto.getPostPrice())
-				.postPhotoPaths(dto.getPostPhotoPaths()).postStartDate(dto.getPostStartDate()).postEndDate(dto.getPostEndDate()).description(dto.getDescription())
+		return PostEntity.builder()
+				.postIdx(dto.getPostIdx())
+				.postTitle(dto.getPostTitle())
+				.postPrice(dto.getPostPrice())
+				.postPhotoPaths(dto.getPostPhotoPaths())
+				.postStartDate(dto.getPostStartDate())
+				.postEndDate(dto.getPostEndDate())
+				.description(dto.getDescription())
 				.build();
 	}
 }

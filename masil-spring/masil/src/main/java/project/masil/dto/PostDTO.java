@@ -19,6 +19,7 @@ public class PostDTO {
 
 	private Integer postIdx; //게시물 식별자
 	
+	private LocalDateTime registrationDate; // 게시글 등록날짜 .
 	
 	private String postTitle; //게시글 제목
 
@@ -26,13 +27,12 @@ public class PostDTO {
 	
 	private List<String> postPhotoPaths ; // 게시글사진경로 . 
 
-
 	private LocalDateTime postStartDate; //제품 빌리는 시작 날짜,시간
 	
 	private LocalDateTime postEndDate; //제품 빌리는 끝 날짜,시간
 
 	private String description; //제품 설명
-	
-	private UserEntity user ; // 게시글 작성자 정보 
+		
+	private String userNickName ; // 유저닉네임 .
 
 }

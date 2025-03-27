@@ -28,19 +28,18 @@ public class UserEntity {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer idx; // 회원 식별자
 
+	@Column(unique = true)
 	private String userId; // 회원아이디
 
 	private String password; // 비밀번호
 
 	private String userName; // 이름
-
+	@Column(unique = true)
 	private String userNickName; // 유저닉네임 
 
 	private String email; // 이메일
 
 	private String profilePhotoPath; // 프로필사진 경로
-
-	private String changeProfilePhotoPath ;	//변경된 프로필사진경로
 	
 	private String location; // 위치설정
 
@@ -53,8 +52,8 @@ public class UserEntity {
 	@OneToMany(mappedBy = "user" , cascade = CascadeType.ALL)
 	private List<PostEntity> posts = new ArrayList<>(); // 게시글
 
-	private String lat ;
+	private Double lat ;
 	
-	private String lng ;
+	private Double lng ;
 	
 }
