@@ -40,6 +40,8 @@ public class UserEntity {
 
 	private String profilePhotoPath; // 프로필사진 경로
 
+	private String changeProfilePhotoPath ;	//변경된 프로필사진경로
+	
 	private String location; // 위치설정
 
 	private String authProvider; // 소셜로그인공급자

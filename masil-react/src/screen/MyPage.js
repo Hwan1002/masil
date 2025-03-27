@@ -8,6 +8,7 @@ import axios from 'axios';
 import LoadingModal from '../component/LoadingModal';
 import '../css/MyPage.css'
 import { Api } from '../context/MasilContext';
+import userDefault from "../css/img/userDefault.svg";
 const MyPage = () => {
 
   const [formData, setFormData] = useState({});
@@ -47,7 +48,7 @@ const MyPage = () => {
         console.error("사용자 정보를 불러오는 중 오류 발생:", error);
       }
     };
-    console.log("내토큰",accessToken)
+    console.log("내토큰", accessToken)
     if (accessToken) {
       getUserInfo();
     }
@@ -237,6 +238,23 @@ const MyPage = () => {
   };
 
 
+  // 프로필사진 기본이미지로 변경 :
+  const basicImage = (e) => {
+    e.preventDefault();
+    setFormData((prev) => ({
+      ...prev,
+      profilePhotoPath:'default',
+    }));
+    console.log(formData)
+      setImagePreview(userDefault);  // 미리보기 이미지 업데이트
+  }
+
+
+
+
+
+
+
   return (
     <div className='signup_form'>
       <h2>내 정보</h2>
@@ -254,6 +272,7 @@ const MyPage = () => {
               <div className="photoImgPlaceholder">프로필 사진 없음</div>  // 사진이 없을 때의 대체 이미지
             )}
             <button type="button" className='profileChangeBtn' onClick={handleProfileClick}>프로필 사진</button>
+            <button type="button" className='profileChangeBtn' onClick={basicImage}>기본이미지</button>
             <input
               name="profilePhoto"
               type="file"
