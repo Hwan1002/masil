@@ -131,19 +131,43 @@ const MyPage = () => {
     }
   };
 
+  // const putUserInfo = async () => {
+  //   const data = new FormData();
+
+  //   // 프로필 사진이 선택되었다면 FormData에 추가
+  //   if (imagePreview) {
+  //     data.append("profilePhoto", inputImgRef.current.files[0]);
+  //   }
+
+  //   // 다른 formData는 JSON 형태로 변환하여 'dto'에 담아 추가
+  //   data.append("dto", new Blob([JSON.stringify(formData)], { type: "application/json" }));
+
+  //   try {
+  //     const response = await Api.put(`/user/modify`, data,);
+
+  //     if (response.status === 200) {
+  //       openModal({
+  //         message: response.data.value,
+  //         actions: [{ label: "확인", onClick: () => navigate('/') }]
+  //       });
+  //     }
+  //   } catch (error) {
+  //     openModal({ message: "정보 수정에 실패했습니다. 다시 시도해주세요." });
+  //     console.error(error);
+  //   }
+  // };
+
   const putUserInfo = async () => {
     const data = new FormData();
 
-    // 프로필 사진이 선택되었다면 FormData에 추가
-    if (imagePreview) {
+    if (imagePreview && formData.profilePhotoPath !== "default") {
       data.append("profilePhoto", inputImgRef.current.files[0]);
     }
 
-    // 다른 formData는 JSON 형태로 변환하여 'dto'에 담아 추가
     data.append("dto", new Blob([JSON.stringify(formData)], { type: "application/json" }));
 
     try {
-      const response = await Api.put(`/user/modify`, data,);
+      const response = await Api.put(`/user/modify`, data);
 
       if (response.status === 200) {
         openModal({
@@ -218,40 +242,36 @@ const MyPage = () => {
   };
 
   // 프로필사진업로드
+
   const ImageUpload = (e) => {
     e.preventDefault();
     const file = e.target.files[0];
     if (file) {
-      // 선택한 파일을 formData에 추가
-      setFormData((prev) => ({
-        ...prev,
-        profile_Photo: file.name,  // 파일의 이름을 formData에 저장
-      }));
-
-      // 미리보기 이미지를 업데이트
+      // 새로 선택한 파일의 미리보기 업데이트
       const reader = new FileReader();
       reader.onload = () => {
         setImagePreview(reader.result);  // 미리보기 이미지 업데이트
       };
       reader.readAsDataURL(file);
+
+      // 선택한 파일을 formData에 추가
+      setFormData((prev) => ({
+        ...prev,
+        profilePhotoPath: file.name,  // 서버로 보낼 파일명 저장
+      }));
     }
   };
 
 
-  // 프로필사진 기본이미지로 변경 :
+  // 프로필사진 기본이미지로 변경
   const basicImage = (e) => {
     e.preventDefault();
     setFormData((prev) => ({
       ...prev,
-      profilePhotoPath:'default',
+      profilePhotoPath: 'default',  // 기본 이미지로 변경
     }));
-    console.log(formData)
-      setImagePreview(userDefault);  // 미리보기 이미지 업데이트
-  }
-
-
-
-
+    setImagePreview(userDefault);  // 기본 이미지 파일 경로로 설정
+  };
 
 
 
@@ -261,16 +281,22 @@ const MyPage = () => {
       <form>
         <div className='form_input'>
           <div className='profilePhoto'>
-            {imagePreview || formData.profilePhotoPath ? (
-              <div className='photoImg'>
+            {imagePreview && formData.profilePhotoPath !== "default" ? (
+              <div className="photoImg">
                 <img
                   src={imagePreview ? imagePreview : `http://localhost:9090${formData.profilePhotoPath}`}
-                  alt="image"
+                  alt="프로필 사진"
                 />
               </div>
             ) : (
-              <div className="photoImgPlaceholder">프로필 사진 없음</div>  // 사진이 없을 때의 대체 이미지
+              <div className="photoImg">
+                <img src={userDefault} alt="기본 프로필 사진" />  {/* 기본 이미지로 userDefault 사용 */}
+              </div>
             )}
+
+
+
+
             <button type="button" className='profileChangeBtn' onClick={handleProfileClick}>프로필 사진</button>
             <button type="button" className='profileChangeBtn' onClick={basicImage}>기본이미지</button>
             <input
