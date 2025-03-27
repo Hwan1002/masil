@@ -1,14 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { ProjectContext } from '../context/MasilContext';
 import '../css/PostRegist.css';
 import camera from '../css/img/photo/camera.png';
 import DatePicker from "../component/DatePicker";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { Api } from "../context/MasilContext";
+import axios from "axios";
 
 const PostRegist = () => {
   const navigate = useNavigate();
+  const { accessToken } = useContext(ProjectContext);
+  const [title, setTitle] = useState(''); // 제목 상태 초기화
   const [price, setPrice] = useState(""); // 가격 상태 초기화
+  const [description, setDescription] = useState(''); // 설명 상태 초기화
   const [errorMessage, setErrorMessage] = useState(""); // 에러 메시지 상태 추가
   const [selectedImages, setSelectedImages] = useState([]); // 여러 이미지를 저장하는 배열
 
@@ -16,24 +20,43 @@ const PostRegist = () => {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
 
-  const handleSubmit = async(e) => {
-    e.preventDefault();  // 기본 폼 제출을 방지
-    // 여기에 폼 제출 후 처리 로직 추가
-    // console.log("대여 시작 시간:", startDate);
-    // console.log("대여 종료 시간:", endDate);
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // 기본 폼 제출 방지
+  
+    const formData = new FormData();
+  
+    // DTO 데이터를 FormData에 추가 (JSON 문자열로 변환)
+    formData.append('dto', new Blob([JSON.stringify({
+      postTitle: title,
+      postPrice: price,
+      postStartDate: startDate.toISOString(),
+      postEndDate: endDate.toISOString(),
+      description: description
+    })], { type: "application/json" }));
+  
+    // 선택된 파일들을 FormData에 추가 (Blob으로 변환)
+    selectedImages.forEach((file) => {
+      const blob = new Blob([file], { type: file.type }); // 파일을 Blob으로 변환
+      formData.append('postPhoto', blob, file.name); // 'postPhoto'라는 이름으로 파일을 Blob으로 추가
+    });
+  
     try {
-      const data = new FormData();
-      if (selectedImages) {
-        data.append("postPhoto", selectedImages ,{ type: "application/json" });
-      }
-      const response = await Api.post('/post/upload',)
+      const response = await Api.post('/post/upload', formData, {
+        // 'Content-Type'은 FormData를 사용할 때 자동으로 설정되므로 명시적으로 설정할 필요 없음
+      });
+  
+      console.log('파일 업로드 성공:', response.data);
+      navigate('/rentalitem'); // 성공 시 다른 페이지로 이동
     } catch (error) {
-      
+      console.error('파일 업로드 실패:', error);
+      setErrorMessage("파일 업로드에 실패했습니다.");
     }
   };
   
+  
+  
 
-  //가격 인풋창 변경상태
+  // 가격 인풋창 변경 상태
   const handleChange = (e) => {
     const value = e.target.value;
 
@@ -47,29 +70,24 @@ const PostRegist = () => {
   };
 
   const handleFileChange = (e) => {
-    // e.target.files -> 사용자가 선택한 파일목록을 가져옴옴
-    // Array.from(e.target.files) -> FileList 객체를 배열(Array)로 변환
-    // 배열로 반환해야 .map() 사용할때 파일을 쉽게 처리할 수 있음
     const files = Array.from(e.target.files);
-
-    //selectedImages (이미 선택된 이미지 개수) + 새로 선택한 files 개수 가 5가 안넘는지 확인
-    //5를 초과하면 경고메시지 띄움
-    //return을 사용하여 함수 실행을 중단 / 실행을 중단하지 않으면 추가등록을 할 수 있는걸 사전에 방지함함
+  
+    // selectedImages (이미 선택된 이미지 개수) + 새로 선택한 files 개수가 5가 안 넘는지 확인
     if (selectedImages.length + files.length > 4) {
       alert("최대 4개의 사진만 등록할 수 있습니다.");
       return;
     }
-
-    //files.map((file) => URL.createObjectURL(file)); 각 파일을 브라우저에서 미리볼 수 있도록 URL 생성성
+  
+    // 미리보기용 URL로 변환 (서버로 전송하는 것은 파일 객체)
     const imageUrls = files.map((file) => URL.createObjectURL(file));
-
-
-    setSelectedImages((prevImages) => [...prevImages, ...imageUrls]);
-
+  
+    // 선택된 이미지들을 상태에 추가 (URL이 아니라 실제 파일 객체만 저장)
+    setSelectedImages((prevImages) => [...prevImages, ...files]);
+  
     // 파일 선택 창 초기화 방지
     e.target.value = "";
   };
-
+  
 
   const triggerFileInput = () => {
     document.getElementById("fileInput").click(); // 버튼 클릭 시 파일 선택창 열기
@@ -80,33 +98,30 @@ const PostRegist = () => {
     const isConfirmed = window.confirm("선택한 사진을 삭제하시겠습니까?");
     
     if (!isConfirmed) {
-      console.log("삭제 취소됨"); // 디버깅용 로그
       return; // 취소 시 함수 종료
     }
   
-    console.log("삭제 진행"); // 디버깅용 로그
     setSelectedImages((prevImages) => prevImages.filter((_, index) => index !== indexToRemove));
   };
-  
-  
-  
 
+  const handleTitleChange = (e) => {
+    setTitle(e.target.value);
+  };
+
+  const handleDescriptionChange = (e) => {
+    setDescription(e.target.value);
+  };
 
   return (
     <div className="postRegist">
       <h2>게시물 등록</h2>
-
-      <form onSubmit={(e)=>handleSubmit(e)}>
+      <form onSubmit={(e) => handleSubmit(e)}>
         <div className="formDiv">
           <label>사진({selectedImages.length}/4)</label>
-          <div className="photoContainer"> {/* 추가된 div */}
-            <button
-             type="button"
-              className="registPhoto"
-              onClick={triggerFileInput}
-            >
+          <div className="photoContainer">
+            <button type="button" className="registPhoto" onClick={triggerFileInput}>
               <img src={camera} alt="사진 등록" />
-            </button> 
+            </button>
             <input
               id="fileInput"
               name="profilePhoto"
@@ -114,23 +129,22 @@ const PostRegist = () => {
               accept="image/*"
               multiple
               style={{ display: "none" }}
-              onChange={handleFileChange}
+              onChange={handleFileChange} // 파일 선택 시 호출
             />
 
             {/* 선택된 여러 이미지 미리보기 */}
             <div className="imagePreviewContainer">
               {selectedImages.map((image, index) => (
                 <div key={index} className="imageWrapper">
-                  <img src={image} alt={`선택된 이미지 ${index + 1}`} className="previewImage" />
+                  <img src={URL.createObjectURL(image)} alt={`선택된 이미지 ${index + 1}`} className="previewImage" />
                   <button className="deleteButton" onClick={() => handleRemoveImage(index)}>✖</button>
                 </div>
               ))}
             </div>
-
           </div>
 
           <label>제목</label>
-          <input name="postTitle" type="text" placeholder="게시물 제목" maxlength="40" onChange={handleChange}/>
+          <input name="postTitle" type="text" placeholder="게시물 제목" maxLength="40" onChange={handleTitleChange} />
           <label>가격</label>
           <input
             name="postPrice"
@@ -138,9 +152,8 @@ const PostRegist = () => {
             placeholder="가격 입력"
             onChange={handleChange}
             value={price}
-            maxlength="12"
+            maxLength="12"
           />
-          {/* 에러 메시지 표시 */}
           {errorMessage && <div className="registerror">{errorMessage}</div>}
         </div>
         <div className="formDiv">
@@ -148,12 +161,17 @@ const PostRegist = () => {
         </div>
         <div className="formDiv">
           <label>설명</label>
-          <textarea className="registdescription" name="description" placeholder="등록할 물건의 설명을 작성해주세요." onChange={handleChange} />
+          <textarea
+            className="registdescription"
+            name="description"
+            placeholder="등록할 물건의 설명을 작성해주세요."
+            onChange={handleDescriptionChange}
+          />
         </div>
-      <div className="registnavigate">
-        <button onClick={() => navigate('/rentalitem')}>뒤로가기</button>
-        <button type="submit">등록하기</button>
-      </div>
+        <div className="registnavigate">
+          <button onClick={() => navigate('/rentalitem')}>뒤로가기</button>
+          <button type="submit">등록하기</button>
+        </div>
       </form>
     </div>
   );
