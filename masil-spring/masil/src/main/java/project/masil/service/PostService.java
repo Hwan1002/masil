@@ -1,6 +1,5 @@
 package project.masil.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -8,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.transaction.Transactional;
 import project.masil.common.FileUploadUtil;
 import project.masil.dto.PostDTO;
 import project.masil.dto.ResponseDTO;
@@ -23,6 +23,7 @@ public class PostService {
 	
 	@Autowired 
 	private UserRepository userRepository;
+	
 	
 
 	
@@ -47,6 +48,36 @@ public class PostService {
 	public List<PostDTO>  retrievePost() {	
 	    return postRepository.findAll().stream().map(this::toDTO).collect(Collectors.toList());
 	    }
+	
+	
+	// 게시글 수정
+	@Transactional
+	public ResponseDTO<String> modify(String userId,PostDTO dto,List<MultipartFile> postPhotos) {
+		
+		PostEntity post = postRepository.findByPostIdx(dto.getPostIdx()) ;		
+		
+		if( postPhotos ==null || postPhotos.isEmpty() ) {
+			// 첨부된 사진이없을경우 아무작업도 수행하지않음 . (기존의 사진을 그대로 사용 )
+		}else {
+		String uploadDir = System.getProperty("user.dir") + "/uploads";
+		dto.setPostPhotoPaths(FileUploadUtil.saveFiles(postPhotos, uploadDir, "postPhoto"));
+		}
+		
+		if(!dto.getPostPhotoPaths().equals(post.getPostPhotoPaths())) {
+			FileUploadUtil.deleteFiles(post.getPostPhotoPaths()) ;
+		}
+		
+		post.setPostPhotoPaths(dto.getPostPhotoPaths());
+		post.setPostTitle(dto.getPostTitle());
+		post.setDescription(dto.getDescription());
+		post.setPostPrice(dto.getPostPrice());
+		post.setPostStartDate(dto.getPostStartDate());
+		post.setPostEndDate(dto.getPostEndDate());
+		postRepository.save(post);
+		return ResponseDTO.<String>builder().status(201).value("게시물이 수정되었습니다 .").build();
+	}
+	
+	
 	
 	
 	// 게시글에 사진이 없는경우 예외처리내부클래스 

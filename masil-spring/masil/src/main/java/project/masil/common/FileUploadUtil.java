@@ -72,4 +72,16 @@ public class FileUploadUtil {
 			}
 		}
 	}
+	
+	public static void deleteFiles(List<String> filePaths) {
+		
+		for(String filePath : filePaths) {
+			deleteFile(filePath);
+		}
+		
+		
+		
+	}
+	
+	
 }

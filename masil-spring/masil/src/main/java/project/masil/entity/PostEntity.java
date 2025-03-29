@@ -5,11 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -27,6 +30,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @Table(name = "boards")
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class PostEntity {
 	
 	@Id
@@ -50,6 +54,9 @@ public class PostEntity {
 	private LocalDateTime postEndDate; //제품 빌리는 끝 날짜,시간
 
 	private String description; //제품 설명
+	
+	@LastModifiedDate
+	private LocalDateTime updateDate; // 수정날짜 .
 	
 	
 
