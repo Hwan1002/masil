@@ -26,6 +26,22 @@ public class PostController {
 	@Autowired
 	private PostService service;
 	
+	
+	// 전체 게시물 조회 
+	@GetMapping
+	public ResponseEntity<?> postRetrieve(){
+		return ResponseEntity.ok(service.retrievePost());
+	}
+	
+	// 특정 게시물 조회
+	@GetMapping("/item/{postIdx}")
+	public ResponseEntity<?> getPostDetail(@PathVariable("postIdx") Integer postIdx) {
+		
+		PostDTO response = service.postDetail(postIdx) ;
+		return ResponseEntity.ok(response) ;
+	}
+	
+	// 게시물 업로드 
 	@PostMapping(value ="/upload", consumes = { "multipart/form-data" })
 	public ResponseEntity<?> postUpload(@AuthenticationPrincipal String userId ,
 										@RequestPart(value = "dto") PostDTO dto , 
@@ -34,13 +50,8 @@ public class PostController {
 		 return ResponseEntity.ok(response);
 	}
 	
-	@GetMapping
-	public ResponseEntity<?> postRetrieve(){
-		return ResponseEntity.ok(service.retrievePost());
-	}
 	
-	
-	
+	// 게시물 수정
 	@PutMapping(value ="/modify" , consumes = {"multipart/form-data"})
 	public  ResponseEntity<?> modifyPost(@AuthenticationPrincipal String userId, 
 										@RequestPart(value = "dto") PostDTO dto , 
@@ -52,14 +63,7 @@ public class PostController {
 	}
 	
 	
-	@GetMapping("/item/{postIdx}")
-	public ResponseEntity<?> getPostDetail(@PathVariable("postIdx") Integer postIdx) {
-		
-		PostDTO response = service.postDetail(postIdx) ;
-		return ResponseEntity.ok(response) ;
-	}
-	
-	
+	// 게시물 삭제 
 	@DeleteMapping("/{postIdx}")
 	public ResponseEntity<?> deletePost(@AuthenticationPrincipal String userId ,@PathVariable("postIdx") Integer postIdx) {
 		return ResponseEntity.ok(service.deletePost(postIdx));

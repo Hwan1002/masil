@@ -1,0 +1,192 @@
+
+1. 전체 게시물 조회
+요청URL : localhost:9090/post
+
+Method: GET
+
+Request Parameters: 없음
+
+Response:
+
+Status Code: 200 OK
+
+Body: List<PostDTO> (게시물 목록)
+
+최신순으로 뿌리는것을 추천 (registrationDate (등록날짜) 속성을 이용하는방법이 있을거같음 ) 
+
+요청 예시 : axios.get(localhost:9090/post)
+
+응답 예시 :  (게시물이 2개일경우 .) 
+    {
+        "postIdx": 152,
+        "registrationDate": "2025-04-01T01:38:11.741788",
+        "updateDate": "2025-04-01T01:38:11.741788",
+        "postTitle": "test1",
+        "postPrice": 200000,
+        "postPhotoPaths": [
+            "/uploads/postPhoto/1743439091696_test1.jpg",
+            "/uploads/postPhoto/1743439091700_test2.jpg",
+            "/uploads/postPhoto/1743439091701_test3.jpg"
+        ],
+        "postStartDate": "2025-03-31T16:37:48.444",
+        "postEndDate": "2025-03-31T16:37:48.444",
+        "description": "test1",
+        "userNickName": "123"
+    },
+    {
+        "postIdx": 153,
+        "registrationDate": "2025-04-01T01:52:21.864148",
+        "updateDate": "2025-04-01T01:52:21.864148",
+        "postTitle": "test2",
+        "postPrice": 200000,
+        "postPhotoPaths": [
+            "/uploads/postPhoto/1743439941860_test3.jpg"
+        ],
+        "postStartDate": "2025-03-31T16:42:48.682",
+        "postEndDate": "2025-03-31T16:42:48.682",
+        "description": "test2",
+        "userNickName": "123"
+    }
+
+
+2. 특정 게시물 조회
+요청URL : localhost:9090/post/item/{postIdx}
+
+Method: GET
+
+Path Variables : postIdx (Integer): 조회하려는 게시물의 Idx (전체 게시물에서 특정게시물을 선택했을경우 .)
+
+Response:
+
+Status Code: 200 OK
+
+Body: PostDTO (게시물 상세 정보)
+
+요청 예시 :  axios.get(`http://localhost:9090/post/item/${postIdx}`)
+
+응답 예시 : 
+{
+    "postIdx": 152,
+    "registrationDate": "2025-04-01T01:38:11.741788",
+    "updateDate": "2025-04-01T01:38:11.741788",
+    "postTitle": "test1",
+    "postPrice": 200000,
+    "postPhotoPaths": [
+        "/uploads/postPhoto/1743439091696_test1.jpg",
+        "/uploads/postPhoto/1743439091700_test2.jpg",
+        "/uploads/postPhoto/1743439091701_test3.jpg"
+    ],
+    "postStartDate": "2025-03-31T16:37:48.444",
+    "postEndDate": "2025-03-31T16:37:48.444",
+    "description": "test1",
+    "userNickName": "123"
+}
+
+
+
+
+3. 게시물 업로드
+요청URL : localhost:9090/post/upload
+
+Method: POST
+
+
+Request Headers:  AccessToken (로그인사용자는  만들어놓은 axios인스턴스 (변수명 : Api ) 를 사용하여 요청을보내면 헤더에 포함됨 .)
+
+Request Body (Multipart): dto (PostDTO): 게시물 정보(사진파일을 제외한 문자열) , postPhoto (List<MultipartFile>): 게시물 사진 파일들
+
+Consumes: multipart/form-data
+
+Response:
+
+Status Code: 200 OK
+
+Body: ResponseDTO<String> (업로드 성공 메시지)
+
+요청 예시 : 
+api.post(/post/upload , formData{
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+
+Form Data :
+- dto:
+    {
+        "postTitle": "수정테스트 .",
+        "postPrice": 120000,
+        "postStartDate": "2025-03-27T19:13:00",
+        "postEndDate": "2025-03-27T19:22:00",
+        "description": "수정테스트",
+        "userNickName": "123"
+    }
+- postPhoto :(file1.jpg , file2.jpg) // 사진 필수파라미터 .
+
+응답 예시 : 
+성공시 
+{
+    "status": 201,
+    "data": null,
+    "value": "게시물이 등록되었습니다.",
+    "error": null,
+    "accessToken": null
+}
+
+실패시
+{
+    "status": 400,
+    "data": null,
+    "value": null,
+    "error":  "사진을 등록해주세요" ,
+    "accessToken": null
+}
+
+
+4. 게시물 수정 ( 이부분은 시나리오가 많아서 좀 길어질거같음 다른파일에 시나리오별 요청 예시 / 응답예시 적어놓겠음 .)
+요청 URL: localhost:8080/post/modify
+
+Method: PUT
+
+Request Headers :  AccessToken (로그인사용자는  만들어놓은 axios인스턴스 (변수명 : Api ) 를 사용하여 요청을보내면 헤더에 포함됨 .)
+
+Request Body (Multipart): dto (PostDTO): 수정할 게시물 정보 (사진파일을 제외한 문자열) , postPhoto (List<MultipartFile>):  수정된 사진 파일들
+
+Consumes: multipart/form-data
+
+Response:
+
+Status Code: 200 OK
+
+Body: ResponseDTO<String> (수정 성공 메시지)
+
+
+5. 게시물 삭제
+URL: localhost:9090/post/{postIdx}
+
+Method: DELETE
+
+Path Variables:  postIdx (Integer): 삭제하려는 게시물의 Idx (전체 게시물에서 특정게시물을 선택후에 삭제버튼을 눌렀을경우  .)
+
+Request Headers: AccessToken (로그인사용자는  만들어놓은 axios인스턴스 (변수명 : Api ) 를 사용하여 요청을보내면 헤더에 포함됨 .)
+
+Response:
+
+Status Code: 200 OK
+
+Body: 성공 메시지 또는 삭제 결과
+
+요청 예시 : 
+Api.delete(`/post/${postIdx}`)
+
+응답 예시 : 
+{
+    "status": 200,
+    "data": null,
+    "value": "게시글이 성공적으로 삭제되었습니다.",
+    "error": null,
+    "accessToken": null
+}
+
+
+
+
