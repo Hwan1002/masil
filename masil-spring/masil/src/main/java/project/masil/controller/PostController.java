@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,8 +52,18 @@ public class PostController {
 	}
 	
 	
+	@GetMapping("/item/{postIdx}")
+	public ResponseEntity<?> getPostDetail(@PathVariable("postIdx") Integer postIdx) {
+		
+		PostDTO response = service.postDetail(postIdx) ;
+		return ResponseEntity.ok(response) ;
+	}
 	
 	
+	@DeleteMapping("/{postIdx}")
+	public ResponseEntity<?> deletePost(@AuthenticationPrincipal String userId ,@PathVariable("postIdx") Integer postIdx) {
+		return ResponseEntity.ok(service.deletePost(postIdx));
+	}
 	
 	
 	

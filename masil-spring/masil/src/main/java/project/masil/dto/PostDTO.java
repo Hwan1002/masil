@@ -21,6 +21,8 @@ public class PostDTO {
 	
 	private LocalDateTime registrationDate; // 게시글 등록날짜 .
 	
+	private LocalDateTime updateDate ; // 게시글 수정날짜 .
+	
 	private String postTitle; //게시글 제목
 
 	private Long postPrice; //게시글 제품 렌탈가격

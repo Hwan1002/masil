@@ -70,8 +70,8 @@ public class GlobalExceptionHandler {
 	
 	//  notExistPhotoException 게시글 사진이 존재하지않을때의 예외처리
 	
-	@ExceptionHandler(PostService.notExistPhotoException.class)
-	public ResponseEntity<ResponseDTO<String>> notExistPhotoException(PostService.notExistPhotoException ex) {
+	@ExceptionHandler(PostService.NotExistPhotoException.class)
+	public ResponseEntity<ResponseDTO<String>> notExistPhotoException(PostService.NotExistPhotoException ex) {
 		ResponseDTO<String> response = ResponseDTO.<String>builder().status(HttpStatus.BAD_REQUEST.value()) 
 				.error(ex.getMessage()).build();
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);

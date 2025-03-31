@@ -27,6 +27,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 		.and()
 		.authorizeHttpRequests(authz -> authz.requestMatchers(
 				"/post",
+				"/post/item/**",
 				"/user", // 회원가입, 중복 체크
 		        "/user/login",
 		        "/user/send-email",
