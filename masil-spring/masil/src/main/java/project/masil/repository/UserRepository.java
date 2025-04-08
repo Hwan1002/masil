@@ -12,11 +12,10 @@ public interface UserRepository  extends JpaRepository<UserEntity,Integer >{
 
 	Boolean existsByEmail(String email);
 	
-<<<<<<< Updated upstream
+
 //	Boolean existsByEmailSocialUser(String email) ;
-=======
-//	Boolean existByEmailSocialUser(String email) ; 
->>>>>>> Stashed changes
+
+
 
 	
 	Boolean existsByUserId(String userId);
