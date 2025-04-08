@@ -5,10 +5,20 @@ import camera from '../css/img/photo/camera.png';
 import DatePicker from "../component/DatePicker";
 import { useNavigate } from "react-router-dom";
 import { Api } from "../context/MasilContext";
+import useModal from '../context/useModal';
+import Modal from '../component/Modal';
 import axios from "axios";
 
 const PostRegist = () => {
   const navigate = useNavigate();
+  const {
+    isModalOpen,
+    modalTitle,
+    modalMessage,
+    modalActions,
+    openModal,
+    closeModal,
+  } = useModal();
   const { accessToken } = useContext(ProjectContext);
   const [title, setTitle] = useState(''); // 제목 상태 초기화
   const [price, setPrice] = useState(""); // 가격 상태 초기화
@@ -20,6 +30,7 @@ const PostRegist = () => {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
 
+  // 등록하기
   const handleSubmit = async (e) => {
     e.preventDefault(); // 기본 폼 제출 방지
   
@@ -46,9 +57,23 @@ const PostRegist = () => {
       });
   
       console.log('파일 업로드 성공:', response.data);
-      navigate('/rentalitem'); // 성공 시 다른 페이지로 이동
+      openModal({
+        title: `게시글 등록`,
+        message: `게시글이 등록되었습니다.`,
+        actions: [{
+          label: "확인", onClick: () => {
+            // closeModal(); window.location.assign("/rentalitem");
+            window.location.reload();
+          }
+        }]
+      });
+      // navigate('/rentalitem'); // 성공 시 다른 페이지로 이동
     } catch (error) {
       console.error('파일 업로드 실패:', error);
+      openModal({
+        title: `경고`,
+        message: error.response.data.error,
+      });
       setErrorMessage("파일 업로드에 실패했습니다.");
     }
   };
@@ -115,6 +140,7 @@ const PostRegist = () => {
   return (
     <div className="postRegist">
       <h2>게시물 등록</h2>
+      {errorMessage && <div className="registerror">{errorMessage}</div>}
       <form onSubmit={(e) => handleSubmit(e)}>
         <div className="formDiv">
           <label>사진({selectedImages.length}/4)</label>
@@ -154,7 +180,6 @@ const PostRegist = () => {
             value={price}
             maxLength="12"
           />
-          {errorMessage && <div className="registerror">{errorMessage}</div>}
         </div>
         <div className="formDiv">
           <DatePicker />
@@ -173,6 +198,13 @@ const PostRegist = () => {
           <button type="submit">등록하기</button>
         </div>
       </form>
+      <Modal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        title={modalTitle}
+        content={modalMessage}
+        actions={modalActions}
+      />
     </div>
   );
 };
