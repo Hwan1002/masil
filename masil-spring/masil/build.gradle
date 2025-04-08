@@ -24,6 +24,8 @@ repositories {
 }
 
 dependencies {
+
+
    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
    implementation 'org.springframework.boot:spring-boot-starter-security'
    implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -37,6 +39,10 @@ dependencies {
    
    //JavaMailSender 사용을 위한 의존성 추가
    implementation 'org.springframework.boot:spring-boot-starter-mail'
+   
+   // OAUth2 의존성 추가 
+   implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+   
    
    // Apache Commons Validator 라이브러리 이메일 형식 검증을위해 추가 (프론트에서 정규식 사용예정)
    //implementation 'commons-validator:commons-validator:1.9.0'

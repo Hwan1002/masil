@@ -11,6 +11,7 @@ import { Api } from '../context/MasilContext';
 import userDefault from "../css/img/userDefault.svg";
 const MyPage = () => {
 
+
   const [formData, setFormData] = useState({});
   const { imagePreview, setImagePreview, accessToken } = useContext(ProjectContext);
   const [isVerified, setIsVerified] = useState(false); // 인증 상태: 이메일 인증 완료 여부
@@ -53,6 +54,7 @@ const MyPage = () => {
       getUserInfo();
     }
   }, [accessToken]);
+
 
 
   //이메일 인증번호 전송 요청

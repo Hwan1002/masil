@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -17,6 +18,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import jakarta.servlet.http.HttpServletResponse;
 import project.masil.security.JwtAuthenticationFilter;
 
+@EnableWebSecurity
 @Configuration
 public class WebSecurityConfig implements WebMvcConfigurer {
 
@@ -38,10 +40,15 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 				"/auth/refresh-token",
 				"/uploads/**",
 				"/default/**"
-				,"/error" // 에러페이지 및 공통경로 
+				,"/error" // 에러페이지 및 공통경로
+				,"/oauth2/**" // 소셜로그인 엔드포인트 허용
 						).permitAll() // 비로그인 유저서비스 , 사진폴더접근 , 정적 리소스 접근 허용
 				.anyRequest().authenticated()// 나머지 요청은 인증 필요
-				)
+			)
+        	.oauth2Login(oauth2 -> oauth2
+                .defaultSuccessUrl("http://localhost:3000") // 로그인 성공 시 리다이렉트 경로
+                .failureUrl("http://localhost:3000/login")       // 로그인 실패 시 리다이렉트 경로
+            )
 				.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class); // JWT 필터등록 
 		
 		
@@ -55,6 +62,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 		CorsConfiguration configuration = new CorsConfiguration();
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		configuration.addAllowedOrigin("http://localhost:3000"); // React 개발 서버 Origin 허용
+		configuration.addAllowedOrigin("https://accounts.google.com"); // Google OAuth Origin허용 
 		configuration.addAllowedMethod("*"); // 모든 HTTP 메서드 허용 (GET, POST, PUT, DELETE 등)
 		configuration.addAllowedHeader("*"); // 모든 헤더 허용
 		configuration.setAllowCredentials(true); // 쿠키 및 인증 정보 허용

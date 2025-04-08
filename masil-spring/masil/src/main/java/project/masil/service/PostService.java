@@ -78,8 +78,8 @@ public class PostService {
 		// 기존삭제 삭제처리 , (dto경로와 현재경로가 다를때)
 		//dto.getPostPhotoPath() 와 post.getPostPhotoPaths() 가 다른경우 == 원래있던사진1,2,3중에서 하나 혹은 두개의 사진이 삭제된것이다 .(삭제된사진은 서버디렉토리에서도 삭제해야한다 .)
 		if(!currentPaths.equals(dtoPaths)) {
-			List<String> pathsToDelete = new ArrayList<>(currentPaths) ;
-			pathsToDelete.removeAll(dtoPaths);
+			List<String> pathsToDelete = new ArrayList<>(currentPaths) ;// 123
+			pathsToDelete.removeAll(dtoPaths);							//dtoPaths = 312
 			FileUploadUtil.deleteFiles(pathsToDelete) ;
 			currentPaths = new ArrayList<>(dtoPaths);	
 		}
