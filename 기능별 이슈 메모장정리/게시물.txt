@@ -1,5 +1,5 @@
 게시물 entity 속성 
-게시글 idx , 제목 postTitle , 가격 postPrice , PostStartDate , postEndDate , description
+게시글 idx , 제목 postTitle , 가격 postPrice , PostStartDate , postEndDate , description, postPhotoPath[] ,updateDate, 
 
 게시물속 사진 여러장받기 (최대 5장)
 
@@ -157,6 +157,10 @@ email이중복인지 , 이미 소셜로그인으로 가입되어있는것인지 
 
 controller 혹은 successHandler에있는 로직 수정필요 .(response객체에 쿠키를 포함시키는 로직과같은부분들은 비즈니스로직에서 제해야함 .) 
 
+refreshToken을 responseDTO객체에  필드로 작성, 응답에 쿠키를 추가해주고 responseDTO.refreshToken.set(null) 로 변경 ,.
 
+
+
+게시물/ 프로필사진 절대경로 배포시 도메인주소로 변경필요함  
 
 

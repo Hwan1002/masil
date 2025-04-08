@@ -17,7 +17,8 @@ Body: List<PostDTO> (게시물 목록)
 요청 예시 : axios.get(localhost:9090/post)
 
 응답 예시 :  (게시물이 2개일경우 .) 
-    {
+    [
+	{
         "postIdx": 152,
         "registrationDate": "2025-04-01T01:38:11.741788",
         "updateDate": "2025-04-01T01:38:11.741788",
@@ -47,6 +48,8 @@ Body: List<PostDTO> (게시물 목록)
         "description": "test2",
         "userNickName": "123"
     }
+	
+]
 
 
 2. 특정 게시물 조회
