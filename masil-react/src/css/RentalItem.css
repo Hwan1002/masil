@@ -1,6 +1,15 @@
+
+.rentalItem-container{
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+
 /* 전체 페이지 컨테이너 */
 .page-container {
-    display: flex; 
+    display: flex;
+    flex: 1;
     gap: 16px; 
     margin: 16px;
   }
@@ -8,16 +17,24 @@
   /* 필터 섹션 */
   .filter-section {
     width: 20%;
+    display: flex;
+    flex-direction: column;
+    flex: 0.1;
     background-color: #f9f9f9; 
     padding: 16px; 
     border-radius: 8px; 
     border: 1px solid #ddd; 
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
   }
+
+  .filter-section2{
+    display: flex;
+  }
   
   /* 필터 옵션 */
   .filter-options label {
-    display: block;
+    display: flex;
+    flex: 1;
     margin-bottom: 8px;
     font-size: 14px;
     color: #333;

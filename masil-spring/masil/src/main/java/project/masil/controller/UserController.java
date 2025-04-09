@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import project.masil.dto.ResponseDTO;
 import project.masil.dto.UserDTO;
@@ -60,7 +61,18 @@ public class UserController {
 	@PostMapping("/login")
 	public ResponseEntity<?> signin(@RequestBody UserDTO dto, HttpServletResponse response) {
 
-		return ResponseEntity.ok(service.signin(dto, response));
+		
+		ResponseDTO<String> responseData = service.signin(dto);
+		
+		// 쿠키 객체생성
+		Cookie refreshCookie = new Cookie("refreshToken", responseData.getValue());
+		refreshCookie.setHttpOnly(true); // HttpOnly 설정
+		refreshCookie.setSecure(false); // HTTPS에서만 전송 (배포 환경에서 필수 true로 변환해주기)
+		refreshCookie.setPath("/"); // 쿠키의 경로 설정 (루트 경로)
+		refreshCookie.setMaxAge(7 * 24 * 60 * 60); // 유효기간: 7일
+		
+		responseData.setValue("환영합니다.");		
+		return ResponseEntity.ok(responseData);
 	}
 
 	// 로그아웃 메서드 

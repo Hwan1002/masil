@@ -87,17 +87,8 @@ public class UserService {
     		user.setRefreshToken(refreshToken);
     		userRepository.save(user); // DB에 RefreshToken 업데이트
 
-    		// 쿠키 객체생성
-    		Cookie refreshCookie = new Cookie("refreshToken", refreshToken);
-    		refreshCookie.setHttpOnly(true); // HttpOnly 설정
-    		refreshCookie.setSecure(false); // HTTPS에서만 전송 (배포 환경에서 필수 true로 변환해주기)
-    		refreshCookie.setPath("/"); // 쿠키의 경로 설정 (루트 경로)
-    		refreshCookie.setMaxAge(7 * 24 * 60 * 60); // 유효기간: 7일
 
-    		//
-
-    		response.addCookie(refreshCookie); // 응답에 쿠키 추가
-            return ResponseDTO.<String>builder().status(200).value("환영합니다").accessToken(accessToken).build(); 
+            return ResponseDTO.<String>builder().status(200).value(refreshToken).accessToken(accessToken).build(); 
         }else {
         	// 1-3 엔티티가 존재하지 않는경우 회원가입및 로그인로직 .
         	
@@ -115,15 +106,8 @@ public class UserService {
     		user.setRefreshToken(refreshToken);
     		userRepository.save(user); // DB에 RefreshToken 업데이트
 
-    		// 쿠키 객체생성
-    		Cookie refreshCookie = new Cookie("refreshToken", refreshToken);
-    		refreshCookie.setHttpOnly(true); // HttpOnly 설정
-    		refreshCookie.setSecure(false); // HTTPS에서만 전송 (배포 환경에서 필수 true로 변환해주기)
-    		refreshCookie.setPath("/"); // 쿠키의 경로 설정 (루트 경로)
-    		refreshCookie.setMaxAge(7 * 24 * 60 * 60); // 유효기간: 7일
-    		response.addCookie(refreshCookie); // 응답에 쿠키 추가
 
-    		return ResponseDTO.<String>builder().status(200).value("환영합니다").accessToken(accessToken).build(); 
+    		return ResponseDTO.<String>builder().status(200).value(refreshToken).accessToken(accessToken).build(); 
         	
         }
 		
@@ -133,7 +117,7 @@ public class UserService {
 	}
 
 	// 로그인
-	public ResponseDTO<String> signin(UserDTO dto, HttpServletResponse response) {
+	public ResponseDTO<String> signin(UserDTO dto) {
 		UserEntity user = userRepository.findByUserId(dto.getUserId());
 		if (user == null) {
 			throw new IdIsNotExistsException("아이디가 일치하지않습니다.");
@@ -148,19 +132,9 @@ public class UserService {
 
 		user.setRefreshToken(refreshToken);
 		userRepository.save(user); // DB에 RefreshToken 업데이트
-
-		// 쿠키 객체생성
-		Cookie refreshCookie = new Cookie("refreshToken", refreshToken);
-		refreshCookie.setHttpOnly(true); // HttpOnly 설정
-		refreshCookie.setSecure(false); // HTTPS에서만 전송 (배포 환경에서 필수 true로 변환해주기)
-		refreshCookie.setPath("/"); // 쿠키의 경로 설정 (루트 경로)
-		refreshCookie.setMaxAge(7 * 24 * 60 * 60); // 유효기간: 7일
-
-		//
-
-		response.addCookie(refreshCookie); // 응답에 쿠키 추가
-
-		return ResponseDTO.<String>builder().status(200).value("환영합니다").accessToken(accessToken).build();
+		
+		
+		return ResponseDTO.<String>builder().status(200).value(refreshToken).accessToken(accessToken).build();
 
 	}
 
