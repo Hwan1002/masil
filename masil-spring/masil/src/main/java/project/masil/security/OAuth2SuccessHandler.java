@@ -45,7 +45,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 		// 쿠키 객체생성
 		Cookie refreshCookie = new Cookie("refreshToken", responseData.getValue());
 		
-		responseData.setValue("") ; // refreshToken responseDTO 객체에서 제거 .
+		
 		
 		refreshCookie.setHttpOnly(true); // HttpOnly 설정
 		refreshCookie.setSecure(false); // HTTPS에서만 전송 (배포 환경에서 필수 true로 변환해주기)
@@ -56,12 +56,13 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 		response.setContentType("application/json"); 
 	    response.setCharacterEncoding("UTF-8");
 		
+	    responseData.setValue("") ; // refreshToken responseDTO 객체에서 제거 .
 	    ObjectMapper objectMapper = new ObjectMapper();
 	    String jsonResponse = objectMapper.writeValueAsString(responseData);
 	    response.getWriter().write(jsonResponse);
 		
 		// 5. 프론트엔드로 리다이렉트 (Optional)
-		response.sendRedirect("http://localhost:3000/login-success");
+//		response.sendRedirect("http://localhost:3000");
 
 	}
 }

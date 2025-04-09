@@ -34,6 +34,7 @@ public class UserEntity {
 	private String password; // 비밀번호
 
 	private String userName; // 이름
+	
 	@Column(unique = true)
 	private String userNickName; // 유저닉네임 
 
