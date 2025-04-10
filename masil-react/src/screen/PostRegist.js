@@ -72,14 +72,11 @@ const PostRegist = () => {
       console.error('파일 업로드 실패:', error);
       openModal({
         title: `경고`,
-        message: error.response.data.error,
+        message: error.response?.data?.error
       });
       setErrorMessage("파일 업로드에 실패했습니다.");
     }
   };
-  
-  
-  
 
   // 가격 인풋창 변경 상태
   const handleChange = (e) => {

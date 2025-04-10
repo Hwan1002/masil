@@ -10,27 +10,40 @@ import UserFindId from './screen/UserFindId';
 import UserFindPwd from './screen/UserFindPwd';
 import PostRegist from './screen/PostRegist';
 import RentalItem from "./screen/RentalItem";
+import SelectedRentalItem from "./screen/SelectedRentalItem";
 
 function App() {
   return (
     <ProjectProvider>
-    <div className="App">
-      <Header />
-      <div className='container'>
+      <div className="App">
+        <Header />
+
+        {/* Routes 구분: container 적용 대상 */}
         <Routes>
-          <Route path="/" element={<Main/>}/>
-          <Route path="/signup" element={<SignUp/>}/>
-          <Route path="/login" element={<Login/>}/>
-          <Route path="/mypage" element={<MyPage/>}/>
-          <Route path="/userfindid" element={<UserFindId/>}/>
-          <Route path="/userfindpwd" element={<UserFindPwd/>}/>
-          <Route path="/postRegist" element={<PostRegist/>}/>
-          <Route path="/rentalitem" element={<RentalItem/>}/>
+          <Route
+            path="/*"
+            element={
+              <div className="container">
+                <Routes>
+                  <Route path="/" element={<Main />} />
+                  <Route path="/signup" element={<SignUp />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/mypage" element={<MyPage />} />
+                  <Route path="/userfindid" element={<UserFindId />} />
+                  <Route path="/userfindpwd" element={<UserFindPwd />} />
+                  <Route path="/postRegist" element={<PostRegist />} />
+                </Routes>
+              </div>
+            }
+          />
+
+          <Route path="/rentalitem" element={<RentalItem />} />
+          <Route path="/post/item/:idx" element={<SelectedRentalItem />} />
         </Routes>
       </div>
-    </div>
     </ProjectProvider>
   );
 }
+
 
 export default App;

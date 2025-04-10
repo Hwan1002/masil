@@ -71,6 +71,7 @@ public class UserController {
 		refreshCookie.setPath("/"); // 쿠키의 경로 설정 (루트 경로)
 		refreshCookie.setMaxAge(7 * 24 * 60 * 60); // 유효기간: 7일
 		
+		response.addCookie(refreshCookie);
 		responseData.setValue("환영합니다.");		
 		return ResponseEntity.ok(responseData);
 	}
