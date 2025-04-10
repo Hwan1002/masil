@@ -82,18 +82,33 @@ const Login = () => {
     }
   };
 
-  const socialLogin = (e) => {
-    // Spring Boot 서버의 소셜 로그인 엔드포인트로 리다이렉트
-    window.location.href = "http://localhost:9090/oauth2/authorization/google";
+  const socialLogin = (social) => {
+    const popup = window.open(
+      `http://localhost:9090/oauth2/authorization/${social}`,
+      "소셜 로그인",
+      "width=600,height=800"
+    );
+  
+    window.addEventListener("message", (event) => {
+      if (event.origin !== "http://localhost:9090") return;
+    
+      // 성공 케이스
+      if (event.data.success) {
+          setLoginSuccess(true);
+        openModal({
+          message: event.data.data.value ,
+          actions: [{ label: "확인", onClick: () => { closeModal();  window.location.href = "/"; } }]
+        });
+      }
+      // 실패 케이스
+      else {
+        openModal({
+          message: event.data.error,
+          actions: [{ label: "확인", onClick: () =>{ closeModal() ;   window.location.href = "/login"; } }]
+        });
+      }
+    }, { once: true });
   };
-
-
-
-
-
-
-
-
 
 
   return (
@@ -154,28 +169,21 @@ const Login = () => {
         <div className="sns_container">
           <div className="sns_item">
             <a
-              href="https://kauth.kakao.com/oauth/authorize"
-              target="_blank"
-              rel="noopener noreferrer"
+              onClick={(e) => socialLogin("kakao")}
             >
               <img src={kakao} alt="카카오 로그인" className="sns_image" />
             </a>
           </div>
           <div className="sns_item">
             <a
-              onClick={(e) => socialLogin()}
-            // href="https://accounts.google.com/signin"
-            // target="_blank"
-            // rel="noopener noreferrer"
+              onClick={(e) => socialLogin("google")}
             >
               <img src={google} alt="구글 로그인" className="sns_image" />
             </a>
           </div>
           <div className="sns_item">
             <a
-              href="https://nid.naver.com/nidlogin.login?mode=form&url=https://www.naver.com/"
-              target="_blank"
-              rel="noopener noreferrer"
+              onClick={(e) => socialLogin("naver")}
             >
               <img src={naver} alt="네이버 로그인" className="sns_image" />
             </a>

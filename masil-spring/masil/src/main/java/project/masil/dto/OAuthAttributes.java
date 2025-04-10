@@ -16,7 +16,6 @@ public class OAuthAttributes {
 	private String userId ;
 	private String name ;
 	private String email; 
-	private String profileImageUrl ;
 	
 	
     public static OAuthAttributes of(String registrationId, Map<String, Object> attributes) {
@@ -37,7 +36,6 @@ public class OAuthAttributes {
         		.userId((String) attributes.get("sub"))
                 .name((String) attributes.get("name"))
                 .email((String) attributes.get("email"))
-                .profileImageUrl((String) attributes.get("picture"))
                 .build();
     }
 
@@ -48,7 +46,6 @@ public class OAuthAttributes {
         		.userId((String) response.get("id"))
                 .name((String) response.get("nickname"))
                 .email((String) response.get("email"))
-                .profileImageUrl((String) response.get("profile_image"))
                 .build();
     }
 
@@ -64,7 +61,6 @@ public class OAuthAttributes {
         		.userId((String.valueOf (attributes.get("id"))))
                 .name((String) kakaoAccount.get("profile"))
                 .email((String) kakaoAccount.get("email"))
-                .profileImageUrl((String) profile.get("thumbnail_image_url"))
                 .build();
     }
 }

@@ -4,6 +4,7 @@ import java.nio.file.Paths;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -70,49 +71,44 @@ public class UserService {
 
 	// 소셜로그인
 	public ResponseDTO<String> socialSignin(String authProvider, OAuthAttributes attributes,HttpServletResponse response) {
-		// 1 dto에 포함되어있는 이메일 로 entity꺼내오기
-		Optional<UserEntity> existingUser = userRepository.findByEmail(attributes.getEmail());
 
-        if (existingUser.isPresent()) {
-            UserEntity user = existingUser.get();
-         // 1-1 entity가 존재한다면 authProvider 속성이 null인지 아닌지 비교후 null일경우 중복된 이메일입니다 예외처리
-            if (user.getAuthProvider() == null) {
-			throw new EmailAlreadyExistsException(attributes.getEmail() + " 은(는) 중복된 이메일입니다 .");
-			}
-        	// 1-2 null이 아닌경우 로그인로직 (accessToken,refreshToken 발급 및 쿠키저장  응답에 쿠키추가 등 밑의 로그인로직 추가 )
-		
-            String accessToken = tokenProvider.generateAccessToken(user.getUserId());
-    		String refreshToken = tokenProvider.generateRefreshToken(user.getUserId());
-
-    		user.setRefreshToken(refreshToken);
-    		userRepository.save(user); // DB에 RefreshToken 업데이트
-
-
-            return ResponseDTO.<String>builder().status(200).value(refreshToken).accessToken(accessToken).build(); 
-        }else {
-        	// 1-3 엔티티가 존재하지 않는경우 회원가입및 로그인로직 .
-        	
-        	UserEntity user =UserEntity.builder()
-        	.authProvider(authProvider)
-        	.userName(attributes.getName())
-        	.userId(attributes.getUserId())
-        	.profilePhotoPath(attributes.getProfileImageUrl())
-        	.email(attributes.getEmail()).build() ;
-        	
-        	
-        	String accessToken = tokenProvider.generateAccessToken(user.getUserId());
-    		String refreshToken = tokenProvider.generateRefreshToken(user.getUserId());
-
-    		user.setRefreshToken(refreshToken);
-    		userRepository.save(user); // DB에 RefreshToken 업데이트
-
-
-    		return ResponseDTO.<String>builder().status(200).value(refreshToken).accessToken(accessToken).build(); 
-        	
-        }
-		
 	
-		
+			// 1 dto에 포함되어있는 이메일 로 entity꺼내오기
+			Optional<UserEntity> existingUser = userRepository.findByEmail(attributes.getEmail());
+
+	        if (existingUser.isPresent()) {
+	            UserEntity user = existingUser.get();
+	         // 1-1 entity가 존재한다면 authProvider 속성이 null인지 아닌지 비교후 null일경우 중복된 이메일입니다 예외처리
+	            if (user.getAuthProvider() == null) {
+	            	 throw new EmailAlreadyExistsException(attributes.getEmail() + " 은(는) 중복된 이메일입니다.");
+	            }
+	        	// 1-2 null이 아닌경우 로그인로직 (accessToken,refreshToken 발급 및 쿠키저장  응답에 쿠키추가 등 밑의 로그인로직 추가 )
+			
+	            String accessToken = tokenProvider.generateAccessToken(user.getUserId());
+	    		String refreshToken = tokenProvider.generateRefreshToken(user.getUserId());
+
+	    		user.setRefreshToken(refreshToken);
+	    		userRepository.save(user); // DB에 RefreshToken 업데이트
+
+
+	            return ResponseDTO.<String>builder().status(200).value(refreshToken).accessToken(accessToken).build(); 
+	        }else {
+	        	// 1-3 엔티티가 존재하지 않는경우 회원가입및 로그인로직 .
+	        	
+	        	UserEntity user =UserEntity.builder()
+	        	.authProvider(authProvider)
+	        	.userName(attributes.getName())
+	        	.userId(attributes.getUserId())
+	        	.profilePhotoPath(DEFAULT_PROFILE_PHOTO)
+	        	.email(attributes.getEmail())
+	        	.userNickName(attributes.getUserId())
+	        	.build() ;
+	        	String accessToken = tokenProvider.generateAccessToken(user.getUserId());
+	    		String refreshToken = tokenProvider.generateRefreshToken(user.getUserId());
+	    		user.setRefreshToken(refreshToken);
+	    		userRepository.save(user); // DB에 RefreshToken 업데이트
+	    		return ResponseDTO.<String>builder().status(200).value(refreshToken).accessToken(accessToken).build(); 
+	        }
 		
 	}
 
@@ -132,8 +128,7 @@ public class UserService {
 
 		user.setRefreshToken(refreshToken);
 		userRepository.save(user); // DB에 RefreshToken 업데이트
-		
-		
+
 		return ResponseDTO.<String>builder().status(200).value(refreshToken).accessToken(accessToken).build();
 
 	}

@@ -35,7 +35,6 @@ public class UserEntity {
 
 	private String userName; // 이름
 	
-	@Column(unique = true)
 	private String userNickName; // 유저닉네임 
 
 	private String email; // 이메일

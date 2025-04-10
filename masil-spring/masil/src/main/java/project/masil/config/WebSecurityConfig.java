@@ -16,6 +16,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import project.masil.security.JwtAuthenticationFilter;
+import project.masil.security.OAuth2FailureHandler;
 import project.masil.security.OAuth2SuccessHandler;
 
 @EnableWebSecurity
@@ -24,7 +25,9 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 
     @Autowired 
     private OAuth2SuccessHandler oAuth2SuccessHandler;
-
+    @Autowired
+    private OAuth2FailureHandler oAuth2FailureHandler;
+    
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.csrf().disable()
@@ -50,7 +53,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 				.anyRequest().authenticated()// 나머지 요청은 인증 필요
 			)
         	.oauth2Login(oauth2 -> oauth2.successHandler(oAuth2SuccessHandler)
-                .failureUrl("http://localhost:3000/login")       // 로그인 실패 시 리다이렉트 경로
+                .failureHandler(oAuth2FailureHandler) 
             )
 				.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class); // JWT 필터등록 
 		
