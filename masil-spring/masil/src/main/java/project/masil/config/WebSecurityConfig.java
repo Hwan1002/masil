@@ -23,10 +23,14 @@ import project.masil.security.OAuth2SuccessHandler;
 @Configuration
 public class WebSecurityConfig implements WebMvcConfigurer {
 
-    @Autowired 
-    private OAuth2SuccessHandler oAuth2SuccessHandler;
     @Autowired
-    private OAuth2FailureHandler oAuth2FailureHandler;
+    private  OAuth2SuccessHandler oAuth2SuccessHandler;
+    @Autowired
+    private  OAuth2FailureHandler oAuth2FailureHandler;
+     
+
+    
+    
     
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

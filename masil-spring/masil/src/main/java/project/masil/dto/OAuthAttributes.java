@@ -59,7 +59,7 @@ public class OAuthAttributes {
         
         return OAuthAttributes.builder()
         		.userId((String.valueOf (attributes.get("id"))))
-                .name((String) kakaoAccount.get("profile"))
+                .name((String) kakaoAccount.get("nickname"))
                 .email((String) kakaoAccount.get("email"))
                 .build();
     }

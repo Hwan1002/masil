@@ -95,6 +95,8 @@ public class UserService {
 	        }else {
 	        	// 1-3 엔티티가 존재하지 않는경우 회원가입및 로그인로직 .
 	        	
+	        	
+	        	
 	        	UserEntity user =UserEntity.builder()
 	        	.authProvider(authProvider)
 	        	.userName(attributes.getName())
