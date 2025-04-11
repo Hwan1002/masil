@@ -623,8 +623,6 @@ http://localhost:9090/login/oauth2/code/google?state=-q01Cmy9A8b6ksVA7RaAtRo31A8
 {"status":200,"data":null,"value":"","error":null,"accessToken":"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMTMzMzc4NzIwMjI5MzAwMDM4NjQiLCJpYXQiOjE3NDQyMDY1MjMsImV4cCI6MTc0NDIwNzQyM30.hXAawCNcVIrXnLKswTJn9dlaw1nsfbIhSx9pki-Xqvg"}
 
 
-
-
 소셜로그인 실패시 failureHandler로 빠지는상황인지 체크
 naver,kakao 도입 
 
