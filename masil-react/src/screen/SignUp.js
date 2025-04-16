@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext } from "react";
+import React, { useState, useRef, useContext, useEffect} from "react";
 import "../css/SignUp.css";
 import { ProjectContext } from "../context/MasilContext";
 import { useNavigate } from "react-router-dom";
@@ -10,16 +10,18 @@ import axios from "axios";
 const SignUp = () => {
   //프로필사진 상태
   const [profilePhoto, setProfilePhoto] = useState(null);
-
   //중복체크 & 이메일 인증 버튼 눌렀는지
   const [duplicateBtn, setDuplicateBtn] = useState(false);
   const [certifiedBtn, setCertifiedBtn] = useState(false);
+  //이메일 인증 완료 여부
+  const [isEmailVerified, setIsEmailVerified] = useState(false); 
   //비밀번호 확인  & 인증코드 상태 따로 관리
   const [pwdConfirm, setPwdConfirm] = useState("");
   const [verifyCode, setVerifyCode] = useState("");
   //이메일 인증 보낼때 나타나는 타이머 상태
-  const [timer, setTimer] = useState(0);
-  
+  const [timer, setTimer] = useState(-1);
+  //이메일 readonly 관리 
+  const [isReadonly, setIsReadOnly] = useState(false);
   //회원가입 formData
   const [formData, setFormData] = useState({
     userId: "",
@@ -30,7 +32,7 @@ const SignUp = () => {
   });
   const {isLoading,setIsLoading} = useContext(ProjectContext);
   const navigate = useNavigate();
-  
+ 
   //모달 기능 사용
   const {
     isModalOpen,
@@ -66,9 +68,18 @@ const SignUp = () => {
       });
       return;
     }
-    if(!certifiedBtn){
+  
+    // 이메일인증번호 확인 .
+    if(certifiedBtn){
       openModal({
         message: "이메일 인증을 해주세요.",
+      });
+      return;
+    }
+
+    if(isEmailVerified == false){
+      openModal({
+        message: "인증번호를 입력하지 않았습니다.",
       });
       return;
     }
@@ -129,7 +140,7 @@ const SignUp = () => {
     e.preventDefault();
     const file = e.target.files[0];
     if (file) {
-      setProfilePhoto(file); 
+      setProfilePhoto(file);
       const reader = new FileReader();
       reader.onload = () => {
         setImagePreview(reader.result);
@@ -149,7 +160,6 @@ const SignUp = () => {
       const response = await axios.get("http://localhost:9090/user", {
         params: { userId: formData.userId },
       });
-      console.log(response.data);
       if (response.data) {
         openModal({
           message: "중복된 아이디입니다.",
@@ -173,7 +183,6 @@ const SignUp = () => {
       })
       return;
     }
-    setCertifiedBtn(false);
     setIsLoading(true);
     openModal({
       title:"전송 중",
@@ -182,22 +191,27 @@ const SignUp = () => {
     try {
       const response = await axios.post('http://localhost:9090/user/send-email',{email:formData.email});
       if(response){
+        setIsReadOnly(true);
         setIsLoading(false);
         setCertifiedBtn(true);
         openModal({
-          message:response.data,
+          message:response.data.value,
         })
         setTimer(300);
+        
         const timerInterval = setInterval(() => {
           setTimer(prev => {
             if (prev <= 1) {
               clearInterval(timerInterval);
+              setCertifiedBtn(false);
+              setIsReadOnly(false);
               return 0;
             }
+            
             return prev - 1;
           });
         }, 1000);
-      } 
+      }
     } catch (error) {
       setIsLoading(false);
       openModal({
@@ -211,12 +225,19 @@ const SignUp = () => {
       const response = await axios.post('http://localhost:9090/user/verify',{
       email:formData.email,verifyCode:verifyCode});
       if(response){
+        setIsEmailVerified(true);
+        setCertifiedBtn(false);
         openModal({
           message:response.data.value
         })
       }
     } catch (error) {
-      console.log(error.response.data.error);
+      setIsEmailVerified(false);
+      setCertifiedBtn(true);
+      openModal({
+        message:error.response.data.error
+      })
+      
     }
   }
   return (
@@ -295,28 +316,27 @@ const SignUp = () => {
                 className="form-input"
                 placeholder="이메일을 입력하세요."
                 onChange={(e) => handleInputChange(e)}
+                readOnly={isReadonly}
               />
-              <button type="button" onClick={(e)=>sendCertifyNumber(e)}>인증</button>
+              {certifiedBtn === false && timer <= 0? (
+                <button type="button" onClick={(e)=>sendCertifyNumber(e)}>인증</button>
+              ):(<button type="button" onClick={(e)=>sendCertifyNumber(e)}>재인증</button>)}
             </div>
-            {timer > 0 && certifiedBtn ?(
-              <div className="timer">
-                남은 시간: {Math.floor(timer / 60)}분 {timer % 60}초
-              </div>
-            ): ("")}
-            {certifiedBtn? (
+            {timer > 0 && certifiedBtn? (
               <div className="inputAndBtn emailCertified">
                 <input type="text" placeholder="인증번호를 입력해주세요." className="form-input" onChange={(e)=>setVerifyCode(e.target.value)}/>
-                <button button onClick={(e)=>emailCertified(e)}>확인</button>
+                <button onClick={(e)=>emailCertified(e)}>확인</button>
+                <div className="timer">
+                  남은 시간: {Math.floor(timer / 60)}분 {timer % 60}초
+                </div>
               </div>
             ):("")
             }
           </div>
         </div>
         <div className="signUp_button">
+        {/* <button type="button" onClick={() => navigate("/")}>돌아가기</button> */}
           <button type="submit">회원가입</button>
-          <button type="button" onClick={() => navigate("/")}>
-            돌아가기
-          </button>
         </div>
       </form>
       <Modal

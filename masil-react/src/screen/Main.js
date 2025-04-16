@@ -1,20 +1,21 @@
 import '../css/Main.css';
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
+import { ProjectContext } from '../context/MasilContext';
+import LocationButton from '../component/locationButton';
 const Main = () => {
-  const navigate = useNavigate();
-  
+
+  const {accessToken} = useContext(ProjectContext);
+  // const navigate = useNavigate();
+
   return(
     <>
     <div className="mainContents">
-      <div>메인페이지 디자인 예정</div>
-      <div>메인페이지 디자인 예정</div>
-      <div>메인페이지 디자인 예정</div>
-      <div>메인페이지 디자인 예정</div>
-      <div>메인페이지 디자인 예정</div>
-      <button onClick={()=>navigate("/postRegist")}>+</button>
+      <div>메인페이지다 </div>
+      <div>메인페이지다 </div>
+      <div>메인페이지다 </div>
+      <LocationButton/>
     </div>
-      
     </>
   )
 }

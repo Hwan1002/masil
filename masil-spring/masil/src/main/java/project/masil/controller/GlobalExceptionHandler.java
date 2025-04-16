@@ -6,7 +6,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import project.masil.dto.ResponseDTO;
+import project.masil.service.AuthService;
 import project.masil.service.EmailService;
+import project.masil.service.PostService;
 import project.masil.service.UserService;
 
 @RestControllerAdvice
@@ -52,7 +54,25 @@ public class GlobalExceptionHandler {
 	// email verificationException (같은 상태코드를 줘도 상관없기때문에 한 예외클래스를 상속받고 모두 같은코드와 각기다른 메세지를 전달할 수 있게 작성 ) 
 	@ExceptionHandler(EmailService.VerificationException.class)
 	public ResponseEntity<ResponseDTO<String>> handleVerificationException(EmailService.VerificationException ex) {
-		ResponseDTO<String> response = ResponseDTO.<String>builder().status(HttpStatus.BAD_REQUEST.value()) // 기본 상태 코드
+		ResponseDTO<String> response = ResponseDTO.<String>builder().status(HttpStatus.BAD_REQUEST.value())
+				.error(ex.getMessage()).build();
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+	}
+	
+
+	// InvalidTokenException (유효하지 않은 토큰 예외처리) 
+	@ExceptionHandler(AuthService.InvalidTokenException.class)
+	public ResponseEntity<ResponseDTO<String>> InvalidTokenException(AuthService.InvalidTokenException ex) {
+		ResponseDTO<String> response = ResponseDTO.<String>builder().status(HttpStatus.UNAUTHORIZED.value()) 
+				.error(ex.getMessage()).build();
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+	}
+	
+	//  notExistPhotoException 게시글 사진이 존재하지않을때의 예외처리
+	
+	@ExceptionHandler(PostService.NotExistPhotoException.class)
+	public ResponseEntity<ResponseDTO<String>> NotExistPhotoException(PostService.NotExistPhotoException ex) {
+		ResponseDTO<String> response = ResponseDTO.<String>builder().status(HttpStatus.BAD_REQUEST.value()) 
 				.error(ex.getMessage()).build();
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 	}

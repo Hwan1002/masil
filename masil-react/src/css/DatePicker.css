@@ -1,6 +1,10 @@
 
+.startTime{
+  margin-bottom: 1.5em;
+}
 
 .MuiPickersCalendarHeader-label {
   font-size: 1rem !important;
   display: block !important;
 }
+

@@ -1,0 +1,118 @@
+
+
+게시글을 수정할때 최초값은 
+
+특정게시물조회의 응답예시와 같은값일것이다 .
+
+{
+    "postIdx": 152,
+    "registrationDate": "2025-04-01T01:38:11.741788",
+    "updateDate": "2025-04-01T01:38:11.741788",
+    "postTitle": "test1",
+    "postPrice": 200000,
+    "postPhotoPaths": [
+        "/uploads/postPhoto/1743439091696_test1.jpg",
+        "/uploads/postPhoto/1743439091700_test2.jpg",
+        "/uploads/postPhoto/1743439091701_test3.jpg"
+    ],
+    "postStartDate": "2025-03-31T16:37:48.444",
+    "postEndDate": "2025-03-31T16:37:48.444",
+    "description": "test1",
+    "userNickName": "123"
+}
+이런식으로 .
+
+
+수정하는 경우에 form데이터중 dto객체로 보내는 값중에서 postPhotoPaths와 사진파일을 보내는과정에서 여러가지 시나리오가 있고
+
+dto객체의 나머지 속성들은 변경되거나 되지않거나 둘중하나밖에없지만
+
+사진은 새로운사진이 추가되면서 기존의 사진이 남아있거나 하는 여러가지 경우가있다 .
+
+위의 응답예시로 
+사진 세개를 1,2,3이라고 가정했을때
+
+기존사진을 그대로 사용하는 경우 1
+기존사진의 1,2,3중 하나 혹은 두가지를 삭제하는 경우 2
+기존사진을 그대로 사용하면서 새로운 사진이 추가되는 경우 3 
+기존사진의 1,2,3중 하나 혹은 두가지를 삭제하면서 새로운 사진을 추가하는 경우 4
+기존사진을 모두 삭제하고 새로운사진을 추가하는 경우 5
+기존사진을 모두 삭제하면서 새로운 사진도 추가하지않는 예외 1이있다 .
+
+모든 경우마다 요청예시가 다르다 .
+
+
+게시글을 수정할때에 나올수있는 모든 시나리오 :
+
+시나리오			기존 사진		새 사진		dto.getPostPhotoPaths()	예상 결과
+
+사진 변경 없음		``		null		``			기존 사진 유지 
+일부 삭제			``		null		``			3.jpg 삭제 
+기존 유지 + 새 사진 추가	``		``		``			기존사진 유지 및 새로운 사진 추가.  
+일부 삭제 + 새 사진 추가	``		``		``			3.jpg 삭제 → 4.jpg저장 및 기존 1,2사진 유지 
+전체 삭제 + 새 사진 추가	``		``		[]			1,2,3.jpg 삭제 → 4.jpg 저장
+필수 사진 누락		``		null		[]			예외 발생( 사진을 등록해주세요  에러메세지 반환 )
+
+
+요청예시는 signup과 같은형태이다 . 
+
+하지만 dto에 postPhotoPath() 가없고 첨부된 사진파일이 없는경우 예외메세지를 반환받게된다 .
+유의해야할점은 기존사진의 배열의 요소들을 삭제하거나 순서를바꾸는 부분, 또는 기존사진과 새로운사진의 순서를 조정하는것에대해서는 아직 처리가되어있지않기떄문에 추후에 수정이필요할 수 있다.
+
+api.put(/post/modify , formData{
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+
+
+dto -{
+    "postIdx": 152,
+    "registrationDate": "2025-04-01T01:38:11.741788",
+    "updateDate": "2025-04-01T01:38:11.741788",
+    "postTitle": "test1",
+    "postPrice": 200000,
+    "postPhotoPaths": [
+        "/uploads/postPhoto/1743439091696_test1.jpg",
+        "/uploads/postPhoto/1743439091700_test2.jpg",
+        "/uploads/postPhoto/1743439091701_test3.jpg"
+    ],
+    "postStartDate": "2025-03-31T16:37:48.444",
+    "postEndDate": "2025-03-31T16:37:48.444",
+    "description": "test1",
+    "userNickName": "123"
+}
+
+
+-postPhoto : (file1.jpg , file2.jpg)
+
+
+응답 예시 : 
+성공시 
+{
+    "status": 201,
+    "data": null,
+    "value": "게시물이 수정되었습니다.",
+    "error": null,
+    "accessToken": null
+}
+
+실패시
+{
+    "status": 400,
+    "data": null,
+    "value": null,
+    "error":  "사진을 등록해주세요" ,
+    "accessToken": null
+}
+
+
+
+
+
+
+
+
+
+
+
