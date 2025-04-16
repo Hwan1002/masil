@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { ProjectContext } from "../context/MasilContext";
 import axios from "axios";
 
+
 const RentalItem = () => {
   const navigate = useNavigate();
   const [showSoldOnly, setShowSoldOnly] = useState(false);
@@ -69,13 +70,22 @@ const RentalItem = () => {
           {currentItems.map((item) => (
             <div className="rental-item" key={item.postIdx}>
               {item.isSold && <span className="sold-badge">판매 완료</span>}
-              <a href={`/post/item/${item.postIdx}`}>
+              {/* <a href={`/post/item/${item.postIdx}`}>
                 <img
                   src={`http://localhost:9090${item.postPhotoPaths}`}
                   alt={item.postIdx}
                   className="rental-image"
                 />
-              </a>
+              </a> */}
+              {item.postPhotoPaths && item.postPhotoPaths.map((path, index) => (
+                <a href={`/post/item/${item.postIdx}`} key={index}>
+                  <img
+                    src={`http://localhost:9090${path}`}
+                    alt={`${item.postIdx}-${index}`}
+                    className="rental-image"
+                  />
+                </a>
+              ))}
               <a href={`/post/item/${item.postIdx}`} className="rental-title">
                 {item.postTitle}
               </a>

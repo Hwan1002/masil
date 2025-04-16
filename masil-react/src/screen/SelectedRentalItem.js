@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { useParams } from 'react-router-dom';
 import '../css/SelectedRentalItem.css'
 import axios from 'axios';
+import moment from 'moment';
 const SelectedRentalItem = () => {
     const { idx } = useParams();
     const [item, setItem] = useState([]);
@@ -28,6 +29,15 @@ const SelectedRentalItem = () => {
         loadData();
     }, [idx]);
 
+    function formatDate(date, format = 'YYYY-MM-DD HH:mm:ss') {
+        return moment(date).format(format);
+    }
+
+    function curency(number) {
+        const num = Number(number);
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
 
 
     return (
@@ -40,25 +50,31 @@ const SelectedRentalItem = () => {
                         alt={item.postIdx}
                         className="selected-rental-image"
                     />
+                    <div className="selected-bottom-title">아이디</div>
                 </div>
                 <div className='selected-description-container'>
                     {/* <div className="selected-explanation"> */}
-                        <div>
-                            <div>작성자</div>
-                            <div>{item.userNickName}</div>
-                        </div>
-                        <div>
-                            <div>등록일</div>
-                            <div>{item.updateDate}</div>
-                        </div>
-                        <div>
-                            <div>희망 대여일</div>
-                            <div>{item.postStartDate}</div>
-                        </div>
-                        <div>설명</div>
-                        <div>{item.description}</div>
+                    <div className="selected-dp-sub-container">
+                        <div className="selected-dp-item-title">작성자</div>
+                        <div className="selected-dp-item">{item.userNickName}</div>
                     </div>
-                    
+                    <div className="selected-dp-sub-container">
+                        <div className="selected-dp-item-title">등록일</div>
+                        <div className="selected-dp-item">{formatDate(item.updateDate)}</div>
+                    </div>
+                    <div className="selected-dp-sub-container">
+                        <div className="selected-dp-item-title">대여일</div>
+                        <div className="selected-dp-item">{formatDate(item.postStartDate)}</div>
+                    </div>
+                    <div className="selected-dp-sub-container">
+                        <div className="selected-dp-item-title">가격</div>
+                        <div className="selected-dp-item">{curency(item.postPrice)}원</div>
+                    </div>
+                    <div className="selected-dp">
+                        <div className="selected-explanation">{item.description}</div>
+                    </div>
+                </div>
+
                 {/* </div> */}
             </div>
         </div>
