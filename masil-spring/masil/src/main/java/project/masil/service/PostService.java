@@ -37,6 +37,7 @@ public class PostService {
 			throw new NotExistPhotoException("사진을 등록해주세요 .");
 		}				
 		
+		
 		String uploadDir = System.getProperty("user.dir") + "/uploads";
 		dto.setPostPhotoPaths(FileUploadUtil.saveFiles(postPhotos, uploadDir, "postPhoto"));
 		
@@ -131,8 +132,6 @@ public class PostService {
 			super(message);
 		}
 	}
-	
-
 	
 	
 	// entity -> dto

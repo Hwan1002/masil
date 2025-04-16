@@ -107,14 +107,15 @@ export const ProjectProvider = ({ children }) => {
         }
     
         // 401 에러 & 첫 재시도
-        if (error.response?.status === 401 && !originalRequest._retry) {
+        if (error.response && error.response?.status === 401 && !originalRequest._retry) {
           originalRequest._retry = true;
 
           // 중복 갱신 방지
           if (!isRefreshing) {
             isRefreshing = true;
             try {
-              const newAccessToken = await refreshToken(); // 토큰 갱신             
+              const newAccessToken = await refreshToken(); // 토큰 갱신     
+              tokenValueRef.current =newAccessToken; // tokenValueRef 업데이트 ;
               processQueue(null, newAccessToken); // 대기열 처리
               originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
               return Api(originalRequest);  // 원래요청 재시도
