@@ -30,6 +30,10 @@ public class UserService {
 
 	@Autowired // tokenProvider 의존성주입
 	private JwtTokenProvider tokenProvider;
+	
+	@Autowired
+	private GeocodingService geocodingService ;
+	
 
 	PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -191,11 +195,12 @@ public class UserService {
 		return ResponseDTO.<String>builder().status(200).value("새로운 비밀번호로 로그인해주세요").build();
 	}
 	
-	// 위도경도 설정메서드 .
+	// 위도경도 , 위치 설정메서드 .
 	public ResponseDTO<String> setLocation (String userId  , UserDTO dto ){
 		UserEntity user= userRepository.findByUserId(userId) ;
 		user.setLat(dto.getLat());
 		user.setLng(dto.getLng());
+		user.setAddress(geocodingService.reverseGeocodeToAddress(dto.getLat(), dto.getLng())) ;
 		userRepository.save(user) ;
 		return ResponseDTO.<String>builder().status(200).value("위치설정이 완료되었습니다 .").build() ;				
 	}
@@ -207,7 +212,7 @@ public class UserService {
 
 		return UserDTO.builder().userId(entity.getUserId()).userName(entity.getUserName())
 				.userNickName(entity.getUserNickName()).email(entity.getEmail())
-				.profilePhotoPath(entity.getProfilePhotoPath()).location(entity.getLocation())
+				.profilePhotoPath(entity.getProfilePhotoPath()).address(entity.getAddress())
 				.authProvider(entity.getAuthProvider()).build();
 	}
 
@@ -215,7 +220,7 @@ public class UserService {
 	public UserEntity toEntity(UserDTO dto) {
 		return UserEntity.builder().userId(dto.getUserId()).password(dto.getPassword()).userName(dto.getUserName())
 				.userNickName(dto.getUserNickName()).email(dto.getEmail()).profilePhotoPath(dto.getProfilePhotoPath())
-				.location(dto.getLocation()).authProvider(dto.getAuthProvider()).build();
+				.address(dto.getAddress()).authProvider(dto.getAuthProvider()).build();
 	}
 
 	// 이메일 중복예외 내부클래스

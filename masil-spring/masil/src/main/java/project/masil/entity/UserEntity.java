@@ -41,7 +41,6 @@ public class UserEntity {
 
 	private String profilePhotoPath; // 프로필사진 경로
 	
-	private String location; // 위치설정
 
 	private String authProvider; // 소셜로그인공급자
 	
@@ -55,5 +54,7 @@ public class UserEntity {
 	private Double lat ; // 위도
 	
 	private Double lng ; // 경도 
+	
+	private String address; // 주소
 	
 }
