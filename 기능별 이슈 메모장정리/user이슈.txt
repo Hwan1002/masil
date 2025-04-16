@@ -626,6 +626,9 @@ http://localhost:9090/login/oauth2/code/google?state=-q01Cmy9A8b6ksVA7RaAtRo31A8
 소셜로그인 실패시 failureHandler로 빠지는상황인지 체크
 naver,kakao 도입 
 
+로그아웃을 하지않고 종료시에 쿠키가남아있거나 , db에서 refreshToken이 삭제되지않은상태 해결필요함 .
+
+마이페이지에서 이메일인증을 통한 비밀번호 변경시에 db에 등록되어있는 이메일로 인증만 하게된다면 그냥 넘어가게 되어있음 .이부분도 문제해결 필요함 .
 
 
 
