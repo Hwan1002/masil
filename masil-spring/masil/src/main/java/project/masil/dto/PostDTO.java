@@ -36,5 +36,9 @@ public class PostDTO {
 	private String description; //제품 설명
 		
 	private String userNickName ; // 유저닉네임 .
+	
+	private String userProfilePhotoPath ; // 유저 프로필사진 경로
+	
+	private String userAddress ; // 유저주소 .
 
 }
