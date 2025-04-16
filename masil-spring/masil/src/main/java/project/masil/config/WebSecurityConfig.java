@@ -1,8 +1,8 @@
 package project.masil.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -15,13 +15,23 @@ import org.springframework.web.multipart.support.StandardServletMultipartResolve
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import jakarta.servlet.http.HttpServletResponse;
 import project.masil.security.JwtAuthenticationFilter;
+import project.masil.security.OAuth2FailureHandler;
+import project.masil.security.OAuth2SuccessHandler;
 
 @EnableWebSecurity
 @Configuration
 public class WebSecurityConfig implements WebMvcConfigurer {
 
+    @Autowired
+    private  OAuth2SuccessHandler oAuth2SuccessHandler;
+    @Autowired
+    private  OAuth2FailureHandler oAuth2FailureHandler;
+     
+
+    
+    
+    
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.csrf().disable()
@@ -42,12 +52,12 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 				"/default/**"
 				,"/error" // 에러페이지 및 공통경로
 				,"/oauth2/**" // 소셜로그인 엔드포인트 허용
+				,"/login/oauth2/**"
 						).permitAll() // 비로그인 유저서비스 , 사진폴더접근 , 정적 리소스 접근 허용
 				.anyRequest().authenticated()// 나머지 요청은 인증 필요
 			)
-        	.oauth2Login(oauth2 -> oauth2
-                .defaultSuccessUrl("http://localhost:3000") // 로그인 성공 시 리다이렉트 경로
-                .failureUrl("http://localhost:3000/login")       // 로그인 실패 시 리다이렉트 경로
+        	.oauth2Login(oauth2 -> oauth2.successHandler(oAuth2SuccessHandler)
+                .failureHandler(oAuth2FailureHandler) 
             )
 				.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class); // JWT 필터등록 
 		

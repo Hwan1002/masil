@@ -34,14 +34,13 @@ public class UserEntity {
 	private String password; // 비밀번호
 
 	private String userName; // 이름
-	@Column(unique = true)
+	
 	private String userNickName; // 유저닉네임 
 
 	private String email; // 이메일
 
 	private String profilePhotoPath; // 프로필사진 경로
 	
-	private String location; // 위치설정
 
 	private String authProvider; // 소셜로그인공급자
 	
@@ -52,8 +51,10 @@ public class UserEntity {
 	@OneToMany(mappedBy = "user" , cascade = CascadeType.ALL)
 	private List<PostEntity> posts = new ArrayList<>(); // 게시글
 
-	private Double lat ;
+	private Double lat ; // 위도
 	
-	private Double lng ;
+	private Double lng ; // 경도 
+	
+	private String address; // 주소
 	
 }

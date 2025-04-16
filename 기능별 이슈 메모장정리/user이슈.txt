@@ -595,10 +595,36 @@ accessToken을 react state상태변수로 관리하고있기에 비동기처리�
 
 
 
+이메일 인증확인버튼을 누를때 중복된 이메일인경우 중복된이메일입니다 , 다른이메일을 작성해주세요 라는메세지와함께 readOnly 해제
+
+유저닉네임은 고유값이 들어가있는데 이걸 고유값으로 설정하지않아야될거같음 .
+
+로그아웃을 하지않고 종료후 하루뒤에 서버에 들어갔을때도 로그인이 되어있음 .
+
+
+소셜로그인 :
+
+구글 소셜로그인 성공적으로 동작 ,
+문제점 1: userNickName 필드가 누락되어있음 이름과 같이가거나 임의의 닉네임을 set해줘야할것같음 . (userId와 같은 구글의 아이디 식별자로 set)
+문제점 2: profilePhotoPath가 url형식으로 되어있음 , 이부분도 기본이미지로 set을 해줘야할것같음 ( 기본이미지로 set )
+문제점 3: 일반로그인사용자가 사용한 이메일로 소셜로그인 실행시 예외처리가 서버로그에 출력되고 클라이언트에는 whiteLabel error Page로 반환됨 . 
 
 
 
+네트워크에서 어떤데이터가 응답으로 넘어가는지 확인필요함
+successHandler에 적혀있는 body에 json으로 넘긴객체들은 어디로넘어가고있는지 ? 그리고 클라이언트 코드에서 json을 받아서 사용할것인지에대해서도 필요함
+ .(이부분이 해결된다면 문제 3번의 에러처리도 유연하게 가능할것같음 .)
 
+refreshToken이 응답쿠키에 전송되어있기에 accessToken은 받더라도  리다이렉트 되기 때문에 refreshToken을이용한 재발급이 이루어져서 굳이 넘겨주지않아도 될것같음 .
+
+리다이렉트를 적용시키지 않았을경우 이페이지에 도착하며 밑의 json객체를 얻게된다 . 그 이후 localhost:3000으로 이동하면 성공적으로 소셜로그인이 이루어져있고 ,  refreshToken도 쿠키에 저장되어있다 
+하지만 문제3의시나리오로 소셜 로그인요청시에는 똑같은 문제점이 발생한다 .
+http://localhost:9090/login/oauth2/code/google?state=-q01Cmy9A8b6ksVA7RaAtRo31A8z33XHTVP3rWNvf3s%3D&code=4%2F0Ab_5qlmHIbTIBKQjGMOI1DuluxtD4XSVHdk2SebqQBZp8vOM0Ut5yAlkdtEPc47i024tRA&scope=email+profile+openid+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&authuser=1&prompt=none
+{"status":200,"data":null,"value":"","error":null,"accessToken":"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMTMzMzc4NzIwMjI5MzAwMDM4NjQiLCJpYXQiOjE3NDQyMDY1MjMsImV4cCI6MTc0NDIwNzQyM30.hXAawCNcVIrXnLKswTJn9dlaw1nsfbIhSx9pki-Xqvg"}
+
+
+소셜로그인 실패시 failureHandler로 빠지는상황인지 체크
+naver,kakao 도입 
 
 
 
