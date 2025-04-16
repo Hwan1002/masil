@@ -57,9 +57,7 @@ public class PostEntity {
 	private String description; //제품 설명
 	
 	@LastModifiedDate
-	private LocalDateTime updateDate; // 수정날짜 .
-	
-	
+	private LocalDateTime updateDate; // 수정날짜 .	
 
 	@ManyToOne
 	@JoinColumn(name = "userId" , nullable =false) 

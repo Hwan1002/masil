@@ -149,6 +149,8 @@ public class PostService {
 				.updateDate(entity.getUpdateDate())
 				.description(entity.getDescription())
 				.userNickName(entity.getUser().getUserNickName())
+				.userProfilePhotoPath(entity.getUser().getProfilePhotoPath())
+				.userAddress(entity.getUser().getAddress())
 				.build();
 	}
 
