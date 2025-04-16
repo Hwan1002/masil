@@ -50,14 +50,20 @@ const SelectedRentalItem = () => {
                         alt={item.postIdx}
                         className="selected-rental-image"
                     />
-                    <div className="selected-bottom-title">아이디</div>
+                    <div className="selected-bottom-title">
+                        <img
+                            src={`http://localhost:9090${item.userProfilePhotoPath}`}
+                            alt={item.postIdx}
+                            className="selected-rental-profile-image"
+                        />
+                        <div className="selected-explanation">
+                            <div className="selected-rental-profile-image">{item.userNickName}</div>
+                            <div className="selected-rental-profile-image">{item.userAddress}</div>
+                        </div>
+                    </div>
                 </div>
                 <div className='selected-description-container'>
                     {/* <div className="selected-explanation"> */}
-                    <div className="selected-dp-sub-container">
-                        <div className="selected-dp-item-title">작성자</div>
-                        <div className="selected-dp-item">{item.userNickName}</div>
-                    </div>
                     <div className="selected-dp-sub-container">
                         <div className="selected-dp-item-title">등록일</div>
                         <div className="selected-dp-item">{formatDate(item.updateDate)}</div>
