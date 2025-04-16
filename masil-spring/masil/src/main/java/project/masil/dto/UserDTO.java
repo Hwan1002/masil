@@ -27,8 +27,15 @@ public class UserDTO {
 	
 	private String authProvider ; // 소셜로그인공급자 
 	
+	private Double lat ; // 위도
+
+	private Double lng ; // 경도 
+	
 	private String verifyCode ; // 이메일 인증번호 
 	
 	private String refreshToken ; // refreshToken
+	
+	
+	
 	
 }

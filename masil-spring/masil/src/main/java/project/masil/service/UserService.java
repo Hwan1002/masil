@@ -190,7 +190,18 @@ public class UserService {
 		userRepository.save(user);
 		return ResponseDTO.<String>builder().status(200).value("새로운 비밀번호로 로그인해주세요").build();
 	}
-
+	
+	// 위도경도 설정메서드 .
+	public ResponseDTO<String> setLocation (String userId  , UserDTO dto ){
+		UserEntity user= userRepository.findByUserId(userId) ;
+		user.setLat(dto.getLat());
+		user.setLng(dto.getLng());
+		userRepository.save(user) ;
+		return ResponseDTO.<String>builder().status(200).value("위치설정이 완료되었습니다 .").build() ;				
+	}
+	
+	
+	
 	// entity -> dto
 	public UserDTO toDTO(UserEntity entity) {
 
