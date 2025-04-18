@@ -5,11 +5,10 @@ import axios from "axios";
 export const ProjectContext = createContext();
 
 // Axios 인스턴스 생성
-export const api = axios.create({
+export const Api = axios.create({
   baseURL: "http://localhost:9090",
   withCredentials: true,
 });
-
 
 export const ProjectProvider = ({ children }) => {
   //로그인 상태
@@ -20,11 +19,15 @@ export const ProjectProvider = ({ children }) => {
   //로딩중 상태
   const [isLoading, setIsLoading] = useState(false);
 
-  // 새로고침시 refreshToken(httpOnlyCookie) 를통한 accessToken 갱신요청 
+  // 새로고침시 refreshToken(httpOnlyCookie) 를통한 accessToken 갱신요청
   useEffect(() => {
     const refreshAccessToken = async () => {
       try {
-        const response = await axios.post('http://localhost:9090/auth/refresh-token', {}, { withCredentials: true });
+        const response = await axios.post(
+          "http://localhost:9090/auth/refresh-token",
+          {},
+          { withCredentials: true }
+        );
         setAccessToken(response.data.accessToken); // 새로운 Access Token 저장
         setLoginSuccess(true); // 로그인 상태 업데이트
       } catch (error) {
@@ -33,13 +36,13 @@ export const ProjectProvider = ({ children }) => {
         setLoginSuccess(false); // 로그인 상태 초기화
       }
     };
-      refreshAccessToken();
+    refreshAccessToken();
   }, []);
 
   // Axios Interceptor 설정
   useEffect(() => {
     // 요청 인터셉터
-    const requestInterceptor = api.interceptors.request.use(
+    const requestInterceptor = Api.interceptors.request.use(
       (config) => {
         if (accessToken) {
           config.headers.Authorization = `Bearer ${accessToken}`;
@@ -50,7 +53,7 @@ export const ProjectProvider = ({ children }) => {
     );
 
     // 응답 인터셉터
-    const responseInterceptor = api.interceptors.response.use(
+    const responseInterceptor = Api.interceptors.response.use(
       (response) => response,
       async (error) => {
         const originalRequest = error.config;
@@ -67,7 +70,7 @@ export const ProjectProvider = ({ children }) => {
             const newAccessToken = refreshResponse.data.accessToken;
             setAccessToken(newAccessToken); // 새로운 토큰 저장
             originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-            return api(originalRequest); // 원래 요청 재시도
+            return Api(originalRequest); // 원래 요청 재시도
           } catch (refreshError) {
             setAccessToken(null);
             setLoginSuccess(false);
@@ -81,23 +84,25 @@ export const ProjectProvider = ({ children }) => {
 
     // 컴포넌트 언마운트 시 인터셉터 제거
     return () => {
-      api.interceptors.request.eject(requestInterceptor);
-      api.interceptors.response.eject(responseInterceptor);
+      Api.interceptors.request.eject(requestInterceptor);
+      Api.interceptors.response.eject(responseInterceptor);
     };
   }, [accessToken]);
 
-
-
   const value = {
-    loginSuccess, setLoginSuccess,
-    accessToken, setAccessToken,
+    loginSuccess,
+    setLoginSuccess,
+    accessToken,
+    setAccessToken,
     // tokenTimer, setTokenTimer,
     // timeText, setTimeText,
-    imagePreview, setImagePreview,
-    isLoading, setIsLoading,
+    imagePreview,
+    setImagePreview,
+    isLoading,
+    setIsLoading,
   };
 
   return (
     <ProjectContext.Provider value={value}>{children}</ProjectContext.Provider>
   );
-}
+};
