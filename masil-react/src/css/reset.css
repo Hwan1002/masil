@@ -1,57 +1,71 @@
 /* 폰트 */
 @font-face {
-    font-family: 'Pretendard-Regular';
-    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
-    font-weight: 400;
-    font-style: normal;
+  font-family: "Pretendard-Regular";
+  src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff")
+    format("woff");
+  font-weight: 400;
+  font-style: normal;
 }
 
 @font-face {
-    font-family: 'SBAggroB';
-    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SBAggroB.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
+  font-family: "SBAggroB";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SBAggroB.woff")
+    format("woff");
+  font-weight: normal;
+  font-style: normal;
 }
 
 @font-face {
-    font-family: 'S-CoreDream-3Light';
-    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
+  font-family: "S-CoreDream-3Light";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff")
+    format("woff");
+  font-weight: normal;
+  font-style: normal;
 }
-
 
 @keyframes blink-caret {
-    from, to {
-      border-color: transparent;
-    }
-    50% {
-      border-color: orange;
-    }
-  } 
-*, :after, :before {
-    box-sizing: border-box;
+  from,
+  to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: orange;
+  }
+}
+*,
+:after,
+:before {
+  box-sizing: border-box;
 }
 
-h1,h2,h3,h4,h5{
-    font-family: 'S-CoreDream-3Light';
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: "S-CoreDream-3Light";
 }
-div,button,span,p,li,a{
-    font-family: 'Pretendard-Regular';
+div,
+button,
+span,
+p,
+li,
+a {
+  font-family: "Pretendard-Regular";
 }
-button{
-    cursor: pointer;
-    background: #a9ddb7;
-    border:none;
-    color:#fff;
-    font-size: .8rem;
-    width: 6em;
-    height: 2em;
-    border-radius: 10px;
-    transition: 0.5s;
+button {
+  cursor: pointer;
+  background: #a9ddb7;
+  border: none;
+  color: #fff;
+  font-size: 0.8rem;
+  width: 6em;
+  height: 2em;
+  border-radius: 10px;
+  transition: 0.5s;
 }
-button:hover{
-    background: #00a32c;
+button:hover {
+  background: #00a32c;
 }
 /* .logo{
     font-size: 25px;
@@ -59,66 +73,71 @@ button:hover{
     color: #fff;
 } */
 
- /* 헤더영역 */
-.header{
-    background: #a9ddb7;
-    position: fixed;
-    top: 0;
-    right: 0;
-    left: 0;
-    z-index: 10;
-    transition: opacity .3s linear;
+/* 헤더영역 */
+.header {
+  background: #a9ddb7;
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 10;
+  transition: opacity 0.3s linear;
 }
-.navBar button{
-    font-size: 1rem;
-    padding: 0 1rem;
-    transition: color .5s ease;
+.navBar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  row-gap: 50px;
+  min-width: 520px;
 }
-.header_container{
-    width: 100%;
-    max-width: 71.25rem;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 4.5rem;
-    padding: 1.25rem 1.5rem;
+.navBar button {
+  font-size: 1rem;
+  transition: color 0.5s ease;
 }
-.header_container button{
-    border:none;
-    background: transparent;
-    color: #fff;
+.header_container {
+  width: 100%;
+  max-width: 71.25rem;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 4.5rem;
+  padding: 1.25rem 1.5rem;
+}
+.header_container button {
+  border: none;
+  background: transparent;
+  color: #fff;
 }
 /* 컨텐츠 부모 태그 */
-.container{
-    position: relative;
-    left: 0;
-    top: 5em;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 45em;
+.container {
+  position: relative;
+  left: 0;
+  top: 5em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 45em;
 }
 /* loading중 스타일 */
-.loadingDiv{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+.loadingDiv {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 .loading {
-    border: 4px solid rgba(172, 172, 172, 0.1);
-    border-left-color: #60ff7d;
-    border-radius: 50%;
-    width: 2em;
-    height: 2em;
-    margin:1em 0;
-    animation: spin 1s linear infinite;
+  border: 4px solid rgba(172, 172, 172, 0.1);
+  border-left-color: #60ff7d;
+  border-radius: 50%;
+  width: 2em;
+  height: 2em;
+  margin: 1em 0;
+  animation: spin 1s linear infinite;
+}
+/* 스피너 애니메이션 */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
-  /* 스피너 애니메이션 */
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
+}

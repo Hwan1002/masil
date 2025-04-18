@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import '../css/PostRegist.css';
-import camera from '../css/img/photo/camera.png';
+import "../css/PostRegist.css";
+import camera from "../css/img/photo/camera.png";
 import DatePicker from "../component/DatePicker";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -15,20 +15,23 @@ const PostRegist = () => {
   const [endDate, setEndDate] = useState(new Date());
 
   const [formData, setFormData] = useState({
-    postTitle : "",
-    postPrice : "",
-    postStartDate : startDate,
-    postEndDate : endDate,
-    description : "",
-  })
-  const handleSubmit = async(e) => {
-    e.preventDefault();  
+    postTitle: "",
+    postPrice: "",
+    postStartDate: startDate,
+    postEndDate: endDate,
+    description: "",
+  });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     // 기본 폼 제출을 방지
     // 여기에 폼 제출 후 처리 로직 추가
     console.log(JSON.stringify(formData));
     const data = new FormData();
-      
-    data.append("dto", new Blob([JSON.stringify(formData)], { type: "application/json" }));
+
+    data.append(
+      "dto",
+      new Blob([JSON.stringify(formData)], { type: "application/json" })
+    );
     for (let i = 0; i < selectedImages.length; i++) {
       data.append("postPhotos", selectedImages[i]); // 파일 직접 추가
     }
@@ -38,23 +41,22 @@ const PostRegist = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-      if(response){
-        console.log(response.data.value)
+      if (response) {
+        console.log(response.data.value);
       }
     } catch (error) {
-        console.log(error.response.data.value);
+      console.log(error.response.data.value);
     }
-    console.log('폼 제출');
+    console.log("폼 제출");
   };
-  
 
   //가격 인풋창 변경상태
   const handleChange = (e) => {
-    const {name, value} = e.target;
+    const { name, value } = e.target;
     if (name === "postPrice") {
       //숫자만 입력할 수 있도록 필터링
       const numericValue = value.replace(/[^0-9]/g, "");
-     
+
       //천 단위 콤마 추가된 값 설정
       setCommaPrice(Number(numericValue).toLocaleString());
 
@@ -62,8 +64,6 @@ const PostRegist = () => {
     } else {
       setFormData({ ...formData, [name]: value });
     }
-   
-
   };
 
   const handleFileChange = (e) => {
@@ -88,7 +88,6 @@ const PostRegist = () => {
     e.target.value = "";
   };
 
-
   const triggerFileInput = () => {
     document.getElementById("fileInput").click(); // 버튼 클릭 시 파일 선택창 열기
   };
@@ -96,34 +95,34 @@ const PostRegist = () => {
   // 이미지 미리보기 삭제
   const handleRemoveImage = (indexToRemove) => {
     const isConfirmed = window.confirm("선택한 사진을 삭제하시겠습니까?");
-    
+
     if (!isConfirmed) {
       console.log("삭제 취소됨"); // 디버깅용 로그
       return; // 취소 시 함수 종료
     }
-  
-    console.log("삭제 진행"); // 디버깅용 로그
-    setSelectedImages((prevImages) => prevImages.filter((_, index) => index !== indexToRemove));
-  };
-  
-  
-  
 
+    console.log("삭제 진행"); // 디버깅용 로그
+    setSelectedImages((prevImages) =>
+      prevImages.filter((_, index) => index !== indexToRemove)
+    );
+  };
 
   return (
     <div className="postRegist">
       <h2>게시물 등록</h2>
-      <form onSubmit={(e)=>handleSubmit(e)}>
+      <form onSubmit={(e) => handleSubmit(e)}>
         <div className="formDiv">
           <label>사진({selectedImages.length}/4)</label>
-          <div className="photoContainer"> {/* 추가된 div */}
+          <div className="photoContainer">
+            {" "}
+            {/* 추가된 div */}
             <button
-             type="button"
+              type="button"
               className="registPhoto"
               onClick={triggerFileInput}
             >
               <img src={camera} alt="사진 등록" />
-            </button> 
+            </button>
             <input
               id="fileInput"
               name="profilePhoto"
@@ -133,21 +132,34 @@ const PostRegist = () => {
               style={{ display: "none" }}
               onChange={handleFileChange}
             />
-
             {/* 선택된 여러 이미지 미리보기 */}
             <div className="imagePreviewContainer">
               {selectedImages.map((image, index) => (
                 <div key={index} className="imageWrapper">
-                  <img src={image} alt={`선택된 이미지 ${index + 1}`} className="previewImage" />
-                  <button className="deleteButton" onClick={() => handleRemoveImage(index)}>✖</button>
+                  <img
+                    src={image}
+                    alt={`선택된 이미지 ${index + 1}`}
+                    className="previewImage"
+                  />
+                  <button
+                    className="deleteButton"
+                    onClick={() => handleRemoveImage(index)}
+                  >
+                    ✖
+                  </button>
                 </div>
               ))}
             </div>
-
           </div>
 
           <label>제목</label>
-          <input name="postTitle" type="text" placeholder="게시물 제목" maxlength="40" onChange={handleChange}/>
+          <input
+            name="postTitle"
+            type="text"
+            placeholder="게시물 제목"
+            maxlength="40"
+            onChange={handleChange}
+          />
           <label>가격</label>
           <input
             name="postPrice"
@@ -162,12 +174,17 @@ const PostRegist = () => {
         </div>
         <div className="formDiv">
           <label>설명</label>
-          <textarea className="registdescription" name="description" placeholder="등록할 물건의 설명을 작성해주세요." onChange={handleChange} />
+          <textarea
+            className="registdescription"
+            name="description"
+            placeholder="등록할 물건의 설명을 작성해주세요."
+            onChange={handleChange}
+          />
         </div>
-      <div className="registnavigate">
-        <button onClick={() => navigate('/rentalitem')}>뒤로가기</button>
-        <button type="submit">등록하기</button>
-      </div>
+        <div className="registnavigate">
+          <button onClick={() => navigate("/rentalitem")}>뒤로가기</button>
+          <button type="submit">등록하기</button>
+        </div>
       </form>
     </div>
   );
