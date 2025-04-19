@@ -7,34 +7,42 @@ html,body{
 
 .page-container {
   display: flex;
-  flex: 1;
   flex-direction: row;
-  padding: 5em 16px 16px 16px;
+  padding: 5em 10%;
   box-sizing: border-box;
   height: 100vh;
+  width: 100vw;
   min-height: 0;
+  justify-content: flex-start;
 }
 
 .filter-section {
   display: flex;
+  width: 210px;
   flex-direction: column;
-  width: 180px;
-  background-color: #f9f9f9;
   padding: 16px;
   border-radius: 8px;
-  border: 1px solid #ddd;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.filter-text{ 
+  padding: 5px;
+  margin-bottom: 15px;
+  border: 1px solid #707070;
+  border-radius: 8px;
 }
 
 /* 콘텐츠 섹션 - 남는 공간 채우기 */
 .content-section {
   display: flex;
   flex-direction: column;
-  flex: 1;
   overflow-y: auto;
+  scrollbar-width: none;
   min-height: 0;
   padding: 0px 16px;
   box-sizing: border-box;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 /* 아이템 목록 그리드 */
@@ -47,30 +55,42 @@ html,body{
 }
 
 /* 반응형 조정 */
-@media (max-width: 1780px) {
+@media (max-width: 1900px) {
   .rental-container {
     grid-template-columns: repeat(4, 1fr);
   }
 }
 
-@media (max-width: 1240px) {
+@media (max-width: 1580px) {
   .rental-container {
     grid-template-columns: repeat(3, 1fr);
   }
 }
 
-@media (max-width: 1000px) {
-  .filter-section {
-    display: none;
-  }
-
+@media (max-width: 1280px) {
   .rental-container {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 1000px) {
   .rental-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 880px) {
+  .rental-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 500px) {
+  .filter-section{
+    display: none;
+  }
+  .rental-container {
+    width: 100%;
     grid-template-columns: 1fr;
   }
 }
@@ -85,9 +105,9 @@ html,body{
   background: #fff;
   padding: 14px;
   border-radius: 10px;
-  border: 1px solid #ddd;
   box-sizing: border-box;
   position: relative;
+  text-decoration: none;
 }
 
 
@@ -95,19 +115,19 @@ html,body{
 /* 이미지 스타일 */
 .rental-image {
   width: 100%;
-  height: 100px;
+  height: 170px;
+  overflow: hidden;
   object-fit: cover;
   transition: transform 0.3s ease;
   transform-origin: center;
+  border-radius: 8px;
+  box-shadow: 0 0px 2px #999, 0px 0px 10px #999;
 }
 
 /* 이미지 확대 효과 */
 .rental-item:hover .rental-image {
   transform: scale(1.12);
 }
-
-/* 링크 스타일 초기화 */
-.rental-item-link {}
 
 /* 제목 스타일 */
 .rental-title {
@@ -126,6 +146,12 @@ html,body{
 .rental-price {
   font-size: 14px;
   color: #333;
+}
+
+.rental-address{
+  color: #707070;
+  padding-top: 5px;
+  font-size: 12px;
 }
 
 /* 판매 완료 배지 */

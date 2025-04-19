@@ -187,6 +187,7 @@ const PostRegist = () => {
             className="registdescription"
             name="description"
             placeholder="등록할 물건의 설명을 작성해주세요."
+            maxLength={2000}
             onChange={handleDescriptionChange}
           />
         </div>

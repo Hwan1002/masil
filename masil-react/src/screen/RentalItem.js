@@ -10,6 +10,7 @@ const RentalItem = () => {
   const [showSoldOnly, setShowSoldOnly] = useState(false);
   const [items, setItems] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [addressKeyword, setAddressKeyword] = useState("");
   const itemsPerPage = 15;
 
   const { loginSuccess } = useContext(ProjectContext);
@@ -26,9 +27,14 @@ const RentalItem = () => {
     fetchData();
   }, []);
 
-  const filteredItems = showSoldOnly
-    ? items.filter((item) => item.isSold)
-    : items;
+  const filteredItems = items.filter((item) => {
+    const matchesSold = showSoldOnly ? item.isSold : true;
+    const matchesAddress = item.userAddress
+      ?.toLowerCase()
+      .includes(addressKeyword);
+    return matchesSold && matchesAddress;
+  });
+  
 
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -42,6 +48,10 @@ const RentalItem = () => {
     }
   };
 
+  const filterAddress = (e) => {
+    setAddressKeyword(e.target.value.toLowerCase());
+  };
+
   const goToPage = (pageNum) => {
     setCurrentPage(pageNum);
   };
@@ -52,6 +62,13 @@ const RentalItem = () => {
       <aside className="filter-section">
         <h3>필터</h3>
         <div className="filter-options">
+          <input
+            type="text"
+            className="filter-text"
+            placeholder="구 이름으로 검색 (예: 부평구)"
+            onChange={filterAddress}
+            maxLength={5}
+          />
           <label>
             <input
               type="checkbox"
@@ -68,31 +85,25 @@ const RentalItem = () => {
       <div className="content-section">
         <div className="rental-container">
           {currentItems.map((item) => (
-            <div className="rental-item" key={item.postIdx}>
+            <a href={`/post/item/${item.postIdx}`} className="rental-item">
               {item.isSold && <span className="sold-badge">판매 완료</span>}
-              {/* <a href={`/post/item/${item.postIdx}`}>
-                <img
-                  src={`http://localhost:9090${item.postPhotoPaths}`}
-                  alt={item.postIdx}
-                  className="rental-image"
-                />
-              </a> */}
-              {item.postPhotoPaths && item.postPhotoPaths.map((path, index) => (
-                <a href={`/post/item/${item.postIdx}`} key={index}>
+
+              <div className="rental-image-wrapper">
+                {item.postPhotoPaths && item.postPhotoPaths.length > 0 && (
                   <img
-                    src={`http://localhost:9090${path}`}
-                    alt={`${item.postIdx}-${index}`}
+                    src={`http://localhost:9090${item.postPhotoPaths[0]}`}
+                    alt={item.postTitle}
                     className="rental-image"
                   />
-                </a>
-              ))}
-              <a href={`/post/item/${item.postIdx}`} className="rental-title">
-                {item.postTitle}
-              </a>
-              <p className="rental-price">
+                )}
+              </div>
+
+              <div className="rental-title">{item.postTitle}</div>
+              <div className="rental-price">
                 {item.postPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}원
-              </p>
-            </div>
+              </div>
+              <div className="rental-address">{item.userAddress}</div>
+            </a>
           ))}
         </div>
 
