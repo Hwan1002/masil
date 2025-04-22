@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useParams,useNavigate } from 'react-router-dom';
+import { useParams,useNavigate, redirect } from 'react-router-dom';
 import '../css/SelectedRentalItem.css'
 import axios from 'axios';
 import moment from 'moment';
@@ -16,14 +16,16 @@ const SelectedRentalItem = () => {
 
     const fetchPostItem = async (idx) => {
         try {
-            const response = await axios.get(`http://localhost:9090/post/item/${idx}`);
-            console.log(response.data);
+            const response = await Api.get(`/post/item/${idx}`);
             setItem(response.data)
+            console.log(response.data);
         } catch (error) {
             console.error("데이터 요청 실패:", error);
             return null;
         }
     };
+
+
 
     const deletePostItem = async (idx) => {
         try {
@@ -34,6 +36,8 @@ const SelectedRentalItem = () => {
             console.error("게시글 삭제 실패:", error);
         }
     };
+
+ 
 
     useEffect(() => {
         const loadData = async () => {
@@ -85,7 +89,7 @@ const SelectedRentalItem = () => {
                 </div>
                 <div>
                     <button className="selected-u">수정</button>
-                    <button onClick={deletePostItem}>삭제</button>
+                    <button onClick={(e) => deletePostItem(idx)}>삭제</button>
                 </div>
             </div>
             <div className='selected-item-container'>

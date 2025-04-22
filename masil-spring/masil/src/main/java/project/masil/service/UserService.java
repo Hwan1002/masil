@@ -203,7 +203,6 @@ public class UserService {
 	}
 	
 	
-	
 	// entity -> dto
 	public UserDTO toDTO(UserEntity entity) {
 

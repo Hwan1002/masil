@@ -53,7 +53,7 @@ public class PostEntity {
 	
 	private LocalDateTime postEndDate; //제품 빌리는 끝 날짜,시간
 	
-	@Column(length = 2000)
+	@Column(length = 1000)
 	private String description; //제품 설명
 	
 	@LastModifiedDate
