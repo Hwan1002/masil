@@ -23,7 +23,7 @@ const LocationButton = () => {
         
         try {
           // 서버로 위치 데이터 전송
-         const response =  await Api.post('user/setLocation', {
+         const response =  await Api.post('/user/setLocation', {
             lat: latitude,
             lng: longitude
           });
