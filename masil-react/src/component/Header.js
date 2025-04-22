@@ -62,22 +62,17 @@ const Header = () => {
     <>
       <header className="header">
         <div className="header_container">
-          <div>
-            <button className="logo" onClick={() => navigate("/")}>
-              Masil
-            </button>
-          </div>
-
+          <button className="logo" onClick={() => navigate("/")}>
+            Masil
+          </button>
           <nav className="navBar">
             <button onClick={() => scrollToSection("about")}>About Me</button>
-            <button onClick={() => navigate("/rentalitem")}>중고물건</button>
+            <button onClick={() => navigate("/rentalitem")}>렌탈물품</button>
             <button onClick={() => scrollToSection("archiving")}>
-              대여물품
+              Archiving
             </button>
-            <button onClick={() => scrollToSection("project")}>
-              자유게시판
-            </button>
-            <button onClick={() => scrollToSection("career")}>채팅</button>
+            <button onClick={() => scrollToSection("project")}>Projects</button>
+            <button onClick={() => scrollToSection("career")}>Career</button>
           </nav>
           <div>
             {loginSuccess ? (

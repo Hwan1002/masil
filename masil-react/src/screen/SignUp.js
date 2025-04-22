@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext, useEffect} from "react";
+import React, { useState, useRef, useContext, useEffect } from "react";
 import "../css/SignUp.css";
 import userDefault from "../css/img/userDefault.svg";
 import { ProjectContext } from "../context/MasilContext";
@@ -9,7 +9,6 @@ import LoadingModal from "../component/LoadingModal";
 import axios from "axios";
 import CryptoJS from "crypto-js";
 
-
 const SignUp = () => {
   //프로필사진 상태
   const [profilePhoto, setProfilePhoto] = useState(null);
@@ -17,12 +16,14 @@ const SignUp = () => {
   const [duplicateBtn, setDuplicateBtn] = useState(false);
   const [certifiedBtn, setCertifiedBtn] = useState(false);
   const [verifyCodeConfirm, setVerifyCodeConfirm] = useState(false);
+  //이메일 인증 완료 여부
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
   //비밀번호 확인  & 인증코드 상태 따로 관리
   const [pwdConfirm, setPwdConfirm] = useState("");
   const [verifyCode, setVerifyCode] = useState("");
   //이메일 인증 보낼때 나타나는 타이머 상태
   const [timer, setTimer] = useState(-1);
-  //이메일 readonly 관리 
+  //이메일 readonly 관리
   const [isReadonly, setIsReadOnly] = useState(false);
   //회원가입 formData
   const [formData, setFormData] = useState({
@@ -32,10 +33,10 @@ const SignUp = () => {
     password: "",
     email: "",
   });
-  
-  const {setIsLoading} = useContext(ProjectContext);
+
+  const { setIsLoading } = useContext(ProjectContext);
   const navigate = useNavigate();
- 
+
   //모달 기능 사용
   const {
     isModalOpen,
@@ -49,9 +50,9 @@ const SignUp = () => {
   //프로필 사진
   const inputImgRef = useRef(null);
   const { imagePreview, setImagePreview } = useContext(ProjectContext);
-  useEffect(()=>{
+  useEffect(() => {
     setImagePreview(userDefault);
-  },[])
+  }, []);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     // const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -93,10 +94,10 @@ const SignUp = () => {
   };
   const idDuplicate = async (e) => {
     e.preventDefault();
-    if(!formData.userId){
+    if (!formData.userId) {
       openModal({
-        message:"아이디를 입력해주세요."
-      })
+        message: "아이디를 입력해주세요.",
+      });
       return;
     }
     try {
@@ -118,39 +119,42 @@ const SignUp = () => {
     }
   };
 
-  const sendCertifyNumber = async(e) => {
+  const sendCertifyNumber = async (e) => {
     e.preventDefault();
-    if(formData.email === ''){
+    if (formData.email === "") {
       openModal({
         message: "이메일을 작성해주세요.",
-      })
+      });
       return;
     }
     setIsLoading(true);
     openModal({
-      title:"전송 중",
-      message: <LoadingModal/>,
+      title: "전송 중",
+      message: <LoadingModal />,
     });
     try {
-      const response = await axios.post('http://localhost:9090/user/send-email',{email:formData.email});
-      if(response){
+      const response = await axios.post(
+        "http://localhost:9090/user/send-email",
+        { email: formData.email }
+      );
+      if (response) {
         setIsReadOnly(true);
         setIsLoading(false);
         setCertifiedBtn(true);
         openModal({
-          message:response.data.value,
-        })
+          message: response.data.value,
+        });
         setTimer(300);
-        
+
         const timerInterval = setInterval(() => {
-          setTimer(prev => {
+          setTimer((prev) => {
             if (prev <= 1) {
               clearInterval(timerInterval);
               setCertifiedBtn(false);
               setIsReadOnly(false);
               return 0;
             }
-            
+
             return prev - 1;
           });
         }, 1000);
@@ -158,32 +162,33 @@ const SignUp = () => {
     } catch (error) {
       setIsLoading(false);
       openModal({
-        message:error.response.data.error,
-      })
+        message: error.response.data.error,
+      });
     }
-  }
-  const emailCertified = async(e) => {
+  };
+  const emailCertified = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:9090/user/verify',{
-      email:formData.email,verifyCode:verifyCode});
-      if(response){
+      const response = await axios.post("http://localhost:9090/user/verify", {
+        email: formData.email,
+        verifyCode: verifyCode,
+      });
+      if (response) {
         setIsEmailVerified(true);
         setCertifiedBtn(false);
         setVerifyCodeConfirm(true);
         openModal({
-          message:response.data.value
-        })
+          message: response.data.value,
+        });
       }
     } catch (error) {
       setIsEmailVerified(false);
       setCertifiedBtn(true);
       openModal({
-        message:error.response.data.error
-      })
-      
+        message: error.response.data.error,
+      });
     }
-  }
+  };
   //회원가입 버튼 클릭 함수
   const submitFormData = async (e) => {
     e.preventDefault();
@@ -209,8 +214,8 @@ const SignUp = () => {
       });
       return;
     }
-  
-    if(!verifyCodeConfirm){
+
+    if (!verifyCodeConfirm) {
       openModal({
         message: "이메일 인증을 해주세요.",
       });
@@ -221,7 +226,10 @@ const SignUp = () => {
       if (profilePhoto) {
         data.append("profilePhoto", profilePhoto);
       }
-      data.append("dto", new Blob([JSON.stringify(formData)], { type: "application/json" }));
+      data.append(
+        "dto",
+        new Blob([JSON.stringify(formData)], { type: "application/json" })
+      );
       const response = await axios.post("http://localhost:9090/user", data, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -231,7 +239,15 @@ const SignUp = () => {
         openModal({
           title: "회원가입",
           message: response.data.value,
-          actions: [{label: "확인", onClick:()=>{ closeModal(); navigate("/login"); }}],
+          actions: [
+            {
+              label: "확인",
+              onClick: () => {
+                closeModal();
+                navigate("/login");
+              },
+            },
+          ],
         });
       }
     } catch (error) {
@@ -242,14 +258,14 @@ const SignUp = () => {
     }
   };
   const [ip, setIp] = useState("");
-  const TIMESTAMP = Date.now().toString(); 
+  const TIMESTAMP = Date.now().toString();
   const ACCESS_KEY = "ncp_iam_BPAMKRArwHlymLpxZvb9"; // 네이버 클라우드 Access Key
   const SECRET_KEY = "ncp_iam_BPKMKRAFoKvZoslGFFPzHDygadA4JIEXB2"; // 네이버 클라우드 Secret Key
-  
-  const checkGeoLocation =  async(e) => {
+
+  const checkGeoLocation = async (e) => {
     e.preventDefault();
-    console.log("버튼클릭")
-    console.log("timestamp : ",TIMESTAMP);
+    console.log("버튼클릭");
+    console.log("timestamp : ", TIMESTAMP);
     const fetchIp = async () => {
       try {
         const response1 = await fetch("https://api64.ipify.org?format=json");
@@ -257,22 +273,27 @@ const SignUp = () => {
         setIp(data.ip);
         const urlPath = `/geolocation/v2/geoLocation?ip=${ip}&ext=t&enc=utf8&responseFormatType=json`;
         const message = `GET ${urlPath}\n${TIMESTAMP}\n${ACCESS_KEY}`;
-        const signature = CryptoJS.HmacSHA256(message, SECRET_KEY).toString(CryptoJS.enc.Base64);
-        console.log("ip 주소 : ",ip);
+        const signature = CryptoJS.HmacSHA256(message, SECRET_KEY).toString(
+          CryptoJS.enc.Base64
+        );
+        console.log("ip 주소 : ", ip);
         console.log("Signature:", signature);
-        const response2 = await axios.get(`https://geolocation.apigw.ntruss.com/geolocation/v2/geoLocation?ip=${ip}&ext=t&enc=utf8&responseFormatType=json`,{
-          headers: {
-            "x-ncp-apigw-timestamp": TIMESTAMP,
-            "x-ncp-iam-access-key": ACCESS_KEY,
-            "x-ncp-apigw-signature-v2": signature,
-          },
-        });
+        const response2 = await axios.get(
+          `https://geolocation.apigw.ntruss.com/geolocation/v2/geoLocation?ip=${ip}&ext=t&enc=utf8&responseFormatType=json`,
+          {
+            headers: {
+              "x-ncp-apigw-timestamp": TIMESTAMP,
+              "x-ncp-iam-access-key": ACCESS_KEY,
+              "x-ncp-apigw-signature-v2": signature,
+            },
+          }
+        );
       } catch (error) {
         console.error("위치 가져오기 오류:", error);
       }
-    }
+    };
     fetchIp();
-  }
+  };
   return (
     <div className="signup_form">
       <h2>회원가입</h2>
@@ -282,7 +303,11 @@ const SignUp = () => {
             <div className="photoImg">
               <img src={imagePreview} alt="preview" />
             </div>
-            <button type="button" className="profileChangeBtn" onClick={handleProfileClick}>
+            <button
+              type="button"
+              className="profileChangeBtn"
+              onClick={handleProfileClick}
+            >
               프로필 사진
             </button>
             <input
@@ -295,8 +320,10 @@ const SignUp = () => {
             />
           </div>
           <div>
-          <button type="button" onClick={checkGeoLocation}>위치</button>
-          {/* <h3>현재 위치</h3>
+            <button type="button" onClick={checkGeoLocation}>
+              위치
+            </button>
+            {/* <h3>현재 위치</h3>
           <p>위도: {geolocation.latitude}</p>
           <p>경도: {geolocation.longitude}</p>
           <p>정확도: {geolocation.accuracy}</p> */}
@@ -322,12 +349,12 @@ const SignUp = () => {
               </button>
             </div>
             <input
-                type="text"
-                name="userNickName"
-                className="form-input"
-                placeholder="닉네임을 입력하세요"
-                onChange={(e) => handleInputChange(e)}
-              />
+              type="text"
+              name="userNickName"
+              className="form-input"
+              placeholder="닉네임을 입력하세요"
+              onChange={(e) => handleInputChange(e)}
+            />
             <input
               type="password"
               name="password"
@@ -350,24 +377,36 @@ const SignUp = () => {
                 onChange={(e) => handleInputChange(e)}
                 readOnly={isReadonly}
               />
-              {certifiedBtn === false && timer <= 0? (
-                <button type="button" onClick={(e)=>sendCertifyNumber(e)}>인증</button>
-              ):(<button type="button" onClick={(e)=>sendCertifyNumber(e)}>재인증</button>)}
+              {certifiedBtn === false && timer <= 0 ? (
+                <button type="button" onClick={(e) => sendCertifyNumber(e)}>
+                  인증
+                </button>
+              ) : (
+                <button type="button" onClick={(e) => sendCertifyNumber(e)}>
+                  재인증
+                </button>
+              )}
             </div>
-            {timer > 0 && certifiedBtn? (
+            {timer > 0 && certifiedBtn ? (
               <div className="inputAndBtn emailCertified">
-                <input type="text" placeholder="인증번호를 입력해주세요." className="form-input" onChange={(e)=>setVerifyCode(e.target.value)}/>
-                <button onClick={(e)=>emailCertified(e)}>확인</button>
+                <input
+                  type="text"
+                  placeholder="인증번호를 입력해주세요."
+                  className="form-input"
+                  onChange={(e) => setVerifyCode(e.target.value)}
+                />
+                <button onClick={(e) => emailCertified(e)}>확인</button>
                 <div className="timer">
                   남은 시간: {Math.floor(timer / 60)}분 {timer % 60}초
                 </div>
               </div>
-            ):("")
-            }
+            ) : (
+              ""
+            )}
           </div>
         </div>
         <div className="signUp_button">
-        {/* <button type="button" onClick={() => navigate("/")}>돌아가기</button> */}
+          {/* <button type="button" onClick={() => navigate("/")}>돌아가기</button> */}
           <button type="submit">회원가입</button>
         </div>
       </form>
