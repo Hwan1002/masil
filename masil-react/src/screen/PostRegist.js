@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import "../css/PostRegist.css";
 import camera from "../css/img/photo/camera.png";
-import DatePicker from "../component/DatePicker";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import RentalDatePicker from "../component/datepicker/DatePicker";
 
 const PostRegist = () => {
   const navigate = useNavigate();
@@ -25,7 +25,7 @@ const PostRegist = () => {
     e.preventDefault();
     // 기본 폼 제출을 방지
     // 여기에 폼 제출 후 처리 로직 추가
-    console.log(JSON.stringify(formData));
+    console.log(formData, selectedImages);
     const data = new FormData();
 
     data.append(
@@ -109,29 +109,33 @@ const PostRegist = () => {
 
   return (
     <div className="postRegist">
-      <h2>게시물 등록</h2>
+      <div className="postRegist-title">
+        <h2>게시물 등록</h2>
+      </div>
       <form onSubmit={(e) => handleSubmit(e)}>
         <div className="formDiv">
-          <label>사진({selectedImages.length}/4)</label>
           <div className="photoContainer">
-            {" "}
-            {/* 추가된 div */}
-            <button
-              type="button"
-              className="registPhoto"
-              onClick={triggerFileInput}
-            >
-              <img src={camera} alt="사진 등록" />
-            </button>
-            <input
-              id="fileInput"
-              name="profilePhoto"
-              type="file"
-              accept="image/*"
-              multiple
-              style={{ display: "none" }}
-              onChange={handleFileChange}
-            />
+            <div className="photoUploadBtn">
+              <div>
+                <button
+                  type="button"
+                  className="registPhoto"
+                  onClick={triggerFileInput}
+                >
+                  <img src={camera} alt="사진 등록" />
+                </button>
+                <input
+                  id="fileInput"
+                  name="profilePhoto"
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  style={{ display: "none" }}
+                  onChange={handleFileChange}
+                />
+              </div>
+              <label>사진({selectedImages.length}/4)</label>
+            </div>
             {/* 선택된 여러 이미지 미리보기 */}
             <div className="imagePreviewContainer">
               {selectedImages.map((image, index) => (
@@ -147,43 +151,56 @@ const PostRegist = () => {
                   >
                     ✖
                   </button>
+                  <div class="overlay"></div>
                 </div>
               ))}
             </div>
           </div>
-
-          <label>제목</label>
-          <input
-            name="postTitle"
-            type="text"
-            placeholder="게시물 제목"
-            maxlength="40"
-            onChange={handleChange}
-          />
-          <label>가격</label>
-          <input
-            name="postPrice"
-            type="text"
-            placeholder="가격 입력"
-            onChange={handleChange}
-            value={commaPrice}
-          />
-        </div>
-        <div className="formDiv">
-          <DatePicker />
-        </div>
-        <div className="formDiv">
-          <label>설명</label>
-          <textarea
-            className="registdescription"
-            name="description"
-            placeholder="등록할 물건의 설명을 작성해주세요."
-            onChange={handleChange}
-          />
-        </div>
-        <div className="registnavigate">
-          <button onClick={() => navigate("/rentalitem")}>뒤로가기</button>
-          <button type="submit">등록하기</button>
+          <div className="div-grid">
+            <di class="div-input">
+              <label>제목</label>
+              <input
+                name="postTitle"
+                type="text"
+                placeholder="게시물 제목"
+                maxlength="40"
+                onChange={handleChange}
+              />
+            </di>
+            <div class="div-input">
+              <label>가격</label>
+              <input
+                name="postPrice"
+                type="text"
+                placeholder="가격 입력"
+                onChange={handleChange}
+                value={commaPrice}
+              />
+            </div>
+            <div class="div-input">
+              <RentalDatePicker
+                startDate={startDate}
+                endDate={endDate}
+                setStartDate={setStartDate}
+                setEndDate={setEndDate}
+              />
+              {/* <RentalDatePicker onChange={handleDateChange} /> */}
+              {/* <DatePicker /> */}
+            </div>
+            <div class="div-input">
+              <label>설명</label>
+              <textarea
+                className="registdescription"
+                name="description"
+                placeholder="등록할 물건의 설명을 작성해주세요."
+                onChange={handleChange}
+              />
+            </div>
+            <div className="registnavigate">
+              <button onClick={() => navigate("/rentalitem")}>뒤로가기</button>
+              <button type="submit">등록하기</button>
+            </div>
+          </div>
         </div>
       </form>
     </div>

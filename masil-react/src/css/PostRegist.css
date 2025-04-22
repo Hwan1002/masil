@@ -1,23 +1,30 @@
 /* 게시물 등록 전체컨테이너 */
-.postRegist{
+.postRegist {
   width: 40em;
-  padding: 1rem;
+  padding: 2rem;
 }
-.postRegist form{
+.postRegist form {
   display: flex;
   flex-direction: column;
 }
-
+.postRegist input {
+  border: 1px solid #ccc;
+}
+.postRegist input:focus {
+  border: 1px solid #a9ddb7;
+  outline: none;
+}
 /* 타이틀 */
-.postRegist h2{
-  text-align: center;
- }
+.postRegist-title {
+  display: flex;
+  justify-content: center;
+}
 
 /* 제목, 가격 인풋 */
-.postRegist input{
+.postRegist input {
   border-radius: 5px;
-  width:100%;
-  height:3em;
+  width: 100%;
+  height: 3em;
   padding: 10px;
   /* margin-bottom: 1.5em; */
 }
@@ -26,68 +33,97 @@
   border-color: #00a32c;
 }
 
-
-
 /* 제목, 가격 라벨*/
-.postRegist label{
+.postRegist label {
   border-radius: 5px;
-  margin-bottom: 0.2em;
-  margin-top: 0.7em;
 }
 
 /* 사진컨테이너 */
-.registPhoto{
-  width: 8em;
-  height:8em;
-  background-color: #fff;
-  border:1px solid #ccc;
+.photoContainer {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  margin:0 0 1.5em 0;
+  flex-direction: column;
+  text-align: center;
+}
+.photoUploadBtn {
+  display: flex;
+  flex-direction: column;
+}
+.photoUploadBtn label {
+  font-size: 12px;
+}
+.registPhoto {
+  position: relative;
+  overflow: hidden;
+  width: 8em;
+  height: 8em;
+  background-color: #fff;
+  margin: 0 0 1.5em 0;
 }
 
-.registPhoto:hover{
+.registPhoto:hover {
   background-color: #fff;
 }
 /* 사진사이즈 */
 .registPhoto img {
-  width:100%;
+  width: 100%;
+  display: block;
+  transition: transform 0.3s ease;
 }
 
-.registPhoto img:hover{
+.registPhoto img:hover {
   transform: scale(1.1);
 }
-
-/* 폼컨테이너 */
-.formDiv{
-  display: flex;
-  flex-direction: column; 
+.imageWrapper {
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+.imageWrapper:hover {
+  transform: scale(1.1);
+}
+.imageWrapper .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  margin-bottom: 2rem;
+  height: 100%;
+  background: white;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.imageWrapper:hover .overlay {
+  opacity: 0.4; /* 하얀색 투명도 조절 */
+}
+.deleteButton {
+  z-index: 99;
+}
+/* 폼컨테이너 */
+.formDiv {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 
 /* 뒤로가기, 등록하기 버튼 */
-.registnavigate{
+.registnavigate {
   display: flex;
   justify-content: center;
 }
 
-.registnavigate:first-child{
+.registnavigate button:first-child {
   margin-right: 1rem;
 }
 
 /* 가격 에러 */
-.registerror{
+.registerror {
   margin-bottom: 1.5em;
   color: red;
 }
 
 /* 미리보기 이미지들을 가로로 배치하는 스타일 */
 .imagePreviewContainer {
-  display: flex;  
-  flex-direction: row;  
-  flex-wrap: wrap; 
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
   gap: 1.5em; /* 이미지 간 간격 */
 }
 
@@ -136,29 +172,42 @@
   transform: scale(1.2);
 }
 
-.registdescription{
+.registdescription {
   width: 100%;
   min-height: 10em;
-  margin-bottom: 1.5em;
   border-radius: 5px;
   text-align: left;
   padding: 0.5em;
   white-space: normal;
   resize: none;
-  border: 2px solid #333;
+  border: 1px solid #ccc;
   font-family: Pretendard-Regular;
+  padding-top: 10px;
+  padding-left: 10px;
 }
 
 /* 플레이스홀더(placeholder)를 가로 + 세로 중앙 정렬 */
 .registdescription::placeholder {
   text-align: center;
   display: flex;
-  justify-content: center; 
-  line-height: 8.5em; 
+  justify-content: center;
+  line-height: 8.5em;
 }
 
 /* datepicker input 사이즈 재설정 */
-.css-jupps9-MuiInputBase-root-MuiOutlinedInput-root{
+.css-jupps9-MuiInputBase-root-MuiOutlinedInput-root {
   width: 100%;
   height: 3em;
+}
+
+.div-grid {
+  display: grid;
+  grid-auto-flow: row;
+  gap: 20px;
+  margin-top: 2rem;
+}
+.div-input {
+  display: grid;
+  grid-auto-flow: row;
+  gap: 20px;
 }
