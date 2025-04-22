@@ -10,7 +10,6 @@ const RentalItem = () => {
   const [showSoldOnly, setShowSoldOnly] = useState(false);
   const [items, setItems] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [addressKeyword, setAddressKeyword] = useState("");
   const itemsPerPage = 15;
 
   const { loginSuccess } = useContext(ProjectContext);
@@ -19,7 +18,6 @@ const RentalItem = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(`http://localhost:9090/post`);
-        console.log(response)
         if (response) setItems(response.data);
       } catch (error) {
         console.error("데이터 불러오기 실패:", error);
@@ -28,14 +26,9 @@ const RentalItem = () => {
     fetchData();
   }, []);
 
-  const filteredItems = items.filter((item) => {
-    const matchesSold = showSoldOnly ? item.isSold : true;
-    const matchesAddress = item.userAddress
-      ?.toLowerCase()
-      .includes(addressKeyword);
-    return matchesSold && matchesAddress;
-  });
-  
+  const filteredItems = showSoldOnly
+    ? items.filter((item) => item.isSold)
+    : items;
 
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -49,10 +42,6 @@ const RentalItem = () => {
     }
   };
 
-  const filterAddress = (e) => {
-    setAddressKeyword(e.target.value.toLowerCase());
-  };
-
   const goToPage = (pageNum) => {
     setCurrentPage(pageNum);
   };
@@ -63,13 +52,6 @@ const RentalItem = () => {
       <aside className="filter-section">
         <h3>필터</h3>
         <div className="filter-options">
-          <input
-            type="text"
-            className="filter-text"
-            placeholder="구 이름으로 검색 (예: 부평구)"
-            onChange={filterAddress}
-            maxLength={5}
-          />
           <label>
             <input
               type="checkbox"
@@ -107,6 +89,7 @@ const RentalItem = () => {
             </a>
           ))}
         </div>
+
 
         {/* 페이지네이션 */}
         <div className="pagination-wrapper">

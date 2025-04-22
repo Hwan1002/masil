@@ -8,7 +8,7 @@ import { Api } from '../context/MasilContext';
 
 
 const SelectedRentalItem = () => {
-    const { idx } = useParams();
+    const { idx} = useParams();
     const [item, setItem] = useState([]);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const navigate = useNavigate();
