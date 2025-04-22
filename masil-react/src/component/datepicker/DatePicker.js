@@ -18,7 +18,7 @@ const RentalDatePicker = ({ startDate, endDate, setStartDate, setEndDate }) => {
   return (
     <div className="div-datepicker">
       <div>
-        <label style={{ display: "block", marginBottom: "6px" }}>
+        <label style={{ display: "block", marginBottom: "10px" }}>
           대여 시작 시간
         </label>
         <DatePicker

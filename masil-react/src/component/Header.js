@@ -67,7 +67,7 @@ const Header = () => {
           </button>
           <nav className="navBar">
             <button onClick={() => scrollToSection("about")}>About Me</button>
-            <button onClick={() => navigate("/rentalitem")}>중고물건</button>
+            <button onClick={() => navigate("/rentalitem")}>렌탈물품</button>
             <button onClick={() => scrollToSection("archiving")}>
               Archiving
             </button>

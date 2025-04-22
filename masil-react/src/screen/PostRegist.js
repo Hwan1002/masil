@@ -1,68 +1,108 @@
 import React, { useState } from "react";
-import "../css/PostRegist.css";
-import camera from "../css/img/photo/camera.png";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import useModal from "../context/useModal";
+import { Api } from "../context/MasilContext";
 import RentalDatePicker from "../component/datepicker/DatePicker";
+import Modal from "../component/Modal";
+import camera from "../css/img/photo/camera.png";
+import "../css/PostRegist.css";
 
 const PostRegist = () => {
   const navigate = useNavigate();
   const [commaPrice, setCommaPrice] = useState("");
   const [selectedImages, setSelectedImages] = useState([]); // 여러 이미지를 저장하는 배열
-
   //DatePicker 에서 값 받아옴
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
 
-  const [formData, setFormData] = useState({
+  const [loginData, setLoginData] = useState({
     postTitle: "",
     postPrice: "",
     postStartDate: startDate,
     postEndDate: endDate,
     description: "",
   });
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    // 기본 폼 제출을 방지
-    // 여기에 폼 제출 후 처리 로직 추가
-    console.log(formData, selectedImages);
-    const data = new FormData();
 
-    data.append(
+  const {
+    isModalOpen,
+    modalTitle,
+    modalMessage,
+    modalActions,
+    openModal,
+    closeModal,
+  } = useModal();
+
+  // 등록하기
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // 기본 폼 제출 방지
+
+    const formData = new FormData();
+
+    // DTO 데이터를 FormData에 추가 (JSON 문자열로 변환)
+    formData.append(
       "dto",
-      new Blob([JSON.stringify(formData)], { type: "application/json" })
+      new Blob(
+        [
+          JSON.stringify({
+            postTitle: loginData.postTitle,
+            postPrice: loginData.postPrice,
+            postStartDate: startDate.toISOString(),
+            postEndDate: endDate.toISOString(),
+            description: loginData.description,
+          }),
+        ],
+        { type: "application/json" }
+      )
     );
-    for (let i = 0; i < selectedImages.length; i++) {
-      data.append("postPhotos", selectedImages[i]); // 파일 직접 추가
-    }
+
+    // 선택된 파일들을 FormData에 추가 (Blob으로 변환)
+    selectedImages.forEach((file) => {
+      const blob = new Blob([file], { type: file.type }); // 파일을 Blob으로 변환
+      formData.append("postPhoto", blob, file.name); // 'postPhoto'라는 이름으로 파일을 Blob으로 추가
+    });
+
     try {
-      const response = await axios.post("http://localhost:9090/post", data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+      const response = await Api.post("/post/upload", formData, {
+        // 'Content-Type'은 FormData를 사용할 때 자동으로 설정되므로 명시적으로 설정할 필요 없음
       });
-      if (response) {
-        console.log(response.data.value);
-      }
+
+      console.log("파일 업로드 성공:", response.data);
+      openModal({
+        title: `게시글 등록`,
+        message: `게시글이 등록되었습니다.`,
+        actions: [
+          {
+            label: "확인",
+            onClick: () => {
+              navigate("/");
+            },
+          },
+        ],
+      });
+      // navigate('/rentalitem'); // 성공 시 다른 페이지로 이동
     } catch (error) {
-      console.log(error.response.data.value);
+      console.error("파일 업로드 실패:", error);
+      openModal({
+        message: "렌탈물품의 사진을 등록해주세요.",
+      });
     }
-    console.log("폼 제출");
   };
 
   //가격 인풋창 변경상태
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === "postPrice") {
-      //숫자만 입력할 수 있도록 필터링
       const numericValue = value.replace(/[^0-9]/g, "");
-
-      //천 단위 콤마 추가된 값 설정
       setCommaPrice(Number(numericValue).toLocaleString());
-
-      setFormData({ ...formData, [name]: numericValue });
+      setLoginData((prev) => ({
+        ...prev,
+        [name]: numericValue,
+      }));
     } else {
-      setFormData({ ...formData, [name]: value });
+      setLoginData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
     }
   };
 
@@ -76,7 +116,9 @@ const PostRegist = () => {
     //5를 초과하면 경고메시지 띄움
     //return을 사용하여 함수 실행을 중단 / 실행을 중단하지 않으면 추가등록을 할 수 있는걸 사전에 방지함함
     if (selectedImages.length + files.length > 4) {
-      alert("최대 4개의 사진만 등록할 수 있습니다.");
+      openModal({
+        message: "최대 4개의 사진만 등록할 수 있습니다.",
+      });
       return;
     }
 
@@ -94,17 +136,27 @@ const PostRegist = () => {
 
   // 이미지 미리보기 삭제
   const handleRemoveImage = (indexToRemove) => {
-    const isConfirmed = window.confirm("선택한 사진을 삭제하시겠습니까?");
+    // const isConfirmed = window.confirm("선택한 사진을 삭제하시겠습니까?");
 
-    if (!isConfirmed) {
-      console.log("삭제 취소됨"); // 디버깅용 로그
-      return; // 취소 시 함수 종료
-    }
-
-    console.log("삭제 진행"); // 디버깅용 로그
-    setSelectedImages((prevImages) =>
-      prevImages.filter((_, index) => index !== indexToRemove)
-    );
+    // if (!isConfirmed) {
+    //   console.log("삭제 취소됨"); // 디버깅용 로그
+    //   return; // 취소 시 함수 종료
+    // }
+    openModal({
+      message: "선택한 사진을 삭제하시겠습니까?",
+      actions: [
+        {
+          label: "확인",
+          onClick: () => {
+            setSelectedImages((prevImages) =>
+              prevImages.filter((_, index) => index !== indexToRemove)
+            );
+            closeModal();
+          },
+        },
+        { label: "취소", onClick: closeModal },
+      ],
+    });
   };
 
   return (
@@ -202,6 +254,13 @@ const PostRegist = () => {
             </div>
           </div>
         </div>
+        <Modal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          title={modalTitle}
+          content={modalMessage}
+          actions={modalActions}
+        />
       </form>
     </div>
   );
