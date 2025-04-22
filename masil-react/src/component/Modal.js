@@ -3,6 +3,7 @@ import '../css/Modal.css';
 
 const Modal = ({ isOpen, onClose, title, content,  actions, className}) => {
     const [isVisible, setIsVisible] = useState(false);
+    
     useEffect(() => {
       if (isOpen) {
         setTimeout(()=> setIsVisible(true), 200);

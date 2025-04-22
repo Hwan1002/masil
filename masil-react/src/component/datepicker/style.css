@@ -1,0 +1,12 @@
+.div-datepicker {
+  display: grid;
+  grid-auto-flow: row;
+  gap: 20px;
+}
+
+.react-datepicker__header {
+  background-color: #a9ddb7;
+}
+.react-datepicker-wrapper {
+  width: 100%;
+}

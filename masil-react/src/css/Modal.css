@@ -1,74 +1,68 @@
 /* Modal.css */
 .modal-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.5s ease, transform 0.5s ease, visibility 0s linear 0.5s;
-    transform: scale(0.1);
-    z-index: 11;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease, transform 0.5s ease-in-out,
+    visibility 0.5s linear 0.5s;
+  transform: scale(0.1);
+  z-index: 11;
 }
 .modal-backdrop.open {
-    visibility: visible;
-    opacity: 1;
-    transform: scale(1);
+  visibility: visible;
+  opacity: 1;
+  transform: scale(1);
 }
-
 
 /* 모달창 기본 공통 css */
 .modal-content {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background: white;
-    padding: 1em;
-    border-radius: 8px;
-    min-width: 20em;
-    width: auto;
-    height: auto;
-    /* opacity: 0;
-    transition: opacity 0.5s ease, transform 0.5s ease; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: white;
+  padding: 1em;
+  border-radius: 8px;
+  min-width: 20em;
+  width: auto;
+  height: auto;
 }
-/* .modal-content.open {
-    opacity: 1;
-    transform: scale(1);
-} */
-.modal-content h2{
-    margin: 0;
-    font-size: 1.1rem;
+
+.modal-content h2 {
+  margin: 0;
+  font-size: 1.1rem;
 }
-.modal-content p{
-    font-size: 0.8rem;
+.modal-content p {
+  font-size: 0.8rem;
 }
 .modal-actions {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .modal-actions button {
-    background-color: #a9ddb7;
-    color: white;
-    width: 5em;
-    height: 2em;
-    margin-right: 1rem;
+  background-color: #a9ddb7;
+  color: white;
+  width: 5em;
+  height: 2em;
+  margin-right: 1rem;
 }
-.modal-actions button:last-child{
-    margin-right: 0;
+.modal-actions button:last-child {
+  margin-right: 0;
 }
 .modal-actions button[type="submit"] {
-    background-color: #4caf50;
-    color: white;
+  background-color: #4caf50;
+  color: white;
 }
-.modal-actions button:hover{
-    background-color: #4caf50;
+.modal-actions button:hover {
+  background-color: #4caf50;
 }
-

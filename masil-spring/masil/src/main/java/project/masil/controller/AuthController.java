@@ -15,12 +15,11 @@ import project.masil.service.JwtTokenProvider;
 public class AuthController {
 
 	@Autowired
-	private AuthService authService; 
+	private AuthService authService; // 사용자 데이터베이스 접근
 
 	// refreshToken을 통한 access토큰 재발급 메서드
 	@PostMapping("/refresh-token")
 	public ResponseEntity<?> refreshAccessToken(@CookieValue("refreshToken") String refreshToken) {
-		System.out.println("토큰 재발급됐음 ");
 		return ResponseEntity.ok(authService.ReissuanceAccessToken(refreshToken));
 	}
 }

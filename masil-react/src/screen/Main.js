@@ -1,15 +1,14 @@
-import '../css/Main.css';
+import "../css/Main.css";
 // import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { ProjectContext } from '../context/MasilContext';
 import LocationButton from '../component/LocationButton';
 import LocationPicker from '../component/LocationPicker';
 const Main = () => {
-
-  const {accessToken} = useContext(ProjectContext);
+  const { accessToken } = useContext(ProjectContext);
   // const navigate = useNavigate();
 
-  return(
+  return (
     <>
     <div className="mainContents">
       <div>메인페이지다 </div>
@@ -19,6 +18,6 @@ const Main = () => {
       <LocationPicker/>
     </div>
     </>
-  )
-}
+  );
+};
 export default Main;
