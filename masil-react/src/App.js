@@ -23,23 +23,33 @@ function App() {
     openModal,
     closeModal,
   } = useModal();
-
   return (
     <ProjectProvider>
       <div className="App">
         <Header />
-        <div className="container">
-          <Routes>
-            <Route path="/" element={<Main />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/mypage" element={<MyPage />} />
-            <Route path="/userfindid" element={<UserFindId />} />
-            <Route path="/userfindpwd" element={<UserFindPwd />} />
-            <Route path="/postRegist" element={<PostRegist />} />
-            <Route path="/rentalitem" element={<RentalItem />} />
-          </Routes>
-        </div>
+
+        {/* Routes 구분: container 적용 대상 */}
+        <Routes>
+          <Route
+            path="/*"
+            element={
+              <div className="container">
+                <Routes>
+                  <Route path="/" element={<Main />} />
+                  <Route path="/signup" element={<SignUp />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/mypage" element={<MyPage />} />
+                  <Route path="/userfindid" element={<UserFindId />} />
+                  <Route path="/userfindpwd" element={<UserFindPwd />} />
+                  <Route path="/postRegist" element={<PostRegist />} />
+                </Routes>
+              </div>
+            }
+          />
+
+          <Route path="/rentalitem" element={<RentalItem />} />
+          <Route path="/post/item/:idx" element={<SelectedRentalItem />} />
+        </Routes>
         <Modal
           isOpen={isModalOpen}
           onClose={closeModal}
