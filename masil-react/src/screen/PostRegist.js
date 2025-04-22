@@ -11,9 +11,11 @@ const PostRegist = () => {
   const navigate = useNavigate();
   const [commaPrice, setCommaPrice] = useState("");
   const [selectedImages, setSelectedImages] = useState([]); // 여러 이미지를 저장하는 배열
+  const [imagePreviews, setImagePreviews] = useState([]);
   //DatePicker 에서 값 받아옴
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
+
 
   const [loginData, setLoginData] = useState({
     postTitle: "",
@@ -34,56 +36,47 @@ const PostRegist = () => {
 
   // 등록하기
   const handleSubmit = async (e) => {
-    e.preventDefault(); // 기본 폼 제출 방지
+    e.preventDefault();
 
     const formData = new FormData();
 
     // DTO 데이터를 FormData에 추가 (JSON 문자열로 변환)
-    formData.append(
-      "dto",
-      new Blob(
-        [
-          JSON.stringify({
-            postTitle: loginData.postTitle,
-            postPrice: loginData.postPrice,
-            postStartDate: startDate.toISOString(),
-            postEndDate: endDate.toISOString(),
-            description: loginData.description,
-          }),
-        ],
-        { type: "application/json" }
-      )
-    );
+    formData.append('dto', new Blob([JSON.stringify({
+      postTitle: loginData.title,
+      postPrice: loginData.price || "0",
+      postStartDate: startDate.toISOString(),
+      postEndDate: endDate.toISOString(),
+      description: loginData.description
+    })], { type: "application/json" }));
 
     // 선택된 파일들을 FormData에 추가 (Blob으로 변환)
     selectedImages.forEach((file) => {
       const blob = new Blob([file], { type: file.type }); // 파일을 Blob으로 변환
-      formData.append("postPhoto", blob, file.name); // 'postPhoto'라는 이름으로 파일을 Blob으로 추가
+      formData.append('postPhoto', blob, file.name); // 'postPhoto'라는 이름으로 파일을 Blob으로 추가
     });
 
     try {
-      const response = await Api.post("/post/upload", formData, {
+      const response = await Api.post('/post/upload', formData, {
         // 'Content-Type'은 FormData를 사용할 때 자동으로 설정되므로 명시적으로 설정할 필요 없음
       });
 
-      console.log("파일 업로드 성공:", response.data);
+      console.log('파일 업로드 성공:', response.data);
       openModal({
         title: `게시글 등록`,
         message: `게시글이 등록되었습니다.`,
-        actions: [
-          {
-            label: "확인",
-            onClick: () => {
-              navigate("/");
-            },
-          },
-        ],
+        actions: [{
+          label: "확인", onClick: () => {
+            // closeModal(); window.location.assign("/rentalitem");
+            window.location.reload();
+          }
+        }]
       });
       // navigate('/rentalitem'); // 성공 시 다른 페이지로 이동
     } catch (error) {
-      console.error("파일 업로드 실패:", error);
+      console.error('파일 업로드 실패:', error);
       openModal({
-        message: "렌탈물품의 사진을 등록해주세요.",
+        title: `경고`,
+        message: error.response?.data?.error
       });
     }
   };
@@ -91,9 +84,14 @@ const PostRegist = () => {
   //가격 인풋창 변경상태
   const handleChange = (e) => {
     const { name, value } = e.target;
+  
     if (name === "postPrice") {
-      const numericValue = value.replace(/[^0-9]/g, "");
-      setCommaPrice(Number(numericValue).toLocaleString());
+      const numericValue = value.replace(/[^0-9]/g, ""); // 숫자만 추출
+  
+      // 포맷된 값 설정 (콤마를 넣은 가격)
+      setCommaPrice(numericValue ? Number(numericValue).toLocaleString() : ""); 
+  
+      // 숫자만 저장 (실제 가격 값)
       setLoginData((prev) => ({
         ...prev,
         [name]: numericValue,
@@ -105,59 +103,58 @@ const PostRegist = () => {
       }));
     }
   };
-
+  
   const handleFileChange = (e) => {
-    // e.target.files -> 사용자가 선택한 파일목록을 가져옴옴
-    // Array.from(e.target.files) -> FileList 객체를 배열(Array)로 변환
-    // 배열로 반환해야 .map() 사용할때 파일을 쉽게 처리할 수 있음
     const files = Array.from(e.target.files);
 
-    //selectedImages (이미 선택된 이미지 개수) + 새로 선택한 files 개수 가 5가 안넘는지 확인
-    //5를 초과하면 경고메시지 띄움
-    //return을 사용하여 함수 실행을 중단 / 실행을 중단하지 않으면 추가등록을 할 수 있는걸 사전에 방지함함
+    // selectedImages (이미 선택된 이미지 개수) + 새로 선택한 files 개수가 5가 안 넘는지 확인
     if (selectedImages.length + files.length > 4) {
-      openModal({
-        message: "최대 4개의 사진만 등록할 수 있습니다.",
-      });
+      alert("최대 4개의 사진만 등록할 수 있습니다.");
       return;
     }
 
-    //files.map((file) => URL.createObjectURL(file)); 각 파일을 브라우저에서 미리볼 수 있도록 URL 생성성
+    // 미리보기용 URL로 변환 (서버로 전송하는 것은 파일 객체)
     const imageUrls = files.map((file) => URL.createObjectURL(file));
-    setSelectedImages((prevImages) => [...prevImages, ...imageUrls]);
+
+    // 선택된 이미지들을 상태에 추가 (URL이 아니라 실제 파일 객체만 저장)
+    setSelectedImages((prevImages) => [...prevImages, ...files]);
 
     // 파일 선택 창 초기화 방지
     e.target.value = "";
   };
 
+
   const triggerFileInput = () => {
     document.getElementById("fileInput").click(); // 버튼 클릭 시 파일 선택창 열기
   };
 
-  // 이미지 미리보기 삭제
-  const handleRemoveImage = (indexToRemove) => {
-    // const isConfirmed = window.confirm("선택한 사진을 삭제하시겠습니까?");
-
-    // if (!isConfirmed) {
-    //   console.log("삭제 취소됨"); // 디버깅용 로그
-    //   return; // 취소 시 함수 종료
-    // }
-    openModal({
-      message: "선택한 사진을 삭제하시겠습니까?",
-      actions: [
-        {
-          label: "확인",
-          onClick: () => {
-            setSelectedImages((prevImages) =>
-              prevImages.filter((_, index) => index !== indexToRemove)
-            );
-            closeModal();
-          },
+// 이미지 미리보기 삭제
+const handleRemoveImage = (indexToRemove) => {
+  openModal({
+    message: "선택한 사진을 삭제하시겠습니까?",
+    actions: [
+      {
+        label: "확인",
+        onClick: () => {
+          // 선택된 이미지에서 삭제할 이미지 제외하고 상태 업데이트
+          setSelectedImages((prevImages) =>
+            prevImages.filter((_, index) => index !== indexToRemove)
+          );
+          
+          // 미리보기 이미지 상태에서 삭제할 이미지 제외하고 상태 업데이트
+          setImagePreviews((prevPreviews) =>
+            prevPreviews.filter((_, index) => index !== indexToRemove)
+          );
+          
+          // 모달 닫기
+          closeModal();
         },
-        { label: "취소", onClick: closeModal },
-      ],
-    });
-  };
+      },
+      { label: "취소", onClick: closeModal }, // 취소 버튼 클릭 시 모달 닫기
+    ],
+  });
+};
+
 
   return (
     <div className="postRegist">
@@ -192,18 +189,8 @@ const PostRegist = () => {
             <div className="imagePreviewContainer">
               {selectedImages.map((image, index) => (
                 <div key={index} className="imageWrapper">
-                  <img
-                    src={image}
-                    alt={`선택된 이미지 ${index + 1}`}
-                    className="previewImage"
-                  />
-                  <button
-                    className="deleteButton"
-                    onClick={() => handleRemoveImage(index)}
-                  >
-                    ✖
-                  </button>
-                  <div class="overlay"></div>
+                  <img src={URL.createObjectURL(image)} alt={`선택된 이미지 ${index + 1}`} className="previewImage" />
+                  <button type="button" className="deleteButton" onClick={() => handleRemoveImage(index)}>✖</button>
                 </div>
               ))}
             </div>

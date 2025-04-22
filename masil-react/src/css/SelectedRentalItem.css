@@ -97,6 +97,7 @@ body {
 
 .selected-rental-profile-image {
     height: 80%;
+    border-radius: 8px;
     object-fit: cover;
 }
 

@@ -16,7 +16,7 @@ const SelectedRentalItem = () => {
 
     const fetchPostItem = async (idx) => {
         try {
-            const response = await axios.get(`http://localhost:9090/post/item/${idx}`);
+            const response = await Api.get(`/post/item/${idx}`);
             console.log(response.data);
             setItem(response.data)
         } catch (error) {
@@ -85,7 +85,7 @@ const SelectedRentalItem = () => {
                 </div>
                 <div>
                     <button className="selected-u">수정</button>
-                    <button onClick={deletePostItem}>삭제</button>
+                    <button onClick={(e) => deletePostItem(idx)}>삭제</button>
                 </div>
             </div>
             <div className='selected-item-container'>
@@ -96,6 +96,7 @@ const SelectedRentalItem = () => {
                             <>
                                 <img
                                     src={`http://localhost:9090${item.postPhotoPaths[currentImageIndex]}`}
+                                    alt={item.postTitle}
                                     className="selected-rental-image"
                                 />
                                 {currentImageIndex > 0 && (

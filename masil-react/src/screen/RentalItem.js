@@ -10,6 +10,7 @@ const RentalItem = () => {
   const [showSoldOnly, setShowSoldOnly] = useState(false);
   const [items, setItems] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [addressKeyword, setAddressKeyword] = useState("");
   const itemsPerPage = 15;
 
   const { loginSuccess } = useContext(ProjectContext);
@@ -18,7 +19,9 @@ const RentalItem = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(`http://localhost:9090/post`);
+        console.log(response.data)
         if (response) setItems(response.data);
+
       } catch (error) {
         console.error("데이터 불러오기 실패:", error);
       }
@@ -26,9 +29,14 @@ const RentalItem = () => {
     fetchData();
   }, []);
 
-  const filteredItems = showSoldOnly
-    ? items.filter((item) => item.isSold)
-    : items;
+  const filteredItems = items.filter((item) => {
+    const matchesSold = showSoldOnly ? item.isSold : true;
+    const matchesAddress = (item.userAddress || "")
+      .toLowerCase()
+      .includes(addressKeyword);
+    return matchesSold && matchesAddress;
+  });
+
 
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -42,6 +50,10 @@ const RentalItem = () => {
     }
   };
 
+  const filterAddress = (e) => {
+    setAddressKeyword(e.target.value.toLowerCase());
+  };
+
   const goToPage = (pageNum) => {
     setCurrentPage(pageNum);
   };
@@ -52,6 +64,13 @@ const RentalItem = () => {
       <aside className="filter-section">
         <h3>필터</h3>
         <div className="filter-options">
+          <input
+            type="text"
+            className="filter-text"
+            placeholder="구 이름으로 검색 (예: 부평구)"
+            onChange={filterAddress}
+            maxLength={5}
+          />
           <label>
             <input
               type="checkbox"
@@ -66,13 +85,15 @@ const RentalItem = () => {
 
       {/* 콘텐츠 섹션 */}
       <div className="content-section">
+        
         <div className="rental-container">
           {currentItems.map((item) => (
-            <a href={`/post/item/${item.postIdx}`} className="rental-item">
-              {item.isSold && <span className="sold-badge">판매 완료</span>}
-
+            <a href={`/post/item/${item.postIdx}`} className="rental-item" key={item.postIdx}>
+              {item.isSold && <span className="sold-badge">대여 완료</span>}
+              {console.log("이미지 경로:", item.postPhotoPaths[0])}
               <div className="rental-image-wrapper">
                 {item.postPhotoPaths && item.postPhotoPaths.length > 0 && (
+                  
                   <img
                     src={`http://localhost:9090${item.postPhotoPaths[0]}`}
                     alt={item.postTitle}
@@ -83,13 +104,12 @@ const RentalItem = () => {
 
               <div className="rental-title">{item.postTitle}</div>
               <div className="rental-price">
-                {item.postPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}원
+                {item.postPrice ? item.postPrice.toLocaleString() : 'error'}원
               </div>
               <div className="rental-address">{item.userAddress}</div>
             </a>
           ))}
         </div>
-
 
         {/* 페이지네이션 */}
         <div className="pagination-wrapper">
