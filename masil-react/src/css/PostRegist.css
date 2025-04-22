@@ -54,8 +54,8 @@
 .registPhoto {
   position: relative;
   overflow: hidden;
-  width: 8em;
-  height: 8em;
+  width: 7em;
+  height: 7em;
   background-color: #fff;
   margin: 0 0 1.5em 0;
 }
@@ -193,7 +193,10 @@
   justify-content: center;
   line-height: 8.5em;
 }
-
+.registdescription:focus {
+  border: 1px solid #a9ddb7;
+  outline: none;
+}
 /* datepicker input 사이즈 재설정 */
 .css-jupps9-MuiInputBase-root-MuiOutlinedInput-root {
   width: 100%;
