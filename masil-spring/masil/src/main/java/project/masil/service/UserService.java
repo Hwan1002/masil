@@ -1,8 +1,10 @@
 package project.masil.service;
 
 import java.nio.file.Paths;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import project.masil.common.FileUploadUtil;
+import project.masil.dto.OAuthAttributes;
 import project.masil.dto.ResponseDTO;
 import project.masil.dto.UserDTO;
 import project.masil.entity.UserEntity;
@@ -27,6 +30,10 @@ public class UserService {
 
 	@Autowired // tokenProvider 의존성주입
 	private JwtTokenProvider tokenProvider;
+	
+	@Autowired
+	private GeocodingService geocodingService ;
+	
 
 	PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -66,8 +73,53 @@ public class UserService {
 				.build();
 	}
 
+	// 소셜로그인
+	public ResponseDTO<String> socialSignin(String authProvider, OAuthAttributes attributes,HttpServletResponse response) {
+
+	
+			// 1 dto에 포함되어있는 이메일 로 entity꺼내오기
+			Optional<UserEntity> existingUser = userRepository.findByEmail(attributes.getEmail());
+
+	        if (existingUser.isPresent()) {
+	            UserEntity user = existingUser.get();
+	         // 1-1 entity가 존재한다면 authProvider 속성이 null인지 아닌지 비교후 null일경우 중복된 이메일입니다 예외처리
+	            if (user.getAuthProvider() == null) {
+	            	 throw new EmailAlreadyExistsException(attributes.getEmail() + " 은(는) 중복된 이메일입니다.");
+	            }
+	        	// 1-2 null이 아닌경우 로그인로직 (accessToken,refreshToken 발급 및 쿠키저장  응답에 쿠키추가 등 밑의 로그인로직 추가 )
+			
+	            String accessToken = tokenProvider.generateAccessToken(user.getUserId());
+	    		String refreshToken = tokenProvider.generateRefreshToken(user.getUserId());
+
+	    		user.setRefreshToken(refreshToken);
+	    		userRepository.save(user); // DB에 RefreshToken 업데이트
+
+
+	            return ResponseDTO.<String>builder().status(200).value(refreshToken).accessToken(accessToken).build(); 
+	        }else {
+	        	// 1-3 엔티티가 존재하지 않는경우 회원가입및 로그인로직 .
+	        	
+	        	
+	        	
+	        	UserEntity user =UserEntity.builder()
+	        	.authProvider(authProvider)
+	        	.userName(attributes.getName())
+	        	.userId(attributes.getUserId())
+	        	.profilePhotoPath(DEFAULT_PROFILE_PHOTO)
+	        	.email(attributes.getEmail())
+	        	.userNickName(attributes.getUserId())
+	        	.build() ;
+	        	String accessToken = tokenProvider.generateAccessToken(user.getUserId());
+	    		String refreshToken = tokenProvider.generateRefreshToken(user.getUserId());
+	    		user.setRefreshToken(refreshToken);
+	    		userRepository.save(user); // DB에 RefreshToken 업데이트
+	    		return ResponseDTO.<String>builder().status(200).value(refreshToken).accessToken(accessToken).build(); 
+	        }
+		
+	}
+
 	// 로그인
-	public ResponseDTO<String> signin(UserDTO dto, HttpServletResponse response) {
+	public ResponseDTO<String> signin(UserDTO dto) {
 		UserEntity user = userRepository.findByUserId(dto.getUserId());
 		if (user == null) {
 			throw new IdIsNotExistsException("아이디가 일치하지않습니다.");
@@ -83,24 +135,16 @@ public class UserService {
 		user.setRefreshToken(refreshToken);
 		userRepository.save(user); // DB에 RefreshToken 업데이트
 
-		// 쿠키 객체생성
-		Cookie refreshCookie = new Cookie("refreshToken", refreshToken);
-		refreshCookie.setHttpOnly(true); // HttpOnly 설정
-		refreshCookie.setSecure(false); // HTTPS에서만 전송 (배포 환경에서 필수 true로 변환해주기)
-		refreshCookie.setPath("/"); // 쿠키의 경로 설정 (루트 경로)
-		refreshCookie.setMaxAge(7 * 24 * 60 * 60); // 유효기간: 7일
-
-		//
-
-		response.addCookie(refreshCookie); // 응답에 쿠키 추가
-
-		return ResponseDTO.<String>builder().status(200).value("환영합니다").accessToken(accessToken).build();
+		return ResponseDTO.<String>builder().status(200).value(refreshToken).accessToken(accessToken).build();
 
 	}
 
 	// 회원정보수정
 	public ResponseDTO<String> modify(String userId, MultipartFile profilePhoto, UserDTO dto) {
 		UserEntity user = userRepository.findByUserId(userId);
+
+		// 기존 프로필사진경로
+		String existingPhoto = user.getProfilePhotoPath();
 
 		if (profilePhoto == null || profilePhoto.isEmpty()) {
 			user.setProfilePhotoPath(dto.getProfilePhotoPath());
@@ -109,6 +153,15 @@ public class UserService {
 			user.setProfilePhotoPath(FileUploadUtil.saveFile(profilePhoto, uploadDir, "profilePhotos"));
 		}
 		user.setUserNickName(dto.getUserNickName());
+
+		// 프로필사진 변경시 기존프로필사진 삭제 .
+		if (dto.getProfilePhotoPath().equals("default")) { // 기본이미지로 변경시 기존 프로필사진 삭제 및 기본이미지 경로로 업데이트
+			user.setProfilePhotoPath(DEFAULT_PROFILE_PHOTO);
+			FileUploadUtil.deleteFile(existingPhoto);
+		} else if (!existingPhoto.equals(user.getProfilePhotoPath())) {
+			FileUploadUtil.deleteFile(existingPhoto);
+		}
+
 		userRepository.save(user);
 
 		return ResponseDTO.<String>builder().status(200).value("회원정보가 수정되었습니다 . ").build();
@@ -117,7 +170,7 @@ public class UserService {
 
 	// 아이디 찾기
 	public ResponseDTO<String> findUserId(String email) {
-		UserEntity user = userRepository.findByEmail(email);
+		UserEntity user = userRepository.findByEmail(email).get();
 		if (user == null) {
 			throw new EmailIsNotExistsException("이메일이 존재하지않습니다 .");
 		}
@@ -136,18 +189,30 @@ public class UserService {
 
 	// 비밀번호 재설정
 	public ResponseDTO<String> resetPassword(UserDTO dto) {
-		UserEntity user = userRepository.findByEmail(dto.getEmail());
+		UserEntity user = userRepository.findByEmail(dto.getEmail()).get();
 		user.setPassword(passwordEncoder.encode(dto.getPassword()));
 		userRepository.save(user);
 		return ResponseDTO.<String>builder().status(200).value("새로운 비밀번호로 로그인해주세요").build();
 	}
-
+	
+	// 위도경도 , 위치 설정메서드 .
+	public ResponseDTO<String> setLocation (String userId  , UserDTO dto ){
+		UserEntity user= userRepository.findByUserId(userId) ;
+		user.setLat(dto.getLat());
+		user.setLng(dto.getLng());
+		user.setAddress(geocodingService.reverseGeocodeToAddress(dto.getLat(), dto.getLng())) ;
+		userRepository.save(user) ;
+		return ResponseDTO.<String>builder().status(200).value("위치설정이 완료되었습니다 .").build() ;				
+	}
+	
+	
+	
 	// entity -> dto
 	public UserDTO toDTO(UserEntity entity) {
 
 		return UserDTO.builder().userId(entity.getUserId()).userName(entity.getUserName())
 				.userNickName(entity.getUserNickName()).email(entity.getEmail())
-				.profilePhotoPath(entity.getProfilePhotoPath()).location(entity.getLocation())
+				.profilePhotoPath(entity.getProfilePhotoPath()).address(entity.getAddress())
 				.authProvider(entity.getAuthProvider()).build();
 	}
 
@@ -155,7 +220,7 @@ public class UserService {
 	public UserEntity toEntity(UserDTO dto) {
 		return UserEntity.builder().userId(dto.getUserId()).password(dto.getPassword()).userName(dto.getUserName())
 				.userNickName(dto.getUserNickName()).email(dto.getEmail()).profilePhotoPath(dto.getProfilePhotoPath())
-				.location(dto.getLocation()).authProvider(dto.getAuthProvider()).build();
+				.address(dto.getAddress()).authProvider(dto.getAuthProvider()).build();
 	}
 
 	// 이메일 중복예외 내부클래스

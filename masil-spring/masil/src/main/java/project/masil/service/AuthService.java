@@ -1,7 +1,11 @@
 package project.masil.service;
 
+import java.util.Collections;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import jakarta.servlet.http.Cookie;
@@ -36,7 +40,16 @@ public class AuthService {
             throw new InvalidTokenException("RefreshToken이 유효하지 않습니다.");
         }
         
-       return  ResponseDTO.<String>builder().accessToken(tokenProvider.generateAccessToken(userId)).build();
+        String newAccessToken = tokenProvider.generateAccessToken(userId);
+        
+        // UsernamePasswordAuthenticationToken :  Authentication 구현체 .
+        // 토큰 재발급시점에서의 인증객체등록.
+        // 새로운 엑세스토큰 발급시 SecurityContext 즉시 업데이트 .
+        UsernamePasswordAuthenticationToken authentication = 
+                new UsernamePasswordAuthenticationToken(userId, null, Collections.emptyList());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+           
+       return  ResponseDTO.<String>builder().accessToken(newAccessToken).build();
 		
 	}
 

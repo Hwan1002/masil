@@ -1,9 +1,11 @@
 package project.masil.security;
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -27,14 +29,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	        String jwt = resolveToken(request);
 
 	        // JWT가 유효한 경우 인증 정보 설정
-	        if (StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt)) {
+	        if (StringUtils.hasText(jwt)) {
+	        	if(!jwtTokenProvider.validateToken(jwt)) {
+	        		// 토큰이 유효하지 않은경우 (만료포함)
+	        		response.sendError(HttpServletResponse.SC_UNAUTHORIZED,"Access Token has expired");
+	        		return ;
+	        }
+	        	
+	        	
 	            String userId = jwtTokenProvider.getUserIdFromToken(jwt); // 토큰에서 userId 추출
 	            
 
+	         // 기본 권한 부여
+	            List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
+	            
 	            // 인증 객체 생성 및 SecurityContext에 설정(token을 통해 userId만 저장)
-
 	            Authentication authentication =
-	                    new UsernamePasswordAuthenticationToken(userId, null);
+	                    new UsernamePasswordAuthenticationToken(userId, null,authorities);
 	            SecurityContextHolder.getContext().setAuthentication(authentication);
 	        }
 

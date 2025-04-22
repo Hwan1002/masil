@@ -12,6 +12,7 @@ import UserFindId from "./screen/UserFindId";
 import UserFindPwd from "./screen/UserFindPwd";
 import PostRegist from "./screen/PostRegist";
 import RentalItem from "./screen/RentalItem";
+import SelectedRentalItem from "./screen/SelectedRentalItem";
 
 function App() {
   const {

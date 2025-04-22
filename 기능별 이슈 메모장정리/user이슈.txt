@@ -380,3 +380,189 @@ secret 키를통해서 HMAC -SHA256 으로 암호화후 Base64 인코딩
 
 
 
+ // Axios Interceptor 설정
+  useEffect(() => {
+    // 요청 인터셉터
+    const requestInterceptor = api.interceptors.request.use(
+      (config) => {
+        const token = accessToken;
+        console.log(token);
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+      },
+      (error) => Promise.reject(error)
+    );
+
+    // 응답 인터셉터
+    const responseInterceptor = api.interceptors.response.use(
+      (response) => response,
+      async (error) => {
+        const originalRequest = error.config;
+
+        if ([401, 403].includes(error.response?.status) && !originalRequest._retry) {
+          originalRequest._retry = true;
+
+          try {
+            const refreshResponse = await axios.post(
+              "http://localhost:9090/auth/refresh-token",
+              {},
+              { withCredentials: true }
+            );
+
+            const newAccessToken = refreshResponse.data.accessToken;
+            
+            // 1. API 인스턴스 기본헤더 업데이트 
+            api.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
+
+            // 2. 원래 요청 구성복제 + 새 헤더적용 .
+            const retryConfig ={
+              ...originalRequest,
+              headers:{
+                ...originalRequest.headers,
+                Authorization: `Bearer ${newAccessToken}`
+              }
+            };
+            setAccessToken(newAccessToken); // 새로운 토큰 저장
+            // 3. API 인스턴스로 재요청
+            return api(retryConfig);
+
+          } catch (refreshError) {
+            setAccessToken(null);
+            setLoginSuccess(false);
+            return Promise.reject(refreshError);
+          }
+        }
+
+        return Promise.reject(error);
+      }
+    );
+
+    // 컴포넌트 언마운트 시 인터셉터 제거
+    return () => {
+      api.interceptors.request.eject(requestInterceptor);
+      api.interceptors.response.eject(responseInterceptor);
+    };
+  }, [accessToken]);
+
+
+accessToken이 유효할떄에 대한 인터셉터는 정상적으로 작동을하는것같다 , 그렇기떄문에 mypage가 정상적으로 접근이가능한것이고 ,
+하지만 1분이지나 accessToken이 만료되었을때는 정상적으로 작동을하지않고있다 .
+
+
+mypage에서 새로고침시에 오류가나더라도401을 반환할수있게끔 작성해보자 . 
+401이나왔을때는 인터셉팅이 되는지 확인을 먼저해야할거같다 . 
+403이나오는 이유 :  spring securtiycontext에서 403을 반환하기때문. 
+
+
+새로고침시 : accessToken이 재발급된다 . contextAPI가 token뿌려줌 . 뿌려지기전의 token을가지고 mypage요청이 서버에 요청하게됨 그렇기에 403이 나옴
+해결방법은 뿌려지고난후에 token을 mypage에서 서버에 요청해야함. 
+
+axios 인터셉터는 동기적으로 동작하지만 리엑트의 상태변수는 비동기로 업데이트된다 .
+인터셉터가 요청을 가로채는시점에서 accessToken이 아직 갱신되지않았다면 잘못된 헤더를포함한 요청이 서버로 전송될 수 있다 .
+
+초기요청차단을 하는방법에대해서 작성해보자 .
+
+요청인터셉터 : 모든요청에대해 현재 accessToken을 헤더에 추가 (react 상태에서 관리하는 최신 accessToken을 참조 .)
+응답인터셉터 : 서버에서 401, 또는 403 응답을 반환하면 , 해당요청을 가로채서 refreshToken()을 호출
+
+마이페이지속에서 새로고침을했을때도 refreshToken 호출 , 인터셉터에서도 refreshToken을 호출 충돌의 위험성이짙음
+
+인터셉터에 큐(대기열) 을 사용하여 첫번쨰 요청이 토큰 갱신을 완료한 후 대기중인 다른요청들이 새로운토큰으로 재요청되도록 해야한다 . 
+그리고 새로고침시 최상위컴포넌트가 아직 새로운 토큰을 발급받기전에 하위컴포넌트가 API 요청을 보내는경우를 방지하기 위해서 refreshToken() 호출이 완료된이후 
+하위컴포넌트가 렌더링되도록 보장해야한다 . (isLoading과 같은 상태변수를 추가) 로딩상태를통한 하위컴포넌트렌더링 핸들링 
+
+
+
+
+
+
+
+
+메인페이지에서 새로고침시 : 정상적으로 console에 새로운 accessToken 재발급되는것 확인 .
+그 accessToken을통한 mypage조회 : 정상적으로 작동되는것 확인. 
+새로고침시 : accessToken재발급되는건 확인되었으나 , mypage요청부에서 403에러출력 .
+
+
+현재코드에서 최초로 마이페이지접근시 정상작동 , 처음 새로고침시 정상작동 . 두번쨰 새로고침부터 403에러 
+401로왔을떄 정상처리가되는지 확인해보자 . 된다면 401을 반환하게 해보자 
+
+401에러가 나오게끔하는데에는 성공했음 .
+securityConfig를 확장하여 401이반환되게 수정.
+인터셉터에서 401에러가나왔을때의 대한 코드로 리액트코드수정해보자 .
+
+
+서버에서 accessToken 만료시에 401에러를 보내야한다 . 모든 accessToken을 검증하는방식을 @AuthenticationPrincipal 어노테이션을 통해서 시큐리티컨텍스트홀더에 저장되어있는 userId를 추출해온다 . 이부분에대해서
+어떻게 시큐리티쪽에서 401을보낼것인지 , 그리고 userId가 어떻게 저장되는지 좀 더 세세하게 알아야한다 .
+
+
+
+
+현재상황 : 최초에러401 -> 응답인터셉터 : 401을받았기에 accssToken재요청후 newAccessToken변수에 저장 -> 원래요청헤더에 newAccessToken 추가해서 원래요청 재시도 -> 근데도 에러가나왔음 .
+에러로그는 최초에 한번 나와야된다 . 그이후에 응답인터셉터를동해 새로운 엑세스토큰을 발급받고 원래요청헤더에 새로운엑세스토큰을 추가해서 보내기때문에 서버와 클라이언트에 에러로그는 한번씩만나와야함 .
+서버 : 최초에러401 반환 -> 토큰재발급됐다는콘솔 확인 , 그후에 두번의 401에러 (시큐리티컨텍스트홀더에 등록된 아이디가없다라는 에러나옴 (잘못된 토큰을통한 요청이왔기때문 , 그리고 요청이 한번만오는게아니라 두번왔음 .) 
+클라이언트 : 에러 세번반환됨 .
+그 이후에 다시한번 메인페이지에서 마이페이지 버튼을 클릭했을때는 정상적으로 작동함 .
+
+
+현재상황 : 최초에러 401 -> 응답인터셉터 : 401을받고 accessToken 재요청후 newAccessToken 변수에 새토큰저장 -> 원래요청헤더에 newAccessToken 추가해서 원래요청 재시도 -> 에러로그출력-> 정상작동 
+서버 : 최초에러401 반환 -> 토큰재발급됐다는콘솔 확인 , 그후에 두번의 401에러 (시큐리티컨텍스트홀더에 등록된 아이디가없다라는 에러나옴 (잘못된 토큰을통한 요청이왔기때문 , 그리고 요청이 한번만오는게아니라 두번왔음 .)-> 정상 데이터 반환
+클라이언트 : 에러 두번반환됨 .  
+
+
+
+일단 얼추해결이 됐다 .
+서버에서는 인증에러를 
+401에러를 반환하게끔 securityConfig쪽에서의 인증에러가나왔을때 401에러를 반환하게수정하였고 , 리프레시토큰을이용한 엑세스토큰 재발급시에 즉시
+인증객체를 저장하게 로직을 수정하여 해결하였다 . 
+
+
+지금문제는 최초에러(accessToken만료) -> 응답인터셉터작동 , refresh-Token에 AccessToken 재발급요청 -> 새로운토큰을 기존요청헤더의 추가 -> 정상작동 의 로직에서
+최초에러(accessToken만료) -> 응답인터셉터작동 , refresh-Token에 AccessToken 재발급요청 -> 새로운토큰을 기존요청헤더의 추가 -> 401에러발생 (Security contextHolder 에서 인증객체를 찾을수없음 ) -> 재요청 ->정상작동
+의 로직으로 진행되고있다는점이다 . 
+AccessToken만료시 두번쨰 요청에서는 한번 더 에러가나고   accessToken이 변경됨을 감지했을때 세번째 요청을보낸후 정상작동한다는점인데 .
+accessToken을 react state상태변수로 관리하고있기에 비동기처리에대한 이유때문인거같은데 해결방법이 필요하다 . 
+
+
+
+
+
+이메일 인증확인버튼을 누를때 중복된 이메일인경우 중복된이메일입니다 , 다른이메일을 작성해주세요 라는메세지와함께 readOnly 해제
+
+유저닉네임은 고유값이 들어가있는데 이걸 고유값으로 설정하지않아야될거같음 .
+
+로그아웃을 하지않고 종료후 하루뒤에 서버에 들어갔을때도 로그인이 되어있음 .
+
+
+소셜로그인 :
+
+구글 소셜로그인 성공적으로 동작 ,
+문제점 1: userNickName 필드가 누락되어있음 이름과 같이가거나 임의의 닉네임을 set해줘야할것같음 . (userId와 같은 구글의 아이디 식별자로 set)
+문제점 2: profilePhotoPath가 url형식으로 되어있음 , 이부분도 기본이미지로 set을 해줘야할것같음 ( 기본이미지로 set )
+문제점 3: 일반로그인사용자가 사용한 이메일로 소셜로그인 실행시 예외처리가 서버로그에 출력되고 클라이언트에는 whiteLabel error Page로 반환됨 . 
+
+
+
+네트워크에서 어떤데이터가 응답으로 넘어가는지 확인필요함
+successHandler에 적혀있는 body에 json으로 넘긴객체들은 어디로넘어가고있는지 ? 그리고 클라이언트 코드에서 json을 받아서 사용할것인지에대해서도 필요함
+ .(이부분이 해결된다면 문제 3번의 에러처리도 유연하게 가능할것같음 .)
+
+refreshToken이 응답쿠키에 전송되어있기에 accessToken은 받더라도  리다이렉트 되기 때문에 refreshToken을이용한 재발급이 이루어져서 굳이 넘겨주지않아도 될것같음 .
+
+리다이렉트를 적용시키지 않았을경우 이페이지에 도착하며 밑의 json객체를 얻게된다 . 그 이후 localhost:3000으로 이동하면 성공적으로 소셜로그인이 이루어져있고 ,  refreshToken도 쿠키에 저장되어있다 
+하지만 문제3의시나리오로 소셜 로그인요청시에는 똑같은 문제점이 발생한다 .
+http://localhost:9090/login/oauth2/code/google?state=-q01Cmy9A8b6ksVA7RaAtRo31A8z33XHTVP3rWNvf3s%3D&code=4%2F0Ab_5qlmHIbTIBKQjGMOI1DuluxtD4XSVHdk2SebqQBZp8vOM0Ut5yAlkdtEPc47i024tRA&scope=email+profile+openid+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&authuser=1&prompt=none
+{"status":200,"data":null,"value":"","error":null,"accessToken":"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMTMzMzc4NzIwMjI5MzAwMDM4NjQiLCJpYXQiOjE3NDQyMDY1MjMsImV4cCI6MTc0NDIwNzQyM30.hXAawCNcVIrXnLKswTJn9dlaw1nsfbIhSx9pki-Xqvg"}
+
+
+소셜로그인 실패시 failureHandler로 빠지는상황인지 체크
+naver,kakao 도입 
+
+로그아웃을 하지않고 종료시에 쿠키가남아있거나 , db에서 refreshToken이 삭제되지않은상태 해결필요함 .
+
+마이페이지에서 이메일인증을 통한 비밀번호 변경시에 db에 등록되어있는 이메일로 인증만 하게된다면 그냥 넘어가게 되어있음 .이부분도 문제해결 필요함 .
+
+
+
+게시글 업로드버튼 클릭시에 엑세스토큰이 만료되었을때에 401 Unauthorized 에러메세지 반환됨 .
