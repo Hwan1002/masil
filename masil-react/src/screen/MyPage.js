@@ -8,7 +8,6 @@ import axios from 'axios';
 import LoadingModal from '../component/LoadingModal';
 import '../css/MyPage.css'
 import { Api } from '../context/MasilContext';
-import userDefault from "../css/img/userDefault.svg";
 const MyPage = () => {
 
 
@@ -49,7 +48,7 @@ const MyPage = () => {
         console.error("사용자 정보를 불러오는 중 오류 발생:", error);
       }
     };
-    console.log("내토큰", accessToken)
+    console.log("내토큰",accessToken)
     if (accessToken) {
       getUserInfo();
     }
@@ -133,32 +132,6 @@ const MyPage = () => {
     }
   };
 
-  // const putUserInfo = async () => {
-  //   const data = new FormData();
-
-  //   // 프로필 사진이 선택되었다면 FormData에 추가
-  //   if (imagePreview) {
-  //     data.append("profilePhoto", inputImgRef.current.files[0]);
-  //   }
-
-  //   // 다른 formData는 JSON 형태로 변환하여 'dto'에 담아 추가
-  //   data.append("dto", new Blob([JSON.stringify(formData)], { type: "application/json" }));
-
-  //   try {
-  //     const response = await Api.put(`/user/modify`, data,);
-
-  //     if (response.status === 200) {
-  //       openModal({
-  //         message: response.data.value,
-  //         actions: [{ label: "확인", onClick: () => navigate('/') }]
-  //       });
-  //     }
-  //   } catch (error) {
-  //     openModal({ message: "정보 수정에 실패했습니다. 다시 시도해주세요." });
-  //     console.error(error);
-  //   }
-  // };
-
   const putUserInfo = async () => {
     const data = new FormData();
 
@@ -169,7 +142,7 @@ const MyPage = () => {
     data.append("dto", new Blob([JSON.stringify(formData)], { type: "application/json" }));
 
     try {
-      const response = await Api.put(`/user/modify`, data);
+      const response = await Api.put(`/user/modify`, data,);
 
       if (response.status === 200) {
         openModal({

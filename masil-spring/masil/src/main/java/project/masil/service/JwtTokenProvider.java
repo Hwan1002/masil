@@ -18,7 +18,7 @@ public class JwtTokenProvider {
     private final Key secretKey;
 
     // Access Token 유효기간 (15분)
-    private final long accessTokenValidityInMilliseconds = 1000 * 60 * 1;
+    private final long accessTokenValidityInMilliseconds = 1000 * 60 * 15;
 
     // Refresh Token 유효기간 (7일)
     private final long refreshTokenValidityInMilliseconds = 1000 * 60 * 60 * 24 * 7;

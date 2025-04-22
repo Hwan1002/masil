@@ -1,17 +1,18 @@
-import React, { useContext, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Modal from './Modal';
-import useModal from '../context/useModal';
-import { Api, ProjectContext } from "../context/MasilContext";
-import axios from 'axios';
+import React, { useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import Modal from "./Modal";
+import useModal from "../context/useModal";
+import { ProjectContext } from "../context/MasilContext";
+import axios from "axios";
 
 const Header = () => {
-  const { loginSuccess, setLoginSuccess, accessToken, setAccessToken } = useContext(ProjectContext);
+  const { loginSuccess, setLoginSuccess, accessToken, setAccessToken } =
+    useContext(ProjectContext);
   const navigate = useNavigate();
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      element.scrollIntoView({ behavior: "smooth" });
     }
   };
   const {
@@ -24,51 +25,82 @@ const Header = () => {
   } = useModal();
 
   const logoutClicked = (e) => {
+    e.preventDefault();
     try {
       const logout = async () => {
-        const response = await Api.post('/user/logout',
-        )
+        const response = await axios.post(
+          "http://localhost:9090/user/logout",
+          {}, // 요청 본문은 비워둠
+          { withCredentials: true } // 옵션객체에 httpOnly 쿠키 포함
+        );
         if (response) {
           setLoginSuccess(false);
           setAccessToken(null);
           openModal({
             message: response.data.value,
-            actions: [{
-              label: "확인", onClick: () => {
-                closeModal(); window.location.assign("/");
-                window.location.reload();
-              }
-            }]// 명시적 페이지 이동 및 새로고침
-          })
+            actions: [
+              {
+                label: "확인",
+                onClick: () => {
+                  closeModal();
+                  window.location.href = "/";
+                },
+              },
+            ],
+          });
         }
-      }
+      };
       logout();
     } catch (error) {
       openModal({
         message: error.response.data.error,
-      })
+      });
     }
-  }
-
-
+  };
 
   return (
     <>
-      <header className='header'>
-        <div className='header_container'>
-          <button className='logo' onClick={() => navigate("/")}>Masil</button>
-          <nav className='navBar'>
-            <button onClick={() => scrollToSection('about')}>About Me</button>
-            <button onClick={() => navigate('/rentalitem')}>중고물건</button>
-            <button onClick={() => scrollToSection('archiving')}>Archiving</button>
-            <button onClick={() => scrollToSection('project')}>Projects</button>
-            <button onClick={() => scrollToSection('career')}>Career</button>
+      <header className="header">
+        <div className="header_container">
+          <div>
+            <button className="logo" onClick={() => navigate("/")}>
+              Masil
+            </button>
+          </div>
+
+          <nav className="navBar">
+            <button onClick={() => scrollToSection("about")}>About Me</button>
+            <button onClick={() => navigate("/rentalitem")}>중고물건</button>
+            <button onClick={() => scrollToSection("archiving")}>
+              대여물품
+            </button>
+            <button onClick={() => scrollToSection("project")}>
+              자유게시판
+            </button>
+            <button onClick={() => scrollToSection("career")}>채팅</button>
           </nav>
           <div>
             {loginSuccess ? (
               <>
                 {/* 로그아웃시 쿠키랑 토큰 삭제 시키는 axios 함수 추가로 인해 onClick안에 하나의 함수로 묶어서 정의 */}
-                <button onClick={() => openModal({ message: "로그아웃 하시겠습니까?", actions: [{ label: "확인", onClick: (e) => { logoutClicked(e) } }, { label: "취소", onClick: closeModal }] })}>LOGOUT</button>
+                <button
+                  onClick={() =>
+                    openModal({
+                      message: "로그아웃 하시겠습니까?",
+                      actions: [
+                        {
+                          label: "확인",
+                          onClick: (e) => {
+                            logoutClicked(e);
+                          },
+                        },
+                        { label: "취소", onClick: closeModal },
+                      ],
+                    })
+                  }
+                >
+                  LOGOUT
+                </button>
                 <button onClick={() => navigate("/mypage")}>MYPAGE</button>
               </>
             ) : (
@@ -88,8 +120,6 @@ const Header = () => {
         actions={modalActions}
       />
     </>
-
-
-  )
-}
+  );
+};
 export default Header;

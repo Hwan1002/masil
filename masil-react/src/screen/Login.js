@@ -42,7 +42,6 @@ const Login = () => {
 
   const loginSubmit = async (e) => {
     e.preventDefault();
-
     try {
       const isEmpty = Object.values(loginInfo).some((value) => !value);
       if (isEmpty) {

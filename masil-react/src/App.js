@@ -2,6 +2,8 @@ import "./css/reset.css";
 import Header from './component/Header';
 import { Route, Routes } from 'react-router-dom';
 import { ProjectProvider } from './context/MasilContext';
+import Modal from "./component/Modal";
+import useModal from './context/useModal';
 import SignUp from './screen/SignUp';
 import Main from './screen/Main';
 import MyPage from './screen/MyPage';
@@ -13,6 +15,15 @@ import RentalItem from "./screen/RentalItem";
 import SelectedRentalItem from "./screen/SelectedRentalItem";
 
 function App() {
+  const {
+    isModalOpen,
+    modalTitle,
+    modalMessage,
+    modalActions,
+    openModal,
+    closeModal,
+  } = useModal();
+
   return (
     <ProjectProvider>
       <div className="App">
@@ -41,6 +52,14 @@ function App() {
           <Route path="/post/item/:idx" element={<SelectedRentalItem />} />
         </Routes>
       </div>
+      <Modal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        title={modalTitle}
+        content={modalMessage}
+        actions={modalActions}
+      />
+    </div>
     </ProjectProvider>
   );
 }

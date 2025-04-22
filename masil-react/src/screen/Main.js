@@ -11,10 +11,9 @@ const Main = () => {
   return(
     <>
     <div className="mainContents">
-      <div>메인페이지다 </div>
-      <div>메인페이지다 </div>
-      <div>메인페이지다 </div>
-      <LocationButton/>
+      <div>
+        메인페이지 디자인 예정
+      </div>
     </div>
     </>
   )
