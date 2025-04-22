@@ -115,9 +115,9 @@ const PostRegist = () => {
     //selectedImages (이미 선택된 이미지 개수) + 새로 선택한 files 개수 가 5가 안넘는지 확인
     //5를 초과하면 경고메시지 띄움
     //return을 사용하여 함수 실행을 중단 / 실행을 중단하지 않으면 추가등록을 할 수 있는걸 사전에 방지함함
-    if (selectedImages.length + files.length > 4) {
+    if (selectedImages.length + files.length > 5) {
       openModal({
-        message: "최대 4개의 사진만 등록할 수 있습니다.",
+        message: "최대 5개의 사진만 등록할 수 있습니다.",
       });
       return;
     }
@@ -186,7 +186,7 @@ const PostRegist = () => {
                   onChange={handleFileChange}
                 />
               </div>
-              <label>사진({selectedImages.length}/4)</label>
+              <label>사진({selectedImages.length}/5)</label>
             </div>
             {/* 선택된 여러 이미지 미리보기 */}
             <div className="imagePreviewContainer">
