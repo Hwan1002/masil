@@ -14,6 +14,7 @@ import project.masil.dto.OAuthAttributes;
 import project.masil.dto.ResponseDTO;
 import project.masil.dto.UserDTO;
 import project.masil.entity.UserEntity;
+import project.masil.repository.BcodeRepository;
 import project.masil.repository.UserRepository;
 
 @Service
@@ -22,16 +23,18 @@ public class UserService {
 	// 기본프로필 경로
 	public static final String DEFAULT_PROFILE_PHOTO = "/default/userDefault.svg";
 
-	@Autowired // repository 의존성 주입
+	@Autowired
 	private UserRepository userRepository;
-
-	@Autowired // tokenProvider 의존성주입
-	private JwtTokenProvider tokenProvider;
 	
 	@Autowired
-	private GeocodingService geocodingService ;
-	
+	private BcodeRepository bCodeRepository ;
 
+	@Autowired 
+	private JwtTokenProvider tokenProvider;	
+	
+	@Autowired
+	private KakaoGeocodingService kakaoGeocodingService;
+	
 	PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 	// Id 중복체크 메서드
@@ -192,12 +195,12 @@ public class UserService {
 		return ResponseDTO.<String>builder().status(200).value("새로운 비밀번호로 로그인해주세요").build();
 	}
 	
-	// 위도경도 , 위치 설정메서드 .
+	// 위도경도 -> 위치 변환 및 저장 
 	public ResponseDTO<String> setLocation (String userId  , UserDTO dto ){
 		UserEntity user= userRepository.findByUserId(userId) ;
-		user.setLat(dto.getLat());
-		user.setLng(dto.getLng());
-		user.setAddress(geocodingService.reverseGeocodeToAddress(dto.getLat(), dto.getLng())) ;
+		String bCode = kakaoGeocodingService.getBcode(dto.getLat(), dto.getLng()) ;
+		// bCode -> 읍면동 주소 변환 메서드 . (repository 에 bcode를 보내 읍면동명 추출 )
+		user.setAddress(bCodeRepository.findEupMyeonDongByBcode(bCode));
 		userRepository.save(user) ;
 		return ResponseDTO.<String>builder().status(200).value("위치설정이 완료되었습니다 .").build() ;				
 	}
