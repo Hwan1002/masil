@@ -11,11 +11,12 @@ const PostRegist = () => {
   const navigate = useNavigate();
   const [commaPrice, setCommaPrice] = useState("");
   const [selectedImages, setSelectedImages] = useState([]); // 여러 이미지를 저장하는 배열
+  const [imagePreviews, setImagePreviews] = useState([]);
   //DatePicker 에서 값 받아옴
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
 
-  const [loginData, setLoginData] = useState({
+  const [RegistData, setRegistData] = useState({
     postTitle: "",
     postPrice: "",
     postStartDate: startDate,
@@ -44,11 +45,11 @@ const PostRegist = () => {
       new Blob(
         [
           JSON.stringify({
-            postTitle: loginData.postTitle,
-            postPrice: loginData.postPrice,
+            postTitle: RegistData.postTitle,
+            postPrice: RegistData.postPrice,
             postStartDate: startDate.toISOString(),
             postEndDate: endDate.toISOString(),
-            description: loginData.description,
+            description: RegistData.description,
           }),
         ],
         { type: "application/json" }
@@ -74,7 +75,7 @@ const PostRegist = () => {
           {
             label: "확인",
             onClick: () => {
-              navigate("/");
+              navigate("/rentalitem");
             },
           },
         ],
@@ -94,12 +95,12 @@ const PostRegist = () => {
     if (name === "postPrice") {
       const numericValue = value.replace(/[^0-9]/g, "");
       setCommaPrice(Number(numericValue).toLocaleString());
-      setLoginData((prev) => ({
+      setRegistData((prev) => ({
         ...prev,
         [name]: numericValue,
       }));
     } else {
-      setLoginData((prev) => ({
+      setRegistData((prev) => ({
         ...prev,
         [name]: value,
       }));
@@ -124,7 +125,7 @@ const PostRegist = () => {
 
     //files.map((file) => URL.createObjectURL(file)); 각 파일을 브라우저에서 미리볼 수 있도록 URL 생성성
     const imageUrls = files.map((file) => URL.createObjectURL(file));
-    setSelectedImages((prevImages) => [...prevImages, ...imageUrls]);
+    setSelectedImages((prevImages) => [...prevImages, ...files]);
 
     // 파일 선택 창 초기화 방지
     e.target.value = "";
@@ -136,12 +137,6 @@ const PostRegist = () => {
 
   // 이미지 미리보기 삭제
   const handleRemoveImage = (indexToRemove) => {
-    // const isConfirmed = window.confirm("선택한 사진을 삭제하시겠습니까?");
-
-    // if (!isConfirmed) {
-    //   console.log("삭제 취소됨"); // 디버깅용 로그
-    //   return; // 취소 시 함수 종료
-    // }
     openModal({
       message: "선택한 사진을 삭제하시겠습니까?",
       actions: [
@@ -150,6 +145,9 @@ const PostRegist = () => {
           onClick: () => {
             setSelectedImages((prevImages) =>
               prevImages.filter((_, index) => index !== indexToRemove)
+            );
+            setImagePreviews((prevPreviews) =>
+              prevPreviews.filter((_, index) => index !== indexToRemove)
             );
             closeModal();
           },
@@ -193,17 +191,17 @@ const PostRegist = () => {
               {selectedImages.map((image, index) => (
                 <div key={index} className="imageWrapper">
                   <img
-                    src={image}
+                    src={URL.createObjectURL(image)}
                     alt={`선택된 이미지 ${index + 1}`}
                     className="previewImage"
                   />
                   <button
+                    type="button"
                     className="deleteButton"
                     onClick={() => handleRemoveImage(index)}
                   >
                     ✖
                   </button>
-                  <div class="overlay"></div>
                 </div>
               ))}
             </div>
