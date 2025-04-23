@@ -72,6 +72,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 		CorsConfiguration configuration = new CorsConfiguration();
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		configuration.addAllowedOrigin("http://localhost:3000"); // React 개발 서버 Origin 허용
+		configuration.addAllowedOrigin("http://localhost:3001"); // React 개발 서버 Origin 허용
 		configuration.addAllowedOrigin("https://accounts.google.com"); // Google OAuth Origin허용 
 		configuration.addAllowedMethod("*"); // 모든 HTTP 메서드 허용 (GET, POST, PUT, DELETE 등)
 		configuration.addAllowedHeader("*"); // 모든 헤더 허용
