@@ -15,7 +15,7 @@ const PostRegist = () => {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
 
-  const [loginData, setLoginData] = useState({
+  const [RegistData, setRegistData] = useState({
     postTitle: "",
     postPrice: "",
     postStartDate: startDate,
@@ -44,11 +44,11 @@ const PostRegist = () => {
       new Blob(
         [
           JSON.stringify({
-            postTitle: loginData.postTitle,
-            postPrice: loginData.postPrice,
+            postTitle: RegistData.postTitle,
+            postPrice: RegistData.postPrice,
             postStartDate: startDate.toISOString(),
             postEndDate: endDate.toISOString(),
-            description: loginData.description,
+            description: RegistData.description,
           }),
         ],
         { type: "application/json" }
@@ -74,7 +74,7 @@ const PostRegist = () => {
           {
             label: "확인",
             onClick: () => {
-              navigate("/");
+              navigate("/rentalitem");
             },
           },
         ],
@@ -94,12 +94,12 @@ const PostRegist = () => {
     if (name === "postPrice") {
       const numericValue = value.replace(/[^0-9]/g, "");
       setCommaPrice(Number(numericValue).toLocaleString());
-      setLoginData((prev) => ({
+      setRegistData((prev) => ({
         ...prev,
         [name]: numericValue,
       }));
     } else {
-      setLoginData((prev) => ({
+      setRegistData((prev) => ({
         ...prev,
         [name]: value,
       }));
