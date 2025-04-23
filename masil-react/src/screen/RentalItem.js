@@ -18,6 +18,7 @@ const RentalItem = () => {
       try {
         const response = await Api.get(`/post`);
         console.log(response.data);
+
         if (response) setItems(response.data);
       } catch (error) {
         console.error("데이터 불러오기 실패:", error);
@@ -93,7 +94,7 @@ const RentalItem = () => {
                 <div className="rental-image-wrapper">
                   {item.postPhotoPaths && item.postPhotoPaths.length > 0 && (
                     <img
-                      src={`http://localhost:9090/${item.postPhotoPaths[idx]}`}
+                      src={`http://localhost:9090/${item.postPhotoPaths[0]}`}
                       alt={item.postTitle}
                       className="rental-image"
                     />
