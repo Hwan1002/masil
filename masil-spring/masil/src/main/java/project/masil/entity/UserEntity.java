@@ -54,4 +54,11 @@ public class UserEntity {
 	
 	private String address; // 주소
 	
+	private Double lat ; // 위도
+
+	private Double lng ; // 경도 
+	
+	
+	
+	
 }

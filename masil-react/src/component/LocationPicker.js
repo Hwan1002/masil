@@ -7,8 +7,12 @@ const LocationPicker = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [latLng, setLatLng] = useState({ lat: null, lng: null });
+  
+  
   const handlePlaceSelected = (place) => {
     setSelectedPlace(place);
+    console.log(place)
+
     if (place && place.geometry && place.geometry.location) {
       setLatLng({
         lat: place.geometry.location.lat(),
@@ -43,9 +47,11 @@ const LocationPicker = () => {
               apiKey={undefined}
               onPlaceSelected={handlePlaceSelected}
               options={{
-                componentRestrictions: { country: 'kr' },
+                componentRestrictions: { country: 'kr' }, // 국가코드 강제 적용
                 types: ['(regions)'],
-                fields: ['address_components', 'formatted_address', 'geometry']
+                fields: ['address_components', 'formatted_address', 'geometry'],
+                language : 'ko', // 한국어 결과우선
+                region : 'kr' // 지역 검색 범위설정 .
               }}
               placeholder="주소 검색 (예: 주안동)"
             />
