@@ -33,18 +33,18 @@ const Header = () => {
       );
       setLoginSuccess(false);
       setAccessToken(null);
-      openModal({
-        message: response.data.value,
-        actions: [
-          {
-            label: "확인",
-            onClick: () => {
-              closeModal();
-              window.location.replace("/");
-            },
-          },
-        ],
-      });
+      window.location.replace("/");
+      // openModal({
+      //   message: response.data.value,
+      //   actions: [
+      //     {
+      //       label: "확인",
+      //       onClick: () => {
+      //         closeModal();            
+      //       },
+      //     },
+      //   ],
+      // });
     } catch (error) {
       openModal({
         message: "로그아웃 중 오류가 발생하였습니다.",
@@ -88,7 +88,6 @@ const Header = () => {
                         {
                           label: "확인",
                           onClick: () => {
-                            closeModal();
                             logoutClicked();
                           },
                         },
