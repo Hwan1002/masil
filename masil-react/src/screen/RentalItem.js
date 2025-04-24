@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { ProjectContext, Api } from "../context/MasilContext";
 import "../css/RentalItem.css";
+import axios from "axios";
 
 const RentalItem = () => {
   const navigate = useNavigate();
@@ -16,10 +17,10 @@ const RentalItem = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await Api.get(`/post`);
-        console.log(response.data);
-
+        const response = await axios.get(`http://localhost:9090/post`);
+        console.log(response.data)
         if (response) setItems(response.data);
+
       } catch (error) {
         console.error("데이터 불러오기 실패:", error);
       }
@@ -86,41 +87,15 @@ const RentalItem = () => {
 
       {/* 콘텐츠 섹션 */}
       <div className="content-section">
+        
         <div className="rental-container">
-          {currentItems.length > 0 ? (
-            currentItems.map((item, idx) => (
-              <a href={`/post/item/${item.postIdx}`} className="rental-item">
-                {item.isSold && <span className="sold-badge">판매 완료</span>}
-
-                <div className="rental-image-wrapper">
-                  {item.postPhotoPaths && item.postPhotoPaths.length > 0 && (
-                    <img
-                      src={`http://localhost:9090/${item.postPhotoPaths[0]}`}
-                      alt={item.postTitle}
-                      className="rental-image"
-                    />
-                  )}
-                </div>
-
-                <div className="rental-title">{item.postTitle}</div>
-                <div className="rental-price">
-                  {item.postPrice
-                    .toString()
-                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                  원
-                </div>
-                <div className="rental-address">{item.userAddress}</div>
-              </a>
-            ))
-          ) : (
-            <div>등록된 게시물이 없습니다.</div>
-          )}
-          {/* {currentItems.map((item) => (
-            <a href={`/post/item/${item.postIdx}`} className="rental-item">
-              {item.isSold && <span className="sold-badge">판매 완료</span>}
-
+          {currentItems.map((item) => (
+            <a href={`/post/item/${item.postIdx}`} className="rental-item" key={item.postIdx}>
+              {item.isSold && <span className="sold-badge">대여 완료</span>}
+              {console.log("이미지 경로:", item.postPhotoPaths[0])}
               <div className="rental-image-wrapper">
                 {item.postPhotoPaths && item.postPhotoPaths.length > 0 && (
+                  
                   <img
                     src={`http://localhost:9090${item.postPhotoPaths[0]}`}
                     alt={item.postTitle}
@@ -131,14 +106,11 @@ const RentalItem = () => {
 
               <div className="rental-title">{item.postTitle}</div>
               <div className="rental-price">
-                {item.postPrice
-                  .toString()
-                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                원
+                {item.postPrice ? item.postPrice.toLocaleString() : 'error'}원
               </div>
               <div className="rental-address">{item.userAddress}</div>
             </a>
-          ))} */}
+          ))} 
         </div>
 
         {/* 페이지네이션 */}
