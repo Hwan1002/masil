@@ -58,6 +58,13 @@ public class PostEntity {
 	
 	@LastModifiedDate
 	private LocalDateTime updateDate; // 수정날짜 .	
+	
+	private Double postLat ; // 위도
+
+	private Double postLng ; // 경도
+	
+	private String postAddress ; // 주소 
+	
 
 	@ManyToOne
 	@JoinColumn(name = "userId" , nullable =false) 
