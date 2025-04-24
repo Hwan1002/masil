@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import useModal from "../context/useModal";
 import Modal from "../component/Modal";
@@ -10,6 +10,7 @@ const SelectedRentalItem = () => {
   const { idx } = useParams();
   const [item, setItem] = useState([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
   const navigate = useNavigate();
 
   const {
@@ -99,6 +100,9 @@ const SelectedRentalItem = () => {
     navigate("/rentalitem");
   };
 
+  const handleEditBtn = () => {
+    navigate("/postRegist", { state: { editBtn: true } });
+  };
   return (
     <div className="selected-container">
       <div className="selected-ud">
@@ -106,7 +110,9 @@ const SelectedRentalItem = () => {
           <button onClick={handleGoBack}>뒤로가기</button>
         </div>
         <div>
-          <button className="selected-u">수정</button>
+          <button className="selected-u" onClick={handleEditBtn}>
+            수정
+          </button>
           <button
             onClick={() =>
               openModal({

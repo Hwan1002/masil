@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import useModal from "../context/useModal";
 import { Api } from "../context/MasilContext";
 import RentalDatePicker from "../component/datepicker/DatePicker";
@@ -8,13 +8,34 @@ import camera from "../css/img/photo/camera.png";
 import "../css/PostRegist.css";
 
 const PostRegist = () => {
-  const navigate = useNavigate();
   const [commaPrice, setCommaPrice] = useState("");
   const [selectedImages, setSelectedImages] = useState([]); // 여러 이미지를 저장하는 배열
   const [imagePreviews, setImagePreviews] = useState([]);
+  const [item, setItem] = useState([]);
   //DatePicker 에서 값 받아옴
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
+
+  const { idx } = useParams();
+  const navigate = useNavigate();
+
+  const location = useLocation();
+
+  const editMode = location.state?.editMode || false;
+  useEffect(() => {
+    const fetchPostItem = async (idx) => {
+      if (editMode) {
+        try {
+          const response = await Api.get(`/post/item/${idx}`);
+          console.log(response.data);
+          setItem(response.data);
+        } catch (error) {
+          console.error("데이터 요청 실패:", error);
+          return null;
+        }
+      }
+    };
+  }, []);
 
   const [RegistData, setRegistData] = useState({
     postTitle: "",
@@ -207,17 +228,17 @@ const PostRegist = () => {
             </div>
           </div>
           <div className="div-grid">
-            <di class="div-input">
+            <div className="div-input">
               <label>제목</label>
               <input
                 name="postTitle"
                 type="text"
                 placeholder="게시물 제목"
-                maxlength="40"
+                maxLength="40"
                 onChange={handleChange}
               />
-            </di>
-            <div class="div-input">
+            </div>
+            <div className="div-input">
               <label>가격</label>
               <input
                 name="postPrice"
@@ -227,7 +248,7 @@ const PostRegist = () => {
                 value={commaPrice}
               />
             </div>
-            <div class="div-input">
+            <div className="div-input">
               <RentalDatePicker
                 startDate={startDate}
                 endDate={endDate}
@@ -237,7 +258,7 @@ const PostRegist = () => {
               {/* <RentalDatePicker onChange={handleDateChange} /> */}
               {/* <DatePicker /> */}
             </div>
-            <div class="div-input">
+            <div className="div-input">
               <label>설명</label>
               <textarea
                 className="registdescription"
