@@ -19,8 +19,6 @@ const LocationPicker = () => {
         lng: place.geometry.location.lng(),
       });
     }
-    // place 객체 안에 geometry.location.lat(), geometry.location.lng() 등 좌표 정보가 있음
-    // 필요하다면 서버로 전송 가능
   };
 
 

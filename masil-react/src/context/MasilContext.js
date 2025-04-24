@@ -44,7 +44,6 @@ export const ProjectProvider = ({ children }) => {
       Api.defaults.headers.common["Authorization"] = `Bearer ${newAccessToken}`;
       setAccessToken(newAccessToken);
       setLoginSuccess(true);
-      console.log(newAccessToken);
       return newAccessToken;
     } catch (error) {
       console.log("Token refresh failed:", error);
