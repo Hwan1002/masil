@@ -223,6 +223,7 @@ const PostRegist = () => {
                   >
                     ✖
                   </button>
+                  <div class="overlay"></div>
                 </div>
               ))}
             </div>
