@@ -118,7 +118,8 @@ public class PostService {
 	@Transactional
 	// 게시글 삭제.
 	public ResponseDTO<String> deletePost(Integer postIdx){
-		postRepository.deleteByPostIdx(postIdx);
+		FileUploadUtil.deleteFiles(postRepository.findByPostIdx(postIdx).getPostPhotoPaths());
+		postRepository.deleteByPostIdx(postIdx);		
 		return ResponseDTO.<String>builder().status(200).value("게시글이 성공적으로 삭제되었습니다.").build();
 		
 	}
