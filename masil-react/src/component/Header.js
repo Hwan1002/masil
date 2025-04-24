@@ -43,7 +43,7 @@ const Header = () => {
                 label: "확인",
                 onClick: () => {
                   closeModal();
-                  window.location.href = "/";
+                  window.location.href = "/main";
                 },
               },
             ],

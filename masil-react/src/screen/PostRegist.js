@@ -17,7 +17,7 @@ const PostRegist = () => {
   const [endDate, setEndDate] = useState(new Date());
 
 
-  const [loginData, setLoginData] = useState({
+  const [RegistData, setRegistData] = useState({
     postTitle: "",
     postPrice: "",
     postStartDate: startDate,
@@ -42,11 +42,11 @@ const PostRegist = () => {
 
     // DTO 데이터를 FormData에 추가 (JSON 문자열로 변환)
     formData.append('dto', new Blob([JSON.stringify({
-      postTitle: loginData.title,
-      postPrice: loginData.price || "0",
+      postTitle: RegistData.postTitle,
+      postPrice: RegistData.postPrice || "0",
       postStartDate: startDate.toISOString(),
       postEndDate: endDate.toISOString(),
-      description: loginData.description
+      description: RegistData.description
     })], { type: "application/json" }));
 
     // 선택된 파일들을 FormData에 추가 (Blob으로 변환)
@@ -92,12 +92,12 @@ const PostRegist = () => {
       setCommaPrice(numericValue ? Number(numericValue).toLocaleString() : ""); 
   
       // 숫자만 저장 (실제 가격 값)
-      setLoginData((prev) => ({
+      setRegistData((prev) => ({
         ...prev,
         [name]: numericValue,
       }));
     } else {
-      setLoginData((prev) => ({
+      setRegistData((prev) => ({
         ...prev,
         [name]: value,
       }));
