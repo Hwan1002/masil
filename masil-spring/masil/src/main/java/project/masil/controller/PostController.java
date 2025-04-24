@@ -35,7 +35,7 @@ public class PostController {
 	
 	// 특정 게시물 조회
 	@GetMapping("/item/{postIdx}")
-	public ResponseEntity<?> getPostDetail(@PathVariable("postIdx") Integer postIdx) {
+	public ResponseEntity<?> getPostDetail(@AuthenticationPrincipal String userId  ,@PathVariable("postIdx") Integer postIdx) {
 		
 		PostDTO response = service.postDetail(postIdx) ;
 		return ResponseEntity.ok(response) ;

@@ -51,10 +51,14 @@ public class UserEntity {
 	@OneToMany(mappedBy = "user" , cascade = CascadeType.ALL)
 	private List<PostEntity> posts = new ArrayList<>(); // 게시글
 
-	private Double lat ; // 위도
-	
-	private Double lng ; // 경도 
 	
 	private String address; // 주소
+	
+	private Double lat ; // 위도
+
+	private Double lng ; // 경도 
+	
+	
+	
 	
 }

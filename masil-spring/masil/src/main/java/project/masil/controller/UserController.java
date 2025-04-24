@@ -127,15 +127,14 @@ public class UserController {
 	}
 	
 	
-	// 위도 경도 주소 설정메서드 .
+	// 위도 경도 주소 설정메서드 
 	@PostMapping("/setLocation")
 	public ResponseEntity<?> setLocation(@AuthenticationPrincipal String userId ,@RequestBody UserDTO dto) {
 		return ResponseEntity.ok(service.setLocation(userId, dto)); 
 	}
 	
 	
-	
-	
+
 	
 	
 

@@ -5,12 +5,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import lombok.extern.slf4j.Slf4j;
 import project.masil.dto.ResponseDTO;
 import project.masil.service.AuthService;
 import project.masil.service.EmailService;
+import project.masil.service.KakaoGeocodingService;
 import project.masil.service.PostService;
 import project.masil.service.UserService;
-
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 	// EmailAlreadyExistsException
@@ -69,7 +71,6 @@ public class GlobalExceptionHandler {
 	}
 	
 	//  notExistPhotoException 게시글 사진이 존재하지않을때의 예외처리
-	
 	@ExceptionHandler(PostService.NotExistPhotoException.class)
 	public ResponseEntity<ResponseDTO<String>> NotExistPhotoException(PostService.NotExistPhotoException ex) {
 		ResponseDTO<String> response = ResponseDTO.<String>builder().status(HttpStatus.BAD_REQUEST.value()) 
@@ -77,4 +78,42 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 	}
 
+	
+	// 좌표 → 법정동코드 변환 실패 예외처리 
+	@ExceptionHandler(UserService.NoRegionCodeFoundException.class)
+	public ResponseEntity<ResponseDTO<String>> NoRegionCodeFoundException(UserService.NoRegionCodeFoundException ex) {
+		ResponseDTO<String> response = ResponseDTO.<String>builder().status(HttpStatus.BAD_REQUEST.value())
+				.error(ex.getMessage()).build() ;
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response) ;		
+	}
+	
+	// 법정동코드 → 주소 변환 실패 예외처리
+	@ExceptionHandler(UserService.AddressNotFoundException.class)
+	public ResponseEntity<ResponseDTO<String>> AddressNotFoundException(UserService.AddressNotFoundException ex) {
+		ResponseDTO<String> response = ResponseDTO.<String>builder().status(HttpStatus.NOT_FOUND.value())
+				.error(ex.getMessage()).build() ;
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response) ;		
+	}	
+	
+	
+	
+	// kakao API 호출실패 예외처리
+	@ExceptionHandler(KakaoGeocodingService.KakaoApiException.class)
+	public ResponseEntity<ResponseDTO<String>> KakaoApiException(KakaoGeocodingService.KakaoApiException ex) {
+		log.error("Kakao API 오류 발생: {}", ex.getMessage());
+		ResponseDTO<String> response = ResponseDTO.<String>builder().status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+				.error("위치설정 서비스에 일시적인 문제가 발생하였습니다 .").build() ;
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response) ;		
+	}
+		
+	// 	기타 서버 내부 오류 예외처리
+	@ExceptionHandler(UserService.InternalServerErrorException.class)
+	public ResponseEntity<ResponseDTO<String>> InternalServerErrorException(UserService.InternalServerErrorException ex) {
+		ResponseDTO<String> response = ResponseDTO.<String>builder().status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+				.error(ex.getMessage()).build() ;
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response) ;		
+	}
+	
+
+	
 }

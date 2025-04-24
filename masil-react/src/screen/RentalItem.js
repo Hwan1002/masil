@@ -29,11 +29,12 @@ const RentalItem = () => {
 
   const filteredItems = items.filter((item) => {
     const matchesSold = showSoldOnly ? item.isSold : true;
-    const matchesAddress = item.userAddress
-      ?.toLowerCase()
+    const matchesAddress = (item.userAddress || "")
+      .toLowerCase()
       .includes(addressKeyword);
     return matchesSold && matchesAddress;
   });
+
 
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;

@@ -14,7 +14,9 @@ import project.masil.dto.OAuthAttributes;
 import project.masil.dto.ResponseDTO;
 import project.masil.dto.UserDTO;
 import project.masil.entity.UserEntity;
+import project.masil.repository.BcodeRepository;
 import project.masil.repository.UserRepository;
+import project.masil.service.KakaoGeocodingService.KakaoApiException;
 
 @Service
 public class UserService {
@@ -22,16 +24,18 @@ public class UserService {
 	// 기본프로필 경로
 	public static final String DEFAULT_PROFILE_PHOTO = "/default/userDefault.svg";
 
-	@Autowired // repository 의존성 주입
+	@Autowired
 	private UserRepository userRepository;
-
-	@Autowired // tokenProvider 의존성주입
-	private JwtTokenProvider tokenProvider;
 	
 	@Autowired
-	private GeocodingService geocodingService ;
-	
+	private BcodeRepository bCodeRepository ;
 
+	@Autowired 
+	private JwtTokenProvider tokenProvider;	
+	
+	@Autowired
+	private KakaoGeocodingService kakaoGeocodingService;
+	
 	PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 	// Id 중복체크 메서드
@@ -192,16 +196,35 @@ public class UserService {
 		return ResponseDTO.<String>builder().status(200).value("새로운 비밀번호로 로그인해주세요").build();
 	}
 	
-	// 위도경도 , 위치 설정메서드 .
+	// 위도경도 -> 위치 변환 및 저장 
 	public ResponseDTO<String> setLocation (String userId  , UserDTO dto ){
 		UserEntity user= userRepository.findByUserId(userId) ;
-		user.setLat(dto.getLat());
+
+		
+		String bCode; 
+		try {
+			bCode= kakaoGeocodingService.getBcode(dto.getLat(), dto.getLng()) ;
+		} catch (KakaoApiException e) {
+			 throw new InternalServerErrorException("서버 오류가 발생했습니다.");
+		}
+		
+		if(bCode ==null) {
+			throw new NoRegionCodeFoundException("정확한 주소를 설정해주세요") ;
+		}
+		
+		String address  = bCodeRepository.findEupMyeonDongByBcode(bCode) ;
+		if(address ==null) {
+			throw new AddressNotFoundException("지역 정보를 찾을 수 없습니다.");
+		}
+		
+		
 		user.setLng(dto.getLng());
-		user.setAddress(geocodingService.reverseGeocodeToAddress(dto.getLat(), dto.getLng())) ;
+		user.setLat(dto.getLat()) ;
+		user.setAddress(address);
 		userRepository.save(user) ;
+	
 		return ResponseDTO.<String>builder().status(200).value("위치설정이 완료되었습니다 .").build() ;				
 	}
-	
 	
 	
 	// entity -> dto
@@ -247,5 +270,28 @@ public class UserService {
 			super(message);
 		}
 	}
+
+	// 법정명코드 null 예외 내부클래스 
+	public static class NoRegionCodeFoundException extends RuntimeException {
+		public NoRegionCodeFoundException(String message) {
+			super(message) ;
+		}
+	}
+	
+	
+	// 서버오류 예외 내부클래스
+	public static class InternalServerErrorException extends RuntimeException {
+		public InternalServerErrorException(String message) {
+			super(message) ;
+		}
+	}
+	
+	// 법정명코드로 주소를 찾지못한 예외 내부클래스 
+	public static class AddressNotFoundException extends RuntimeException {
+		public AddressNotFoundException(String message) {
+			super(message) ;
+		}
+	}
+	
 
 }
