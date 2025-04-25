@@ -24,40 +24,42 @@ const Header = () => {
     closeModal,
   } = useModal();
 
-  const logoutClicked = (e) => {
-    e.preventDefault();
+  const logoutClicked = async () => {
     try {
-      const logout = async () => {
-        const response = await axios.post(
-          "http://localhost:9090/user/logout",
-          {}, // 요청 본문은 비워둠
-          { withCredentials: true } // 옵션객체에 httpOnly 쿠키 포함
-        );
-        if (response) {
-          setLoginSuccess(false);
-          setAccessToken(null);
-          openModal({
-            message: response.data.value,
-            actions: [
-              {
-                label: "확인",
-                onClick: () => {
-                  closeModal();
-                  window.location.href = "/";
-                },
-              },
-            ],
-          });
-        }
-      };
-      logout();
+      const response = await axios.post(
+        "http://localhost:9090/user/logout",
+        {},
+        { withCredentials: true }
+      );
+      setLoginSuccess(false);
+      setAccessToken(null);
+      window.location.replace("/");
+      // openModal({
+      //   message: response.data.value,
+      //   actions: [
+      //     {
+      //       label: "확인",
+      //       onClick: () => {
+      //         closeModal();            
+      //       },
+      //     },
+      //   ],
+      // });
     } catch (error) {
       openModal({
-        message: error.response.data.error,
+        message: "로그아웃 중 오류가 발생하였습니다.",
+        actions: [
+          {
+            label: "확인",
+            onClick: () => {
+              closeModal();
+              window.location.replace("/");
+            },
+          },
+        ],
       });
     }
   };
-
   return (
     <>
       <header className="header">
@@ -85,8 +87,8 @@ const Header = () => {
                       actions: [
                         {
                           label: "확인",
-                          onClick: (e) => {
-                            logoutClicked(e);
+                          onClick: () => {
+                            logoutClicked();
                           },
                         },
                         { label: "취소", onClick: closeModal },
