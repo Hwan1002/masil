@@ -2,8 +2,7 @@ import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Modal from "./Modal";
 import useModal from "../context/useModal";
-import { ProjectContext } from "../context/MasilContext";
-import axios from "axios";
+import { Api, ProjectContext } from "../context/MasilContext";
 
 const Header = () => {
   const { loginSuccess, setLoginSuccess, accessToken, setAccessToken } =
@@ -26,11 +25,7 @@ const Header = () => {
 
   const logoutClicked = async () => {
     try {
-      const response = await axios.post(
-        "http://localhost:9090/user/logout",
-        {},
-        { withCredentials: true }
-      );
+      const response = await Api.post('/user/logout',)
       setLoginSuccess(false);
       setAccessToken(null);
       window.location.replace("/");
@@ -41,6 +36,7 @@ const Header = () => {
       //       label: "확인",
       //       onClick: () => {
       //         closeModal();            
+            
       //       },
       //     },
       //   ],
