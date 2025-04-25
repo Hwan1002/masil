@@ -1,17 +1,16 @@
-import React, { useState } from 'react';
-import Autocomplete from 'react-google-autocomplete';
-import '../css/LocationPicker.css'; // CSS 파일 import
-import { Api } from '../context/MasilContext';
+import React, { useState } from "react";
+import Autocomplete from "react-google-autocomplete";
+import "../css/LocationPicker.css"; // CSS 파일 import
+import { Api } from "../context/MasilContext";
 
 const LocationPicker = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [latLng, setLatLng] = useState({ lat: null, lng: null });
-  
-  
+
   const handlePlaceSelected = (place) => {
     setSelectedPlace(place);
-    console.log(place)
+    console.log(place);
 
     if (place && place.geometry && place.geometry.location) {
       setLatLng({
@@ -23,10 +22,8 @@ const LocationPicker = () => {
     // 필요하다면 서버로 전송 가능
   };
 
-
   const postPlace = () => {
-
-    Api.post((`/user/setLocation`), {
+    Api.post(`/user/setLocation`, {
       lat: latLng.lat,
       lng: latLng.lng,
     });
@@ -39,19 +36,22 @@ const LocationPicker = () => {
       </button>
 
       {isOpen && (
-        <div className="location-modal-backdrop" onClick={() => setIsOpen(false)}>
-          <div className="location-modal" onClick={e => e.stopPropagation()}>
+        <div
+          className="location-modal-backdrop"
+          onClick={() => setIsOpen(false)}
+        >
+          <div className="location-modal" onClick={(e) => e.stopPropagation()}>
             <h3>지역 검색</h3>
             <Autocomplete
               className="location-autocomplete"
               apiKey={undefined}
               onPlaceSelected={handlePlaceSelected}
               options={{
-                componentRestrictions: { country: 'kr' }, // 국가코드 강제 적용
-                types: ['(regions)'],
-                fields: ['address_components', 'formatted_address', 'geometry'],
-                language : 'ko', // 한국어 결과우선
-                region : 'kr' // 지역 검색 범위설정 .
+                componentRestrictions: { country: "kr" }, // 국가코드 강제 적용
+                types: ["(regions)"],
+                fields: ["address_components", "formatted_address", "geometry"],
+                language: "ko", // 한국어 결과우선
+                region: "kr", // 지역 검색 범위설정 .
               }}
               placeholder="주소 검색 (예: 주안동)"
             />
@@ -61,7 +61,7 @@ const LocationPicker = () => {
                 <button
                   className="location-confirm-btn"
                   onClick={() => {
-                    // 서버로 selectedPlace 정보 전송 등 추가 로직 
+                    // 서버로 selectedPlace 정보 전송 등 추가 로직
                     postPlace();
                     setIsOpen(false);
                   }}
@@ -70,7 +70,10 @@ const LocationPicker = () => {
                 </button>
               </div>
             )}
-            <button className="location-close-btn" onClick={() => setIsOpen(false)}>
+            <button
+              className="location-close-btn"
+              onClick={() => setIsOpen(false)}
+            >
               ✕
             </button>
           </div>
