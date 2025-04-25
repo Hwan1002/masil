@@ -330,7 +330,7 @@ const MyPage = () => {
               type="text"
               name="user_name"
               className="form-input"
-              value={formData.email || ""}
+              value={formData.userId || ""}
               readOnly
             />
             <input
@@ -353,9 +353,10 @@ const MyPage = () => {
                       type="email"
                       name="email"
                       placeholder="이메일 입력"
-                      value={email}
+                      value={formData.email}
                       onChange={(e) => setEmail(e.target.value)}
                       onKeyDown={handleKeyPress}
+                      readOnly
                     />
                     <button
                       type="submit"

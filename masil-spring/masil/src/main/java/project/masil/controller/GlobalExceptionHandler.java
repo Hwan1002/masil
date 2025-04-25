@@ -78,6 +78,13 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 	}
 
+	// AccessDeniedException 게시글 수정삭제 권한부족 예외처리 	
+	@ExceptionHandler(PostService.AccessDeniedException.class)
+	public ResponseEntity<ResponseDTO<String>> AccessDeniedException(PostService.AccessDeniedException ex) {
+		ResponseDTO<String> response = ResponseDTO.<String>builder().status(HttpStatus.FORBIDDEN.value())
+				.error(ex.getMessage()).build() ;
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response) ;		
+	}
 	
 	// 좌표 → 법정동코드 변환 실패 예외처리 
 	@ExceptionHandler(UserService.NoRegionCodeFoundException.class)
@@ -115,5 +122,9 @@ public class GlobalExceptionHandler {
 	}
 	
 
+	
+	
+	
+	
 	
 }

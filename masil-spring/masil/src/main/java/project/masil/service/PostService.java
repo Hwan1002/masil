@@ -51,14 +51,32 @@ public class PostService {
 	// 게시글 조회 
 	public List<PostDTO>  retrievePost() {	
 	    return postRepository.findAll().stream().map(this::toDTO).collect(Collectors.toList());
-	    }
+	}
+	
+	
+	// 게시글상세조회
+	public PostDTO postDetail(Integer postIdx) {
+		return toDTO(postRepository.findByPostIdxWithUser(postIdx));
+	}
+	
+	
+	// 내 게시물 조회 .
+	public List<PostDTO> myPost(String userId) {
+		return postRepository.findByUser_UserId(userId).stream().map(this::toDTO).collect(Collectors.toList());
+	}
 	
 	
 	// 게시글 수정
 	@Transactional
 	public ResponseDTO<String> modify(String userId,PostDTO dto,List<MultipartFile> postPhotos) {
 		
-		PostEntity post = postRepository.findByPostIdx(dto.getPostIdx()) ;
+		PostEntity post = postRepository.findByPostIdxWithUser(dto.getPostIdx()) ;
+		
+		
+		if(!post.getUser().getUserId().equals(userId)) {
+			throw new AccessDeniedException("본인이 작성한 게시글만 수정할 수 있습니다.");
+	    }
+		
 		
 		// 기존 사진경로 복사 
 		List<String> currentPaths = new ArrayList<>(post.getPostPhotoPaths());
@@ -109,16 +127,18 @@ public class PostService {
 	}
 	
 	
-	// 게시글상세조회
-	public PostDTO postDetail(Integer postIdx) {
-	return toDTO(postRepository.findByPostIdx(postIdx));
-	}
-	
+
 	
 	@Transactional
 	// 게시글 삭제.
-	public ResponseDTO<String> deletePost(Integer postIdx){
-		postRepository.deleteByPostIdx(postIdx);
+	public ResponseDTO<String> deletePost(String userId, Integer postIdx){
+		PostEntity post = postRepository.findByPostIdxWithUser(postIdx) ;
+		if(!post.getUser().getUserId().equals(userId)) {
+			throw new AccessDeniedException("본인이 작성한 게시글만 삭제할 수 있습니다.");
+	    }
+		
+		FileUploadUtil.deleteFiles(postRepository.findByPostIdxWithUser(postIdx).getPostPhotoPaths());
+		postRepository.deleteByPostIdx(postIdx);		
 		return ResponseDTO.<String>builder().status(200).value("게시글이 성공적으로 삭제되었습니다.").build();
 		
 	}
@@ -132,6 +152,14 @@ public class PostService {
 			super(message);
 		}
 	}
+	
+	// 게시글 수정삭제 권한부족 예외처리 
+	public static class AccessDeniedException extends RuntimeException {
+		public AccessDeniedException (String message) {
+			super(message) ;
+		}
+	}
+	
 	
 	
 	// entity -> dto
@@ -148,8 +176,7 @@ public class PostService {
 				.updateDate(entity.getUpdateDate())
 				.description(entity.getDescription())
 				.userNickName(entity.getUser().getUserNickName())
-				.userProfilePhotoPath(entity.getUser().getProfilePhotoPath())
-				.userAddress(entity.getUser().getAddress())
+				.userProfilePhotoPath(entity.getUser().getProfilePhotoPath())				
 				.build();
 	}
 

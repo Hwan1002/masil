@@ -56,6 +56,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 						).permitAll() // 비로그인 유저서비스 , 사진폴더접근 , 정적 리소스 접근 허용
 				.anyRequest().authenticated()// 나머지 요청은 인증 필요
 			)
+//		  	.logout(logout -> logout.disable()) // 기본 로그아웃 비활성화
         	.oauth2Login(oauth2 -> oauth2.successHandler(oAuth2SuccessHandler)
                 .failureHandler(oAuth2FailureHandler) 
             )

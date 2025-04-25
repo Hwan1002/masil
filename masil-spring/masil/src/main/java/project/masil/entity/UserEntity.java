@@ -28,7 +28,7 @@ public class UserEntity {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer idx; // 회원 식별자
 
-	@Column(unique = true)
+	@Column(unique = true , name = "user_id")
 	private String userId; // 회원아이디
 
 	private String password; // 비밀번호
