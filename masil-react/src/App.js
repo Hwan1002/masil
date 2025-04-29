@@ -10,7 +10,7 @@ import UserFindId from './screen/UserFindId';
 import UserFindPwd from './screen/UserFindPwd';
 import PostRegist from './screen/PostRegist';
 import RentalItem from "./screen/RentalItem";
-//alclsssysdk Eh rksaksdp wlfkfdlsp wlsWk wnrdugvvio
+//alclsssysdk Eh rksaksdp wlfkfdlsp wlsWk wnrdugvv
 function App() {
   return (
     <ProjectProvider>
