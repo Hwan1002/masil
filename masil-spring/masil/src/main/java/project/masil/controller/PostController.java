@@ -36,10 +36,17 @@ public class PostController {
 	// 특정 게시물 조회
 	@GetMapping("/item/{postIdx}")
 	public ResponseEntity<?> getPostDetail(@AuthenticationPrincipal String userId  ,@PathVariable("postIdx") Integer postIdx) {
-		
-		PostDTO response = service.postDetail(postIdx) ;
-		return ResponseEntity.ok(response) ;
+		return ResponseEntity.ok(service.postDetail(postIdx)) ;
 	}
+	
+	
+	
+	// 내 게시물 조회
+	@GetMapping("/myPost")
+	public ResponseEntity<?> getMyPost(@AuthenticationPrincipal String userId){		
+		return ResponseEntity.ok(service.myPost(userId)) ;
+	}
+	
 	
 	// 게시물 업로드 
 	@PostMapping(value ="/upload", consumes = { "multipart/form-data" })
@@ -66,9 +73,9 @@ public class PostController {
 	// 게시물 삭제 
 	@DeleteMapping("/{postIdx}")
 	public ResponseEntity<?> deletePost(@AuthenticationPrincipal String userId ,@PathVariable("postIdx") Integer postIdx) {
-		return ResponseEntity.ok(service.deletePost(postIdx));
+		return ResponseEntity.ok(service.deletePost(userId , postIdx));
 	}
-	
+
 	
 	
 	

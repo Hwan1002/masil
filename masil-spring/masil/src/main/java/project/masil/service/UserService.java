@@ -67,7 +67,8 @@ public class UserService {
 			dto.setProfilePhotoPath(FileUploadUtil.saveFile(profilePhoto, uploadDir, "profilePhotos"));
 		}
 		dto.setPassword(passwordEncoder.encode(dto.getPassword()));
-
+						
+		
 		userRepository.save(toEntity(dto));
 		return ResponseDTO.<String>builder().status(201) // HTTP 상태 코드
 				.value("회원가입이 완료되었습니다.") // 성공 메시지
@@ -197,34 +198,33 @@ public class UserService {
 	}
 	
 	// 위도경도 -> 위치 변환 및 저장 
-	public ResponseDTO<String> setLocation (String userId  , UserDTO dto ){
-		UserEntity user= userRepository.findByUserId(userId) ;
-
-		
-		String bCode; 
-		try {
-			bCode= kakaoGeocodingService.getBcode(dto.getLat(), dto.getLng()) ;
-		} catch (KakaoApiException e) {
-			 throw new InternalServerErrorException("서버 오류가 발생했습니다.");
-		}
-		
-		if(bCode ==null) {
-			throw new NoRegionCodeFoundException("정확한 주소를 설정해주세요") ;
-		}
-		
-		String address  = bCodeRepository.findEupMyeonDongByBcode(bCode) ;
-		if(address ==null) {
-			throw new AddressNotFoundException("지역 정보를 찾을 수 없습니다.");
-		}
-		
-		
-		user.setLng(dto.getLng());
-		user.setLat(dto.getLat()) ;
-		user.setAddress(address);
-		userRepository.save(user) ;
-	
-		return ResponseDTO.<String>builder().status(200).value("위치설정이 완료되었습니다 .").build() ;				
-	}
+//	public ResponseDTO<String> setLocation (UserDTO dto ){
+//
+//		
+//		String bCode; 
+//		try {
+//			bCode= kakaoGeocodingService.getBcode(dto.getLat(), dto.getLng()) ;
+//		} catch (KakaoApiException e) {
+//			 throw new InternalServerErrorException("서버 오류가 발생했습니다.");
+//		}
+//		
+//		if(bCode ==null) {
+//			throw new NoRegionCodeFoundException("정확한 주소를 설정해주세요") ;
+//		}
+//		
+//		String address  = bCodeRepository.findEupMyeonDongByBcode(bCode) ;
+//		if(address ==null) {
+//			throw new AddressNotFoundException("지역 정보를 찾을 수 없습니다.");
+//		}
+//		
+//		
+//		user.setLng(dto.getLng());
+//		user.setLat(dto.getLat()) ;
+//		user.setAddress(address);
+//		userRepository.save(user) ;
+//	
+//		return ResponseDTO.<String>builder().status(200).value("위치설정이 완료되었습니다 .").build() ;				
+//	}
 	
 	
 	// entity -> dto
@@ -240,6 +240,7 @@ public class UserService {
 	public UserEntity toEntity(UserDTO dto) {
 		return UserEntity.builder().userId(dto.getUserId()).password(dto.getPassword()).userName(dto.getUserName())
 				.userNickName(dto.getUserNickName()).email(dto.getEmail()).profilePhotoPath(dto.getProfilePhotoPath())
+				.lat(dto.getLat()).lng(dto.getLng())
 				.address(dto.getAddress()).authProvider(dto.getAuthProvider()).build();
 	}
 

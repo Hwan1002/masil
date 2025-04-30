@@ -22,7 +22,7 @@ public class KakaoGeocodingService {
 	private final String KAKAO_GEO_URL = "https://dapi.kakao.com/v2/local/geo/coord2regioncode.json";
 
 	// 좌표 → 법정동코드 조회
-	public String getBcode(double lat, double lng) {
+	public String getBcode(Double lat, Double lng) {
 		RestTemplate restTemplate = new RestTemplate();
 		try {
 			// 헤더 설정

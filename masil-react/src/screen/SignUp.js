@@ -257,43 +257,43 @@ const SignUp = () => {
       });
     }
   };
-  const [ip, setIp] = useState("");
-  const TIMESTAMP = Date.now().toString();
-  const ACCESS_KEY = "ncp_iam_BPAMKRArwHlymLpxZvb9"; // 네이버 클라우드 Access Key
-  const SECRET_KEY = "ncp_iam_BPKMKRAFoKvZoslGFFPzHDygadA4JIEXB2"; // 네이버 클라우드 Secret Key
+  // const [ip, setIp] = useState("");
+  // const TIMESTAMP = Date.now().toString();
+  // const ACCESS_KEY = "ncp_iam_BPAMKRArwHlymLpxZvb9"; // 네이버 클라우드 Access Key
+  // const SECRET_KEY = "ncp_iam_BPKMKRAFoKvZoslGFFPzHDygadA4JIEXB2"; // 네이버 클라우드 Secret Key
 
-  const checkGeoLocation = async (e) => {
-    e.preventDefault();
-    console.log("버튼클릭");
-    console.log("timestamp : ", TIMESTAMP);
-    const fetchIp = async () => {
-      try {
-        const response1 = await fetch("https://api64.ipify.org?format=json");
-        const data = await response1.json();
-        setIp(data.ip);
-        const urlPath = `/geolocation/v2/geoLocation?ip=${ip}&ext=t&enc=utf8&responseFormatType=json`;
-        const message = `GET ${urlPath}\n${TIMESTAMP}\n${ACCESS_KEY}`;
-        const signature = CryptoJS.HmacSHA256(message, SECRET_KEY).toString(
-          CryptoJS.enc.Base64
-        );
-        console.log("ip 주소 : ", ip);
-        console.log("Signature:", signature);
-        const response2 = await axios.get(
-          `https://geolocation.apigw.ntruss.com/geolocation/v2/geoLocation?ip=${ip}&ext=t&enc=utf8&responseFormatType=json`,
-          {
-            headers: {
-              "x-ncp-apigw-timestamp": TIMESTAMP,
-              "x-ncp-iam-access-key": ACCESS_KEY,
-              "x-ncp-apigw-signature-v2": signature,
-            },
-          }
-        );
-      } catch (error) {
-        console.error("위치 가져오기 오류:", error);
-      }
-    };
-    fetchIp();
-  };
+  // const checkGeoLocation = async (e) => {
+  //   e.preventDefault();
+  //   console.log("버튼클릭");
+  //   console.log("timestamp : ", TIMESTAMP);
+  //   const fetchIp = async () => {
+  //     try {
+  //       const response1 = await fetch("https://api64.ipify.org?format=json");
+  //       const data = await response1.json();
+  //       setIp(data.ip);
+  //       const urlPath = `/geolocation/v2/geoLocation?ip=${ip}&ext=t&enc=utf8&responseFormatType=json`;
+  //       const message = `GET ${urlPath}\n${TIMESTAMP}\n${ACCESS_KEY}`;
+  //       const signature = CryptoJS.HmacSHA256(message, SECRET_KEY).toString(
+  //         CryptoJS.enc.Base64
+  //       );
+  //       console.log("ip 주소 : ", ip);
+  //       console.log("Signature:", signature);
+  //       const response2 = await axios.get(
+  //         `https://geolocation.apigw.ntruss.com/geolocation/v2/geoLocation?ip=${ip}&ext=t&enc=utf8&responseFormatType=json`,
+  //         {
+  //           headers: {
+  //             "x-ncp-apigw-timestamp": TIMESTAMP,
+  //             "x-ncp-iam-access-key": ACCESS_KEY,
+  //             "x-ncp-apigw-signature-v2": signature,
+  //           },
+  //         }
+  //       );
+  //     } catch (error) {
+  //       console.error("위치 가져오기 오류:", error);
+  //     }
+  //   };
+  //   fetchIp();
+  // };
   return (
     <div className="signup_form">
       <h2>회원가입</h2>
@@ -320,9 +320,9 @@ const SignUp = () => {
             />
           </div>
           <div>
-            <button type="button" onClick={checkGeoLocation}>
+            {/* <button type="button" onClick={checkGeoLocation}>
               위치
-            </button>
+            </button> */}
             {/* <h3>현재 위치</h3>
           <p>위도: {geolocation.latitude}</p>
           <p>경도: {geolocation.longitude}</p>
