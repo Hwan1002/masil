@@ -25,22 +25,12 @@ const Header = () => {
 
   const logoutClicked = async () => {
     try {
-      const response = await Api.post('/user/logout',)
-      setLoginSuccess(false);
-      setAccessToken(null);
-      window.location.replace("/");
-      // openModal({
-      //   message: response.data.value,
-      //   actions: [
-      //     {
-      //       label: "확인",
-      //       onClick: () => {
-      //         closeModal();            
-            
-      //       },
-      //     },
-      //   ],
-      // });
+      const response = await Api.post("/user/logout");
+      if (response) {
+        setLoginSuccess(false);
+        setAccessToken(null);
+        window.location.replace("/");
+      }
     } catch (error) {
       openModal({
         message: "로그아웃 중 오류가 발생하였습니다.",
