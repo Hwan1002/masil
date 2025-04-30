@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import useModal from "../context/useModal";
+import useEditStore from "../shared/useEditStore";
 import Modal from "../component/Modal";
 import moment from "moment";
 import { Api } from "../context/MasilContext";
@@ -10,7 +11,7 @@ const SelectedRentalItem = () => {
   const { idx } = useParams();
   const [item, setItem] = useState([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
+  const setEdit = useEditStore((state) => state.setEdit);
   const navigate = useNavigate();
 
   const {
@@ -25,7 +26,6 @@ const SelectedRentalItem = () => {
   const fetchPostItem = async (idx) => {
     try {
       const response = await Api.get(`/post/item/${idx}`);
-      console.log(response.data);
       setItem(response.data);
     } catch (error) {
       console.error("데이터 요청 실패:", error);
@@ -101,7 +101,8 @@ const SelectedRentalItem = () => {
   };
 
   const handleEditBtn = () => {
-    navigate("/postRegist", { state: { editBtn: true } });
+    setEdit(true);
+    navigate("/postRegist");
   };
   return (
     <div className="selected-container">
@@ -111,7 +112,7 @@ const SelectedRentalItem = () => {
         </div>
         <div>
           <button className="selected-u" onClick={handleEditBtn}>
-            수정
+            <a href={`/post/item/${item.postIdx}`}>수정</a>
           </button>
           <button
             onClick={() =>

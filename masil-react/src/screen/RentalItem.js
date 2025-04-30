@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { ProjectContext, Api } from "../context/MasilContext";
-import "../css/RentalItem.css";
 import axios from "axios";
+import "../css/RentalItem.css";
 
 const RentalItem = () => {
   const navigate = useNavigate();
@@ -18,9 +18,8 @@ const RentalItem = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(`http://localhost:9090/post`);
-        console.log(response.data)
+        console.log(response.data);
         if (response) setItems(response.data);
-
       } catch (error) {
         console.error("데이터 불러오기 실패:", error);
       }
@@ -35,7 +34,6 @@ const RentalItem = () => {
       .includes(addressKeyword);
     return matchesSold && matchesAddress;
   });
-
 
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -87,15 +85,17 @@ const RentalItem = () => {
 
       {/* 콘텐츠 섹션 */}
       <div className="content-section">
-        
         <div className="rental-container">
           {currentItems.map((item) => (
-            <a href={`/post/item/${item.postIdx}`} className="rental-item" key={item.postIdx}>
+            <a
+              href={`/post/item/${item.postIdx}`}
+              className="rental-item"
+              key={item.postIdx}
+            >
               {item.isSold && <span className="sold-badge">대여 완료</span>}
               {console.log("이미지 경로:", item.postPhotoPaths[0])}
               <div className="rental-image-wrapper">
                 {item.postPhotoPaths && item.postPhotoPaths.length > 0 && (
-                  
                   <img
                     src={`http://localhost:9090${item.postPhotoPaths[0]}`}
                     alt={item.postTitle}
@@ -106,11 +106,11 @@ const RentalItem = () => {
 
               <div className="rental-title">{item.postTitle}</div>
               <div className="rental-price">
-                {item.postPrice ? item.postPrice.toLocaleString() : 'error'}원
+                {item.postPrice ? item.postPrice.toLocaleString() : "error"}원
               </div>
               <div className="rental-address">{item.userAddress}</div>
             </a>
-          ))} 
+          ))}
         </div>
 
         {/* 페이지네이션 */}
