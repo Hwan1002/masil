@@ -7,10 +7,12 @@ import RentalDatePicker from "../component/datepicker/DatePicker";
 import Modal from "../component/Modal";
 import camera from "../css/img/photo/camera.png";
 import "../css/PostRegist.css";
+import LocationButton from "../component/LocationButton";
+import LocationPicker from "../component/LocationPicker";
 
 const PostRegist = () => {
   const [item, setItem] = useState({});
-  const [selectedImages, setSelectedImages] = useState([item.selectedImages]); // 여러 이미지를 저장하는 배열
+  const [selectedImages, setSelectedImages] = useState([]); // 여러 이미지를 저장하는 배열
   const [setImagePreviews] = useState([]);
   const [commaPrice, setCommaPrice] = useState("");
 
@@ -20,24 +22,23 @@ const PostRegist = () => {
   const { idx } = useParams();
 
   const navigate = useNavigate();
-  const { isEdit, userId } = useEditStore();
+  // const { isEdit, userId } = useEditStore();
 
-  useEffect(() => {
-    const fetchPostItem = async (idx) => {
-      console.log(isEdit);
-      // try {
-      //   const response = await Api.get(`/post/item/${idx}`);
-      //   setItem(response.data);
-      // } catch (error) {
-      //   console.error("데이터 요청 실패:", error);
-      //   return null;
-      // }
-    };
-    fetchPostItem();
-  }, [isEdit, idx]);
+  // useEffect(() => {
+  //   const fetchPostItem = async (idx) => {
+  // try {
+  //   const response = await Api.get(`/post/item/${idx}`);
+  //   setItem(response.data);
+  // } catch (error) {
+  //   console.error("데이터 요청 실패:", error);
+  //   return null;
+  // }
+  //   };
+  //   fetchPostItem();
+  // }, [isEdit, idx]);
 
   const [RegistData, setRegistData] = useState({
-    postTitle: item.postTitle,
+    postTitle: "",
     postPrice: "",
     postStartDate: startDate,
     postEndDate: endDate,
@@ -186,7 +187,8 @@ const PostRegist = () => {
   return (
     <div className="postRegist">
       <div className="postRegist-title">
-        <h2>{!isEdit ? "게시물 등록" : "게시물 수정"}</h2>
+        {/* <h2>{!isEdit ? "게시물 등록" : "게시물 수정"}</h2> */}
+        <h2>게시물 등록</h2>
       </div>
       <form onSubmit={(e) => handleSubmit(e)}>
         <div className="formDiv">
@@ -235,6 +237,14 @@ const PostRegist = () => {
             </div>
           </div>
           <div className="div-grid">
+            <div className="postLocation">
+              <div>
+                <LocationButton />
+              </div>
+              <div>
+                <LocationPicker />
+              </div>
+            </div>
             <div className="div-input">
               <label>제목</label>
               <input

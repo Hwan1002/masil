@@ -213,3 +213,8 @@
   grid-auto-flow: row;
   gap: 20px;
 }
+
+.postLocation {
+  display: flex;
+  gap: 0 0.5rem;
+}

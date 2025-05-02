@@ -29,7 +29,11 @@ const LocationPicker = () => {
 
   return (
     <div>
-      <button className="location-btn" onClick={() => setIsOpen(true)}>
+      <button
+        className="location-btn"
+        onClick={() => setIsOpen(true)}
+        type="button"
+      >
         지역 설정
       </button>
 
@@ -55,7 +59,13 @@ const LocationPicker = () => {
             />
             {selectedPlace && (
               <div className="location-selected">
-                <div>선택된 주소: {selectedPlace.formatted_address}</div>
+                <div>
+                  <div className="div-selected">
+                    <p className="selected-address">
+                      {selectedPlace.formatted_address}
+                    </p>
+                  </div>
+                </div>
                 <button
                   className="location-confirm-btn"
                   onClick={() => {
@@ -63,6 +73,7 @@ const LocationPicker = () => {
                     postPlace();
                     setIsOpen(false);
                   }}
+                  type="button"
                 >
                   위치 설정 완료
                 </button>

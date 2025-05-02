@@ -18,7 +18,6 @@ const RentalItem = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(`http://localhost:9090/post`);
-        console.log(response.data);
         if (response) setItems(response.data);
       } catch (error) {
         console.error("데이터 불러오기 실패:", error);
