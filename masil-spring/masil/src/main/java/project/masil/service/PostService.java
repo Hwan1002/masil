@@ -37,6 +37,9 @@ public class PostService {
 			throw new NotExistPhotoException("사진을 등록해주세요 .");
 		}				
 		
+		if(dto.getLat() == null  || dto.getLng()==null || dto.getAddress() ==null ) {
+			throw new NotExistLocation("위치를 설정해주세요 .");						
+		}
 		
 		String uploadDir = System.getProperty("user.dir") + "/uploads";
 		dto.setPostPhotoPaths(FileUploadUtil.saveFiles(postPhotos, uploadDir, "postPhoto"));
@@ -153,6 +156,12 @@ public class PostService {
 		}
 	}
 	
+	// 게시글의 위치정보를 포함하지않았을때의 예외처리 내부클래스 
+	public static class NotExistLocation extends RuntimeException {
+		public NotExistLocation(String message) {
+			super(message) ;
+		}
+	}
 	// 게시글 수정삭제 권한부족 예외처리 
 	public static class AccessDeniedException extends RuntimeException {
 		public AccessDeniedException (String message) {
@@ -176,7 +185,10 @@ public class PostService {
 				.updateDate(entity.getUpdateDate())
 				.description(entity.getDescription())
 				.userNickName(entity.getUser().getUserNickName())
-				.userProfilePhotoPath(entity.getUser().getProfilePhotoPath())				
+				.userProfilePhotoPath(entity.getUser().getProfilePhotoPath())
+				.lat(entity.getLat())
+				.lng(entity.getLng())
+				.address(entity.getAddress()) 
 				.build();
 	}
 
@@ -190,6 +202,9 @@ public class PostService {
 				.postStartDate(dto.getPostStartDate())
 				.postEndDate(dto.getPostEndDate())
 				.description(dto.getDescription())
+				.lat(dto.getLat())
+				.lng(dto.getLng())
+				.address(dto.getAddress()) 
 				.build();
 	}
 }

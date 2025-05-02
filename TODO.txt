@@ -34,7 +34,13 @@ locationService lat,lng 를  KakaoGeocodingService 클래스의 getBcode 를통�
 읍면동 명 추출 ->   locationDTO 의 lat,lng,address 속성의 값 세팅후 객체반환
 
 
+location 객체생성 , contextAPI 사용 .
 
+location  = {
+lat : "" ,
+lng: "" ,
+address : "" 	
+}
 
 
 lat , lng를 전송 -> lat,lng -> 법정동코드 변환 -> 법정동코드 -> address변환 -> 

@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useEditStore from "../shared/useEditStore";
 import useModal from "../context/useModal";
-import { Api } from "../context/MasilContext";
+import { Api, ProjectContext } from "../context/MasilContext";
 import RentalDatePicker from "../component/datepicker/DatePicker";
 import Modal from "../component/Modal";
 import camera from "../css/img/photo/camera.png";
@@ -20,6 +20,7 @@ const PostRegist = () => {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const { idx } = useParams();
+  const { location, setLocation } =useContext(ProjectContext);
 
   const navigate = useNavigate();
   // const { isEdit, userId } = useEditStore();
@@ -71,6 +72,9 @@ const PostRegist = () => {
             postStartDate: startDate.toISOString(),
             postEndDate: endDate.toISOString(),
             description: RegistData.description,
+            address: location.address,
+            lat: location.lat,
+            lng: location.lng,
           }),
         ],
         { type: "application/json" }

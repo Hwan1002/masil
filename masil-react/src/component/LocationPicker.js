@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Autocomplete from "react-google-autocomplete";
 import "../css/LocationPicker.css"; // CSS 파일 import
-import { Api } from "../context/MasilContext";
+import { Api, ProjectContext } from "../context/MasilContext";
+import axios from "axios";
 
 const LocationPicker = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [latLng, setLatLng] = useState({ lat: null, lng: null });
+  const { location, setLocation } =useContext(ProjectContext);
+
 
   const handlePlaceSelected = (place) => {
     setSelectedPlace(place);
@@ -20,11 +23,13 @@ const LocationPicker = () => {
     }
   };
 
-  const postPlace = () => {
-    Api.post(`/user/setLocation`, {
+  const postPlace = async  () => {
+    const response = await axios.post(`http://localhost:9090/location`, {
       lat: latLng.lat,
       lng: latLng.lng,
     });
+    setLocation(response.data);
+    console.log(response.data)
   };
 
   return (

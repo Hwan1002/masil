@@ -78,6 +78,16 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 	}
 
+	
+	// NotExistLocation 게시글의 위치정보가 존재하지않는경우 예외처리 .
+	@ExceptionHandler(PostService.NotExistLocation.class)
+	public ResponseEntity<ResponseDTO<String>> NotExistPhotoException(PostService.NotExistLocation ex) {
+		ResponseDTO<String> response = ResponseDTO.<String>builder().status(HttpStatus.BAD_REQUEST.value()) 
+				.error(ex.getMessage()).build();
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+	}
+
+	
 	// AccessDeniedException 게시글 수정삭제 권한부족 예외처리 	
 	@ExceptionHandler(PostService.AccessDeniedException.class)
 	public ResponseEntity<ResponseDTO<String>> AccessDeniedException(PostService.AccessDeniedException ex) {

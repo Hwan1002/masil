@@ -14,9 +14,8 @@ import project.masil.dto.OAuthAttributes;
 import project.masil.dto.ResponseDTO;
 import project.masil.dto.UserDTO;
 import project.masil.entity.UserEntity;
-import project.masil.repository.BcodeRepository;
 import project.masil.repository.UserRepository;
-import project.masil.service.KakaoGeocodingService.KakaoApiException;
+import project.masil.service.PostService.NotExistLocation;
 
 @Service
 public class UserService {
@@ -26,16 +25,10 @@ public class UserService {
 
 	@Autowired
 	private UserRepository userRepository;
-	
-	@Autowired
-	private BcodeRepository bCodeRepository ;
 
 	@Autowired 
 	private JwtTokenProvider tokenProvider;	
-	
-	@Autowired
-	private KakaoGeocodingService kakaoGeocodingService;
-	
+
 	PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 	// Id 중복체크 메서드
@@ -57,8 +50,10 @@ public class UserService {
 		// 사진을 저장하고 사진의 경로를 얻는 stirng 반환받은후 그 반환받은 값을 profilePhoto에 직접 넣어준다 .
 		if (userRepository.existsByEmail(dto.getEmail())) {
 			throw new EmailAlreadyExistsException(dto.getEmail() + " 은(는) 중복된 이메일입니다: ");
+		};
+		if(dto.getLat() == null  || dto.getLng()==null || dto.getAddress() ==null ) {
+			throw new NotExistLocation("위치를 설정해주세요 .");						
 		}
-		;
 
 		if (profilePhoto == null || profilePhoto.isEmpty()) {
 			dto.setProfilePhotoPath(DEFAULT_PROFILE_PHOTO);
@@ -68,6 +63,8 @@ public class UserService {
 		}
 		dto.setPassword(passwordEncoder.encode(dto.getPassword()));
 						
+		
+		
 		
 		userRepository.save(toEntity(dto));
 		return ResponseDTO.<String>builder().status(201) // HTTP 상태 코드
@@ -233,7 +230,11 @@ public class UserService {
 		return UserDTO.builder().userId(entity.getUserId()).userName(entity.getUserName())
 				.userNickName(entity.getUserNickName()).email(entity.getEmail())
 				.profilePhotoPath(entity.getProfilePhotoPath()).address(entity.getAddress())
+				.lat(entity.getLat())
+				.lng(entity.getLng())
+				.address(entity.getAddress())
 				.authProvider(entity.getAuthProvider()).build();
+				
 	}
 
 	// dto -> entity

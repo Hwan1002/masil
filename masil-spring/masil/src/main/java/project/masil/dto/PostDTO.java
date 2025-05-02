@@ -39,11 +39,11 @@ public class PostDTO {
 	
 	private String userProfilePhotoPath ; // 유저 프로필사진 경로
 
-	private Double postLat ; // 위도
+	private Double lat ; // 위도
 
-	private Double postLng ; // 경도
+	private Double lng ; // 경도
 	
-	private String postAddress ; // 주소 
+	private String address ; // 주소 
 	
 	
 	

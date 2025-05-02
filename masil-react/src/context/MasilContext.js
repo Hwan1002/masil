@@ -25,11 +25,16 @@ export const ProjectProvider = ({ children }) => {
   //로딩중 상태
   const [isLoading, setIsLoading] = useState(false);
 
+  // 위치객체
+  const [location , setLocation ] = useState({}) ;
+
   // 컴포넌트 렌더링 상태
   const [isTokenLoading, setIsTokenLoading] = useState(false);
 
   // 렌더링없는 추적
   const tokenValueRef = useRef(accessToken);
+
+
 
   useEffect(() => {
     tokenValueRef.current = accessToken;
@@ -157,6 +162,8 @@ export const ProjectProvider = ({ children }) => {
     setImagePreview,
     isLoading,
     setIsLoading,
+    location,
+    setLocation,
   };
 
   if (isTokenLoading) {
