@@ -6,12 +6,14 @@ import Modal from "../component/Modal";
 import moment from "moment";
 import { Api } from "../context/MasilContext";
 import "../css/SelectedRentalItem.css";
+import useLoginStore from "../shared/useLoginStore";
 
 const SelectedRentalItem = () => {
   const { idx } = useParams();
   const [item, setItem] = useState([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const setEdit = useEditStore((state) => state.setEdit);
+  const { setEdit, setUserId } = useEditStore();
+  const { userId } = useLoginStore;
   const navigate = useNavigate();
 
   const {
@@ -101,8 +103,25 @@ const SelectedRentalItem = () => {
   };
 
   const handleEditBtn = () => {
+    console.log(item);
+    // get해온 userId와 로그인할때 저장한 값이 동일한지 비교 해야함
+    // if (userId === item.userId) {
     setEdit(true);
+    setUserId(item.postIdx);
     navigate("/postRegist");
+    // } else {
+    // openModal({
+    //   message: "수정할 수 없는 게시물입니다.",
+    //   actions: [
+    //     {
+    //       label: "확인",
+    //       onClick: () => {
+    //         closeModal();
+    //       },
+    //     },
+    //   ],
+    // });
+    // }
   };
   return (
     <div className="selected-container">
@@ -112,7 +131,7 @@ const SelectedRentalItem = () => {
         </div>
         <div>
           <button className="selected-u" onClick={handleEditBtn}>
-            <a href={`/post/item/${item.postIdx}`}>수정</a>
+            <a href={`/post/item/${idx}`}>수정</a>
           </button>
           <button
             onClick={() =>

@@ -9,6 +9,7 @@ import useModal from "../context/useModal";
 import axios from "axios";
 import { ProjectContext } from "../context/MasilContext";
 import { useNavigate } from "react-router-dom";
+import useLoginStore from "../shared/useLoginStore";
 const Login = () => {
   // 비밀번호 보이기, 숨기기 버튼 상태
   const [showPassword, setShowPassword] = useState(false);
@@ -16,6 +17,9 @@ const Login = () => {
   const [loginInfo, setLoginInfo] = useState({});
   //로그인 성공 여부
   const { setLoginSuccess, setAccessToken } = useContext(ProjectContext);
+
+  const { userId, setUserId } = useLoginStore();
+
   const navigate = useNavigate();
   const {
     isModalOpen,
@@ -62,6 +66,8 @@ const Login = () => {
       );
       if (response) {
         setLoginSuccess(true);
+        debugger;
+        setUserId(loginInfo.userId);
         openModal({
           message: response.data.value,
           actions: [
