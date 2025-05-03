@@ -29,6 +29,7 @@ const SelectedRentalItem = () => {
     try {
       const response = await Api.get(`/post/item/${idx}`);
       setItem(response.data);
+      console.log(item)
     } catch (error) {
       console.error("데이터 요청 실패:", error);
       return null;
@@ -195,7 +196,7 @@ const SelectedRentalItem = () => {
                 {item.userNickName}
               </div>
               <div className="selected-rental-profile-text">
-                {item.userAddress}
+                {item.address}
               </div>
             </div>
           </div>

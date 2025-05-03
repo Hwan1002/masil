@@ -7,6 +7,8 @@ import Modal from "../component/Modal";
 import useModal from "../context/useModal";
 import LoadingModal from "../component/LoadingModal";
 import axios from "axios";
+import LocationButton from "../component/LocationButton";
+import LocationPicker from "../component/LocationPicker";
 import CryptoJS from "crypto-js";
 
 const SignUp = () => {
@@ -197,6 +199,8 @@ const SignUp = () => {
     e.preventDefault();
     //빈값확인
     const isEmpty = Object.values(formData).some((value) => !value);
+    console.log("formdata",formData)
+    console.log("이건", isEmpty)
     if (isEmpty) {
       openModal({
         message: "빈칸을 입력해주세요.",
@@ -313,6 +317,14 @@ const SignUp = () => {
             >
               프로필 사진
             </button>
+            <div className="postLocation">
+              <div>
+                <LocationButton />
+              </div>
+              <div>
+                <LocationPicker />
+              </div>
+            </div>
             <input
               name="profilePhoto"
               type="file"
