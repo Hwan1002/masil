@@ -32,9 +32,9 @@ const SignUp = () => {
     userNickName: "",
     password: "",
     email: "",
-    lat: "",
-    lng : "",
-    address : ""
+    // lat: "",
+    // lng : "",
+    // address : ""
   });
 
   const { setIsLoading } = useContext(ProjectContext);
