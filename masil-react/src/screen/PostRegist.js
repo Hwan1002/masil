@@ -13,7 +13,7 @@ import LocationPicker from "../component/LocationPicker";
 const PostRegist = () => {
   const [item, setItem] = useState({});
   const [selectedImages, setSelectedImages] = useState([]); // 여러 이미지를 저장하는 배열
-  const [setImagePreviews] = useState([]);
+  const [imagePreviews ,setImagePreviews] = useState([]);
   const [commaPrice, setCommaPrice] = useState("");
 
   //DatePicker 에서 값 받아옴
