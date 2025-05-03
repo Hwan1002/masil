@@ -54,13 +54,7 @@ const Header = () => {
             Masil
           </button>
           <nav className="navBar">
-            <button onClick={() => scrollToSection("about")}>About Me</button>
             <button onClick={() => navigate("/rentalitem")}>렌탈물품</button>
-            <button onClick={() => scrollToSection("archiving")}>
-              Archiving
-            </button>
-            <button onClick={() => scrollToSection("project")}>Projects</button>
-            <button onClick={() => scrollToSection("career")}>Career</button>
           </nav>
           <div>
             {loginSuccess ? (
