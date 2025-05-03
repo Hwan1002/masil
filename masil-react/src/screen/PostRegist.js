@@ -188,6 +188,12 @@ const PostRegist = () => {
     });
   };
 
+  useEffect(() => {
+    return () => {
+      selectedImages.forEach((file) => URL.revokeObjectURL(file.preview));
+    };
+  }, [selectedImages]);
+
   return (
     <div className="postRegist">
       <div className="postRegist-title">
@@ -223,9 +229,7 @@ const PostRegist = () => {
               {selectedImages.map((image, index) => (
                 <div key={index} className="imageWrapper">
                   <img
-                    src={
-                      !item ? URL.createObjectURL(image) : item.postPhotoPaths
-                    }
+                    src={URL.createObjectURL(image)}
                     alt={`선택된 이미지 ${index + 1}`}
                     className="previewImage"
                   />
