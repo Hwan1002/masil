@@ -62,10 +62,9 @@
 
 .myPageSendBtn{
     position: absolute;
-    top: 50%;
+    top: 60%;
     right: 5px; /* 입력 필드 오른쪽에 버튼 위치 */
-    transform: translateY(-70%); /* 버튼을 수직 중앙 정렬 */
-    padding: 5px 10px;
+    transform: translateY(-75%); /* 버튼을 수직 중앙 정렬 */
     font-size: 0.9rem;
     border: none;
     cursor: pointer;
@@ -75,6 +74,7 @@
 .profilePhoto{
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 .photoImg{
@@ -85,4 +85,8 @@
 
 .profileChangeBtn{
   margin-bottom: 5px;
+}
+
+.dpLabel{
+  display: flex;
 }

@@ -326,16 +326,20 @@ const MyPage = () => {
           </div>
 
           <div className="inputAll">
+            <label for="id" className="dpLabel">아이디</label>
             <input
               type="text"
               name="user_name"
+              id="id"
               className="form-input"
               value={formData.userId || ""}
               readOnly
             />
+            <label for="userNick" className="dpLabel">닉네임</label>
             <input
               type="text"
               name="userNickName"
+              id="userNick"
               className="form-input"
               value={formData.userNickName || ""}
               placeholder="닉네임을 입력하세요"
@@ -348,10 +352,12 @@ const MyPage = () => {
               <>
                 <div className="myPageEmailContainer">
                   <div className="myPageEmailInput">
+                  <label for="email" className="dpLabel">이메일</label>
                     <input
                       className="FindId_input"
                       type="email"
                       name="email"
+                      id="email"
                       placeholder="이메일 입력"
                       value={formData.email}
                       onChange={(e) => setEmail(e.target.value)}
