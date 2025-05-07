@@ -176,6 +176,7 @@ public class PostService {
 	
 		return PostDTO.builder()
 				.postIdx(entity.getPostIdx())
+				.userId(entity.getUser().getUserId())
 				.registrationDate(entity.getRegistrationDate())
 				.postTitle(entity.getPostTitle())
 				.postPrice(entity.getPostPrice())

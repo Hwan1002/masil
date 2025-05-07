@@ -13,27 +13,27 @@ import LocationPicker from "../component/LocationPicker";
 const PostRegist = () => {
   const [item, setItem] = useState({});
   const [selectedImages, setSelectedImages] = useState([]); // 여러 이미지를 저장하는 배열
-  const [imagePreviews ,setImagePreviews] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
   const [commaPrice, setCommaPrice] = useState("");
 
   //DatePicker 에서 값 받아옴
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const { idx } = useParams();
-  const { location, setLocation } =useContext(ProjectContext);
+  const { location, setLocation } = useContext(ProjectContext);
 
   const navigate = useNavigate();
-  // const { isEdit, userId } = useEditStore();
+  const { isEdit, userId, setEdit } = useEditStore();
 
   // useEffect(() => {
   //   const fetchPostItem = async (idx) => {
-  // try {
-  //   const response = await Api.get(`/post/item/${idx}`);
-  //   setItem(response.data);
-  // } catch (error) {
-  //   console.error("데이터 요청 실패:", error);
-  //   return null;
-  // }
+  //     try {
+  //       const response = await Api.get(`/post/item/${idx}`);
+  //       setItem(response.data);
+  //     } catch (error) {
+  //       console.error("데이터 요청 실패:", error);
+  //       return null;
+  //     }
   //   };
   //   fetchPostItem();
   // }, [isEdit, idx]);
@@ -95,11 +95,14 @@ const PostRegist = () => {
       console.log("파일 업로드 성공:", response.data);
       openModal({
         title: `게시글 등록`,
-        message: `게시글이 등록되었습니다.`,
+        message: isEdit
+          ? `게시글이 등록되었습니다.`
+          : "게시글이 수정되었습니다.",
         actions: [
           {
             label: "확인",
             onClick: () => {
+              setEdit(false);
               navigate("/rentalitem");
             },
           },
@@ -197,8 +200,8 @@ const PostRegist = () => {
   return (
     <div className="postRegist">
       <div className="postRegist-title">
-        {/* <h2>{!isEdit ? "게시물 등록" : "게시물 수정"}</h2> */}
-        <h2>게시물 등록</h2>
+        <h2>{!isEdit ? "게시물 등록" : "게시물 수정"}</h2>
+        {/* <h2>게시물 등록</h2> */}
       </div>
       <form onSubmit={(e) => handleSubmit(e)}>
         <div className="formDiv">
@@ -294,7 +297,14 @@ const PostRegist = () => {
               />
             </div>
             <div className="registnavigate">
-              <button onClick={() => navigate("/rentalitem")}>뒤로가기</button>
+              <button
+                onClick={() => {
+                  navigate("/rentalitem");
+                  setEdit(false);
+                }}
+              >
+                뒤로가기
+              </button>
               <button type="submit">등록하기</button>
             </div>
           </div>

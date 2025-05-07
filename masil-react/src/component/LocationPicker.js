@@ -8,8 +8,7 @@ const LocationPicker = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [latLng, setLatLng] = useState({ lat: null, lng: null });
-  const { location, setLocation } =useContext(ProjectContext);
-
+  const { location, setLocation } = useContext(ProjectContext);
 
   const handlePlaceSelected = (place) => {
     setSelectedPlace(place);
@@ -23,13 +22,13 @@ const LocationPicker = () => {
     }
   };
 
-  const postPlace = async  () => {
+  const postPlace = async () => {
     const response = await axios.post(`http://localhost:9090/location`, {
       lat: latLng.lat,
       lng: latLng.lng,
     });
     setLocation(response.data);
-    console.log(response.data)
+    console.log(response.data);
   };
 
   return (
@@ -48,6 +47,12 @@ const LocationPicker = () => {
           onClick={() => setIsOpen(false)}
         >
           <div className="location-modal" onClick={(e) => e.stopPropagation()}>
+            <button
+              className="location-close-btn"
+              onClick={() => setIsOpen(false)}
+            >
+              ✕
+            </button>
             <h3>지역 검색</h3>
             <Autocomplete
               className="location-autocomplete"
@@ -84,12 +89,6 @@ const LocationPicker = () => {
                 </button>
               </div>
             )}
-            <button
-              className="location-close-btn"
-              onClick={() => setIsOpen(false)}
-            >
-              ✕
-            </button>
           </div>
         </div>
       )}

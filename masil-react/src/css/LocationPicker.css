@@ -1,6 +1,9 @@
 p {
   padding: 0;
 }
+h3 {
+  margin: 0;
+}
 .location-modal-backdrop {
   position: fixed;
   top: 0;

@@ -63,9 +63,19 @@ button {
   height: 2em;
   border-radius: 10px;
   transition: 0.5s;
+  text-decoration: none;
+  outline: none;
 }
 button:hover {
   background: #00a32c;
+}
+button:focus,
+button:active,
+a:focus,
+a:active {
+  outline: none;
+  text-decoration: none;
+  color: inherit; /* 클릭 시 색상 변경 방지 */
 }
 /* .logo{
     font-size: 25px;

@@ -12,7 +12,7 @@ const SelectedRentalItem = () => {
   const { idx } = useParams();
   const [item, setItem] = useState([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const { setEdit, setUserId } = useEditStore();
+  const { setEdit } = useEditStore();
   const { userId } = useLoginStore;
   const navigate = useNavigate();
 
@@ -29,13 +29,11 @@ const SelectedRentalItem = () => {
     try {
       const response = await Api.get(`/post/item/${idx}`);
       setItem(response.data);
-      console.log(item)
     } catch (error) {
       console.error("데이터 요청 실패:", error);
       return null;
     }
   };
-
   const deletePostItem = async (idx) => {
     try {
       const response = await Api.delete(`/post/${idx}`);
@@ -64,7 +62,6 @@ const SelectedRentalItem = () => {
     const loadData = async () => {
       const data = await fetchPostItem(idx);
       if (data) {
-        // setState(data) 등 처리
       }
     };
 
@@ -104,11 +101,9 @@ const SelectedRentalItem = () => {
   };
 
   const handleEditBtn = () => {
-    console.log(item);
     // get해온 userId와 로그인할때 저장한 값이 동일한지 비교 해야함
     // if (userId === item.userId) {
     setEdit(true);
-    setUserId(item.postIdx);
     navigate("/postRegist");
     // } else {
     // openModal({
@@ -124,6 +119,8 @@ const SelectedRentalItem = () => {
     // });
     // }
   };
+  console.log("로그인 아이디 : ", userId);
+  console.log("게시물 아이디 : ", item.userId);
   return (
     <div className="selected-container">
       <div className="selected-ud">
@@ -134,6 +131,7 @@ const SelectedRentalItem = () => {
           <button className="selected-u" onClick={handleEditBtn}>
             <a href={`/post/item/${idx}`}>수정</a>
           </button>
+
           <button
             onClick={() =>
               openModal({
@@ -195,9 +193,7 @@ const SelectedRentalItem = () => {
               <div className="selected-rental-profile-text">
                 {item.userNickName}
               </div>
-              <div className="selected-rental-profile-text">
-                {item.address}
-              </div>
+              <div className="selected-rental-profile-text">{item.address}</div>
             </div>
           </div>
         </div>

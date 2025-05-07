@@ -20,21 +20,20 @@ export const ProjectProvider = ({ children }) => {
   //로그인 상태
   const [loginSuccess, setLoginSuccess] = useState(false);
   const [accessToken, setAccessToken] = useState(null);
+
   //프로필사진
   const [imagePreview, setImagePreview] = useState(userDefault);
   //로딩중 상태
   const [isLoading, setIsLoading] = useState(false);
 
   // 위치객체
-  const [location , setLocation ] = useState({}) ;
+  const [location, setLocation] = useState({});
 
   // 컴포넌트 렌더링 상태
   const [isTokenLoading, setIsTokenLoading] = useState(false);
 
   // 렌더링없는 추적
   const tokenValueRef = useRef(accessToken);
-
-
 
   useEffect(() => {
     tokenValueRef.current = accessToken;
@@ -156,6 +155,7 @@ export const ProjectProvider = ({ children }) => {
     setLoginSuccess,
     accessToken,
     setAccessToken,
+
     // tokenTimer, setTokenTimer,
     // timeText, setTimeText,
     imagePreview,

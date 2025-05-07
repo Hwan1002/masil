@@ -19,6 +19,8 @@ public class PostDTO {
 
 	private Integer postIdx; //게시물 식별자
 	
+	private String userId; //게시물 아이디
+	
 	private LocalDateTime registrationDate; // 게시글 등록날짜 .
 	
 	private LocalDateTime updateDate ; // 게시글 수정날짜 .

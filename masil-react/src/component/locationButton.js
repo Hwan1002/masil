@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import {ProjectContext } from "../context/MasilContext";
+import { ProjectContext } from "../context/MasilContext";
 import "../css/LocationButton.css"; //
 import axios from "axios";
 const LocationButton = () => {
@@ -54,10 +54,12 @@ const LocationButton = () => {
       {isopen && (
         <div className="location-modal-backdrop">
           <div className="location-button-container">
-            <p>위도: {location.lat},</p>
-            <p>경도: {location.lng}</p>
-            <p>주소 : {location.address}</p>
-            {error && <p style={{ color: "red" }}>{error}</p>}
+            <div className="location-info">
+              <p>위도: {location.lat},</p>
+              <p>경도: {location.lng}</p>
+              <p>주소 : {location.address}</p>
+              {error && <p style={{ color: "red" }}>{error}</p>}
+            </div>
             <button type="button" onClick={() => setIsOpen(false)}>
               확인
             </button>

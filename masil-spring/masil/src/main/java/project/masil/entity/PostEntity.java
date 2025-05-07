@@ -36,7 +36,8 @@ public class PostEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer postIdx; // 게시글 식별자
-
+	
+	
 	@CreatedDate
 	private LocalDateTime registrationDate; // 등록날짜
 

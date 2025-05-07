@@ -18,7 +18,7 @@ const Login = () => {
   //로그인 성공 여부
   const { setLoginSuccess, setAccessToken } = useContext(ProjectContext);
 
-  const { userId, setUserId } = useLoginStore();
+  const { setUserId } = useLoginStore();
 
   const navigate = useNavigate();
   const {
@@ -66,8 +66,6 @@ const Login = () => {
       );
       if (response) {
         setLoginSuccess(true);
-        debugger;
-        setUserId(loginInfo.userId);
         openModal({
           message: response.data.value,
           actions: [
@@ -75,6 +73,7 @@ const Login = () => {
               label: "확인",
               onClick: () => {
                 setAccessToken(response.data.accessToken);
+
                 closeModal();
                 navigate("/");
               },
@@ -110,6 +109,7 @@ const Login = () => {
         // 성공 케이스
         if (event.data.success) {
           setLoginSuccess(true);
+
           openModal({
             message: event.data.data.value,
             actions: [

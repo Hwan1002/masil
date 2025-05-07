@@ -28,12 +28,12 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 1rem;
   background: white;
   padding: 1em;
   border-radius: 8px;
   min-width: 20em;
-  width: auto;
-  height: auto;
+  min-height: 8em;
 }
 
 .modal-content h2 {
@@ -47,6 +47,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 1rem;
 }
 
 .modal-actions button {
@@ -54,11 +55,8 @@
   color: white;
   width: 5em;
   height: 2em;
-  margin-right: 1rem;
 }
-.modal-actions button:last-child {
-  margin-right: 0;
-}
+
 .modal-actions button[type="submit"] {
   background-color: #4caf50;
   color: white;
