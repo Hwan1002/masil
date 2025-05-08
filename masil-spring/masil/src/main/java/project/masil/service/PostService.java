@@ -176,7 +176,6 @@ public class PostService {
 	
 		return PostDTO.builder()
 				.postIdx(entity.getPostIdx())
-				.userId(entity.getUser().getUserId())
 				.registrationDate(entity.getRegistrationDate())
 				.postTitle(entity.getPostTitle())
 				.postPrice(entity.getPostPrice())
@@ -187,6 +186,7 @@ public class PostService {
 				.description(entity.getDescription())
 				.userNickName(entity.getUser().getUserNickName())
 				.userProfilePhotoPath(entity.getUser().getProfilePhotoPath())
+				.userId(entity.getUser().getUserId())
 				.lat(entity.getLat())
 				.lng(entity.getLng())
 				.address(entity.getAddress()) 

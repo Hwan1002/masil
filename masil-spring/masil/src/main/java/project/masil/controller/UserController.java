@@ -69,7 +69,7 @@ public class UserController {
 		refreshCookie.setHttpOnly(true); // HttpOnly 설정
 		refreshCookie.setSecure(false); // HTTPS에서만 전송 (배포 환경에서 필수 true로 변환해주기)
 		refreshCookie.setPath("/"); // 쿠키의 경로 설정 (루트 경로)
-		refreshCookie.setMaxAge(7 * 24 * 60 * 60); // 유효기간: 7일
+		refreshCookie.setMaxAge(-1); // 브라우저(모든 창) 종료 시 자동 삭제됨. 세션 쿠키.
 		
 		// 응답 객체에 쿠키추가
 		response.addCookie(refreshCookie);

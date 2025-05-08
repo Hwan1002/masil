@@ -19,8 +19,6 @@ public class PostDTO {
 
 	private Integer postIdx; //게시물 식별자
 	
-	private String userId; //게시물 아이디
-	
 	private LocalDateTime registrationDate; // 게시글 등록날짜 .
 	
 	private LocalDateTime updateDate ; // 게시글 수정날짜 .
@@ -40,6 +38,8 @@ public class PostDTO {
 	private String userNickName ; // 유저닉네임 .
 	
 	private String userProfilePhotoPath ; // 유저 프로필사진 경로
+	
+	private String userId; //게시물 아이디
 
 	private Double lat ; // 위도
 

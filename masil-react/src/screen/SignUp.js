@@ -9,9 +9,9 @@ import LoadingModal from "../component/LoadingModal";
 import axios from "axios";
 import LocationButton from "../component/LocationButton";
 import LocationPicker from "../component/LocationPicker";
-import CryptoJS from "crypto-js";
-
 const SignUp = () => {
+
+  const { location, setLocation } = useContext(ProjectContext);
   //프로필사진 상태
   const [profilePhoto, setProfilePhoto] = useState(null);
   //중복체크 & 이메일 인증 버튼 눌렀는지
@@ -34,9 +34,7 @@ const SignUp = () => {
     userNickName: "",
     password: "",
     email: "",
-    // lat: "",
-    // lng : "",
-    // address : ""
+
   });
 
   const { setIsLoading } = useContext(ProjectContext);
@@ -199,7 +197,7 @@ const SignUp = () => {
     e.preventDefault();
     //빈값확인
     const isEmpty = Object.values(formData).some((value) => !value);
-    console.log("formdata",formData)
+    console.log("formdata", formData)
     console.log("이건", isEmpty)
     if (isEmpty) {
       openModal({
@@ -235,7 +233,12 @@ const SignUp = () => {
       }
       data.append(
         "dto",
-        new Blob([JSON.stringify(formData)], { type: "application/json" })
+        new Blob([JSON.stringify({
+          ...formData,
+          address: location.address,
+          lat: location.lat,
+          lng: location.lng,
+        }),], { type: "application/json" })
       );
       const response = await axios.post("http://localhost:9090/user", data, {
         headers: {
@@ -262,6 +265,8 @@ const SignUp = () => {
         title: "회원가입",
         message: error.response.data.error,
       });
+    } finally {
+      setLocation({}); // 항상 location 초기화
     }
   };
   // const [ip, setIp] = useState("");

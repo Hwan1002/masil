@@ -115,6 +115,8 @@ const PostRegist = () => {
         title: `경고`,
         message: error.response?.data?.error,
       });
+    } finally {
+      setLocation({}); // 항상 location 초기화
     }
   };
 

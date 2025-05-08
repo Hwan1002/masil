@@ -3,14 +3,11 @@
 
 로그아웃시 main 혹은 로그인페이지로 redirect 
 웹페이를 닫았을경우 appllication 에서 쿠키에저장되어있는 refreshToken을 삭제되야한다 .
-다시 웹페이지를 찾았을경우에 로그인이되어있는것을 방지해야한다 .
+다시 웹페이지를 찾았을경우에 로그인이되어있는것을 방지해야한다 . // 쿠키의 maxAge(-1) (세션쿠키로 변경으로 해결  )
 
 게시글 작성 컴포넌트에 위치를 갖게끔 
 유저위치와 게시글 대여위치를 지정할수있게끔. 
 유저위치는 마이페이지 , 혹은메인페이지 어디에서할지 지정해야하고 
-
-
-
 게시글위치는 게시글을 작성할때에 희망하는 거래장소를 설정할수 있게끔 만든다 .
 게시글 post API 수정 -> 게시글 Modify API 수정 = 위치 지정 , LocationButton , LocationPicker 에있는 기능들을 그대로 좌표전송 해줘야함 .
 게시글 entity , DTO 에 lat , lng , address 필드추가 및 외부 API 호출로 인한 reverseGeoCoding 및 법정동코드 -> address반환로직 추가 .
@@ -18,6 +15,7 @@
 수정도 마찬가지 .
 여유있을시에 반경만들기 해도되고 .
 location Button , location Picker 컴포넌트에 API.post가아닌 axios.post로 바꿔야함 , 유저 인증객체를 보내는로직이아닌 그냥 단순 좌표가공만해서 넘겨줘야함 , 넘겨받은코드를 userDB에 연결해줘야함 .
+// 완료 
 
 
 일반 회원가입의 로직에서 signup 
@@ -42,9 +40,13 @@ lng: "" ,
 address : "" 	
 }
 
-
 lat , lng를 전송 -> lat,lng -> 법정동코드 변환 -> 법정동코드 -> address변환 -> 
 userRepository.save(user) ; 
+
+// 게시글 , 회원가입시 위치 완료 .
+
+
+*** 소셜로그인시 유저가 위치를갖고있는지 검증하는 로직 필요함 , 그리고 소셜로그인시에 회원
 
 
 게시글 수정 ,삭제,  로직에대해서 유저와 게시글과의 관계 검토해야함 .(권한)
@@ -93,15 +95,11 @@ if(address ==null) {
 
 
 
+일단해야할것 . 
 
+1 : 로그인시에 반환되는 responseDTO 에 userId 추가하기 . // 했음
 
-
-
-
-
-
-
-
+2 : userId 저장하는 로직구현되면 socialLogin쪽도 동일한 로직으로 userId 저장할수있게 구현하기.
 
 
 
