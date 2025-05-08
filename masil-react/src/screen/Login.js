@@ -37,6 +37,11 @@ const Login = () => {
   //   setTimeText(`남은 토큰 시간 : ${tokenTimer}`);
   // }
 
+  const savedUserId = (userId) => {
+    setUserId(userId);
+    console.log("로그인 성공후 zustand 저장 : ", userId);
+  };
+
   //로그인 값 핸들러
   const loginHandler = (e) => {
     const { name, value } = e.target;
@@ -73,7 +78,7 @@ const Login = () => {
               label: "확인",
               onClick: () => {
                 setAccessToken(response.data.accessToken);
-
+                savedUserId(response.data.userId);
                 closeModal();
                 navigate("/");
               },
@@ -95,11 +100,11 @@ const Login = () => {
   };
 
   const socialLogin = (social) => {
-    const popup = window.open(
-      `http://localhost:9090/oauth2/authorization/${social}`,
-      "소셜 로그인",
-      "width=600,height=800"
-    );
+    // const popup = window.open(
+    //   `http://localhost:9090/oauth2/authorization/${social}`,
+    //   "소셜 로그인",
+    //   "width=600,height=800"
+    // );
 
     window.addEventListener(
       "message",

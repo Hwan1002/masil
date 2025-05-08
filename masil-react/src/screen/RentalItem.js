@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { ProjectContext, Api } from "../context/MasilContext";
+import useEditStore from "../shared/useEditStore";
+import { ProjectContext } from "../context/MasilContext";
 import axios from "axios";
 import "../css/RentalItem.css";
 
@@ -8,6 +9,7 @@ const RentalItem = () => {
   const navigate = useNavigate();
   const [showSoldOnly, setShowSoldOnly] = useState(false);
   const [items, setItems] = useState([]);
+  const { setEdit } = useEditStore();
   const [currentPage, setCurrentPage] = useState(1);
   const [addressKeyword, setAddressKeyword] = useState("");
   const itemsPerPage = 15;
@@ -143,7 +145,10 @@ const RentalItem = () => {
       {/* 등록 버튼 */}
       {loginSuccess && (
         <button
-          onClick={() => navigate("/postRegist")}
+          onClick={() => {
+            setEdit(false);
+            navigate("/postRegist");
+          }}
           className="fixed-button"
         >
           +
