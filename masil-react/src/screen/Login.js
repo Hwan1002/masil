@@ -100,7 +100,7 @@ const Login = () => {
   };
 
   const socialLogin = (social) => {
-     window.open(
+    window.open(
       `http://localhost:9090/oauth2/authorization/${social}`,
       "소셜 로그인",
       "width=600,height=800"
@@ -113,23 +113,43 @@ const Login = () => {
 
         // 성공 케이스
         if (event.data.success) {
-          setLoginSuccess(true);
-
-          openModal({
-            message: event.data.data.value,
-            actions: [
-              {
-                label: "확인",
-                onClick: () => {
-                  closeModal();
-                  window.location.href = "/";
+          setLoginSuccess(true); 
+          // hasAddress ( 주소값이 설정되어있을때 true)
+          if (event.data.data.hasAddress) {
+            // 주소값이 설정되어있을때의 로그인 로직 
+            openModal({
+              message: event.data.data.value,
+              actions: [
+                {
+                  label: "확인",
+                  onClick: () => {
+                    savedUserId(event.data.data.userId);
+                    closeModal();
+                    navigate("/");;
+                  },
                 },
-              },
-            ],
-          });
-        }
+              ],
+            });
+          } else {
+            // 주소값이 설정되어있지 않을때의 로그인 로직
+            openModal({
+              message: "주소를 등록해주세요!",
+              actions: [
+                {
+                  label: "주소 등록하러 가기",
+                  onClick: () => {
+                    savedUserId(event.data.data.userId);
+                    closeModal();
+                    window.location.href = "/";
+                  },
+                },
+              ],
+            });
+            // 또는 React Router를 사용한다면
+            // navigate("/register-address");
+          }
         // 실패 케이스
-        else {
+        } else {
           openModal({
             message: event.data.error,
             actions: [
