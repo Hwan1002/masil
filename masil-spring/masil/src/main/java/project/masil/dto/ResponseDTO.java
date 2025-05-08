@@ -18,5 +18,6 @@ public class ResponseDTO<T> {
 	private T value ; // 단일응답
 	private String error ; // 에러메세지 
 	private String accessToken ; // accessToken 
-	private String userId ; 
+	private String userId ; // 사용자의 아이디 
+	private Boolean hasAddress ; // 주소값 
 }
