@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import useModal from "../context/useModal";
+import { Api } from "../context/MasilContext";
 import useEditStore from "../shared/useEditStore";
+import useLoginStore from "../shared/useLoginStore";
 import Modal from "../component/Modal";
 import moment from "moment";
-import { Api } from "../context/MasilContext";
 import "../css/SelectedRentalItem.css";
-import useLoginStore from "../shared/useLoginStore";
 
 const SelectedRentalItem = () => {
   const { idx } = useParams();
   const [item, setItem] = useState([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const { setEdit } = useEditStore();
-  const { userId } = useLoginStore;
+  const { userId, setIdx } = useLoginStore();
+
   const navigate = useNavigate();
 
   const {
@@ -25,15 +26,27 @@ const SelectedRentalItem = () => {
     closeModal,
   } = useModal();
 
+  useEffect(() => {
+    const loadData = async () => {
+      const res = await fetchPostItem(idx);
+      if (res) {
+        setItem(res.data);
+      }
+    };
+
+    loadData();
+  }, [idx]);
+
   const fetchPostItem = async (idx) => {
     try {
       const response = await Api.get(`/post/item/${idx}`);
-      setItem(response.data);
+      return response;
     } catch (error) {
       console.error("데이터 요청 실패:", error);
       return null;
     }
   };
+
   const deletePostItem = async (idx) => {
     try {
       const response = await Api.delete(`/post/${idx}`);
@@ -57,16 +70,6 @@ const SelectedRentalItem = () => {
       console.error("게시글 삭제 실패:", error);
     }
   };
-
-  useEffect(() => {
-    const loadData = async () => {
-      const data = await fetchPostItem(idx);
-      if (data) {
-      }
-    };
-
-    loadData();
-  }, [idx]);
 
   const formatDate = (date, format = "YYYY-MM-DD HH:mm:ss") => {
     return moment(date).format(format);
@@ -101,26 +104,11 @@ const SelectedRentalItem = () => {
   };
 
   const handleEditBtn = () => {
-    // get해온 userId와 로그인할때 저장한 값이 동일한지 비교 해야함
-    // if (userId === item.userId) {
+    setIdx(idx);
     setEdit(true);
     navigate("/postRegist");
-    // } else {
-    // openModal({
-    //   message: "수정할 수 없는 게시물입니다.",
-    //   actions: [
-    //     {
-    //       label: "확인",
-    //       onClick: () => {
-    //         closeModal();
-    //       },
-    //     },
-    //   ],
-    // });
-    // }
   };
-  console.log("로그인 아이디 : ", userId);
-  console.log("게시물 아이디 : ", item.userId);
+
   return (
     <div className="selected-container">
       <div className="selected-ud">
@@ -128,23 +116,29 @@ const SelectedRentalItem = () => {
           <button onClick={handleGoBack}>뒤로가기</button>
         </div>
         <div>
-          <button className="selected-u" onClick={handleEditBtn}>
-            <a href={`/post/item/${idx}`}>수정</a>
-          </button>
+          {userId === item.userId ? (
+            <>
+              <button className="selected-u" onClick={handleEditBtn}>
+                <a href={`/post/item/${idx}`}>수정</a>
+              </button>
 
-          <button
-            onClick={() =>
-              openModal({
-                message: "정말 삭제하시겠습니까?",
-                actions: [
-                  { label: "돌아가기", onClick: closeModal },
-                  { label: "삭제", onClick: () => deletePostItem(idx) },
-                ],
-              })
-            }
-          >
-            삭제
-          </button>
+              <button
+                onClick={() =>
+                  openModal({
+                    message: "정말 삭제하시겠습니까?",
+                    actions: [
+                      { label: "돌아가기", onClick: closeModal },
+                      { label: "삭제", onClick: () => deletePostItem(idx) },
+                    ],
+                  })
+                }
+              >
+                삭제
+              </button>
+            </>
+          ) : (
+            "응~ 안보여~"
+          )}
         </div>
       </div>
       <div className="selected-item-container">

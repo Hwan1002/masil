@@ -3,12 +3,13 @@ import { useNavigate, useParams } from "react-router-dom";
 import useEditStore from "../shared/useEditStore";
 import useModal from "../context/useModal";
 import { Api, ProjectContext } from "../context/MasilContext";
-import RentalDatePicker from "../component/datepicker/DatePicker";
 import Modal from "../component/Modal";
-import camera from "../css/img/photo/camera.png";
-import "../css/PostRegist.css";
+import RentalDatePicker from "../component/datepicker/DatePicker";
 import LocationButton from "../component/LocationButton";
 import LocationPicker from "../component/LocationPicker";
+import camera from "../css/img/photo/camera.png";
+import "../css/PostRegist.css";
+import useLoginStore from "../shared/useLoginStore";
 
 const PostRegist = () => {
   const [item, setItem] = useState({});
@@ -19,25 +20,26 @@ const PostRegist = () => {
   //DatePicker 에서 값 받아옴
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  const { idx } = useParams();
   const { location, setLocation } = useContext(ProjectContext);
 
   const navigate = useNavigate();
-  const { isEdit, userId, setEdit } = useEditStore();
+  const { isEdit, setEdit } = useEditStore();
+  const { idx } = useLoginStore();
 
-  // useEffect(() => {
-  //   const fetchPostItem = async (idx) => {
-  //     try {
-  //       const response = await Api.get(`/post/item/${idx}`);
-  //       setItem(response.data);
-  //     } catch (error) {
-  //       console.error("데이터 요청 실패:", error);
-  //       return null;
-  //     }
-  //   };
-  //   fetchPostItem();
-  // }, [isEdit, idx]);
-
+  useEffect(() => {
+    if (isEdit) {
+      const fetchPostItem = async () => {
+        try {
+          const response = await Api.get(`/post/item/${idx}`);
+          setItem(response.data);
+        } catch (error) {
+          console.error("데이터 요청 실패:", error);
+          return null;
+        }
+      };
+      fetchPostItem();
+    }
+  }, [isEdit, idx]);
   const [RegistData, setRegistData] = useState({
     postTitle: "",
     postPrice: "",
@@ -266,7 +268,7 @@ const PostRegist = () => {
                 placeholder="게시물 제목"
                 maxLength="40"
                 onChange={handleChange}
-                value={item.postTitle}
+                value={item.postTitle || ""}
               />
             </div>
             <div className="div-input">
@@ -276,15 +278,19 @@ const PostRegist = () => {
                 type="text"
                 placeholder="가격 입력"
                 onChange={handleChange}
-                value={commaPrice}
+                value={item.postPrice || ""}
               />
             </div>
             <div className="div-input">
               <RentalDatePicker
-                startDate={startDate}
-                endDate={endDate}
-                setStartDate={setStartDate}
-                setEndDate={setEndDate}
+                startDate={item.postStartDate || ""}
+                endDate={item.postEndDate || ""}
+                setStartDate={
+                  item.startDate ? setStartDate(item.startDate) : setStartDate
+                }
+                setEndDate={
+                  item.endDate ? setEndDate(item.endDate) : setEndDate
+                }
               />
               {/* <RentalDatePicker onChange={handleDateChange} /> */}
               {/* <DatePicker /> */}
@@ -295,6 +301,7 @@ const PostRegist = () => {
                 className="registdescription"
                 name="description"
                 placeholder="등록할 물건의 설명을 작성해주세요."
+                value={item.description || ""}
                 onChange={handleChange}
               />
             </div>
@@ -307,7 +314,7 @@ const PostRegist = () => {
               >
                 뒤로가기
               </button>
-              <button type="submit">등록하기</button>
+              <button type="submit">{isEdit ? "수정하기" : "등록하기"}</button>
             </div>
           </div>
         </div>
