@@ -30,7 +30,7 @@ const RentalItem = () => {
 
   const filteredItems = items.filter((item) => {
     const matchesSold = showSoldOnly ? item.isSold : true;
-    const matchesAddress = (item.userAddress || "")
+    const matchesAddress = (item.address || "")
       .toLowerCase()
       .includes(addressKeyword);
     return matchesSold && matchesAddress;
