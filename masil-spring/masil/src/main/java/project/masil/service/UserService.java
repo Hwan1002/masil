@@ -112,7 +112,7 @@ public class UserService {
 	    		String refreshToken = tokenProvider.generateRefreshToken(user.getUserId());
 	    		user.setRefreshToken(refreshToken);
 	    		userRepository.save(user); // DB에 RefreshToken 업데이트
-	    		return ResponseDTO.<String>builder().status(200).value(refreshToken).accessToken(accessToken).build(); 
+	    		return ResponseDTO.<String>builder().status(200).value(refreshToken).accessToken(accessToken).hasAddress(false).userId(user.getUserId()).build(); 
 	        }
 		
 	}

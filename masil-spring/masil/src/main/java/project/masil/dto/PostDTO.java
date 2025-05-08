@@ -41,6 +41,8 @@ public class PostDTO {
 	
 	private String userId; //게시물 아이디
 
+	private String userAddress ; // 작성자 위치.
+		
 	private Double lat ; // 위도
 
 	private Double lng ; // 경도
