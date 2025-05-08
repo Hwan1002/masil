@@ -187,6 +187,7 @@ public class PostService {
 				.userNickName(entity.getUser().getUserNickName())
 				.userProfilePhotoPath(entity.getUser().getProfilePhotoPath())
 				.userId(entity.getUser().getUserId())
+				.userAddress(entity.getUser().getAddress())
 				.lat(entity.getLat())
 				.lng(entity.getLng())
 				.address(entity.getAddress()) 
