@@ -94,7 +94,7 @@ public class UserService {
 	    		userRepository.save(user); // DB에 RefreshToken 업데이트
 
 
-	            return ResponseDTO.<String>builder().status(200).value(refreshToken).accessToken(accessToken).build(); 
+	            return ResponseDTO.<String>builder().status(200).value(refreshToken).accessToken(accessToken).hasAddress(true).userId(user.getUserId()).build(); 
 	        }else {
 	        	// 1-3 엔티티가 존재하지 않는경우 회원가입및 로그인로직 .
 	        	

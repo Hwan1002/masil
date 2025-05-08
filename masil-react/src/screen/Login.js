@@ -100,7 +100,7 @@ const Login = () => {
   };
 
   const socialLogin = (social) => {
-    const popup = window.open(
+     window.open(
       `http://localhost:9090/oauth2/authorization/${social}`,
       "소셜 로그인",
       "width=600,height=800"
