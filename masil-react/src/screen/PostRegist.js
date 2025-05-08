@@ -25,6 +25,21 @@ const PostRegist = () => {
   const navigate = useNavigate();
   const { isEdit, setEdit } = useEditStore();
   const { idx } = useLoginStore();
+  const [registData, setRegistData] = useState({
+    postTitle: "",
+    postPrice: "",
+    postStartDate: startDate,
+    postEndDate: endDate,
+    description: "",
+  });
+  const {
+    isModalOpen,
+    modalTitle,
+    modalMessage,
+    modalActions,
+    openModal,
+    closeModal,
+  } = useModal();
 
   useEffect(() => {
     if (isEdit) {
@@ -40,22 +55,16 @@ const PostRegist = () => {
       fetchPostItem();
     }
   }, [isEdit, idx]);
-  const [RegistData, setRegistData] = useState({
-    postTitle: "",
-    postPrice: "",
-    postStartDate: startDate,
-    postEndDate: endDate,
-    description: "",
-  });
 
-  const {
-    isModalOpen,
-    modalTitle,
-    modalMessage,
-    modalActions,
-    openModal,
-    closeModal,
-  } = useModal();
+  useEffect(() => {
+    if (registData.postStartDate) {
+      setStartDate(registData.postStartDate);
+    }
+    if (registData.postendDate) {
+      setEndDate(registData.postendDate);
+    }
+  }, [registData.postStartDate, registData.postendDate]);
+
 
   // 등록하기
   const handleSubmit = async (e) => {
@@ -69,11 +78,11 @@ const PostRegist = () => {
       new Blob(
         [
           JSON.stringify({
-            postTitle: RegistData.postTitle,
-            postPrice: RegistData.postPrice || "0",
+            postTitle: registData.postTitle,
+            postPrice: registData.postPrice || "0",
             postStartDate: startDate.toISOString(),
             postEndDate: endDate.toISOString(),
-            description: RegistData.description,
+            description: registData.description,
             address: location.address,
             lat: location.lat,
             lng: location.lng,
@@ -268,7 +277,7 @@ const PostRegist = () => {
                 placeholder="게시물 제목"
                 maxLength="40"
                 onChange={handleChange}
-                value={item.postTitle || ""}
+                value={registData.postTitle}
               />
             </div>
             <div className="div-input">
@@ -278,19 +287,15 @@ const PostRegist = () => {
                 type="text"
                 placeholder="가격 입력"
                 onChange={handleChange}
-                value={item.postPrice || ""}
+                value={commaPrice}
               />
             </div>
             <div className="div-input">
               <RentalDatePicker
-                startDate={item.postStartDate || ""}
-                endDate={item.postEndDate || ""}
-                setStartDate={
-                  item.startDate ? setStartDate(item.startDate) : setStartDate
-                }
-                setEndDate={
-                  item.endDate ? setEndDate(item.endDate) : setEndDate
-                }
+                startDate={startDate}
+                endDate={endDate}
+                setStartDate={setStartDate}
+                setEndDate={setEndDate}
               />
               {/* <RentalDatePicker onChange={handleDateChange} /> */}
               {/* <DatePicker /> */}
@@ -301,7 +306,7 @@ const PostRegist = () => {
                 className="registdescription"
                 name="description"
                 placeholder="등록할 물건의 설명을 작성해주세요."
-                value={item.description || ""}
+                value={registData.description}
                 onChange={handleChange}
               />
             </div>
