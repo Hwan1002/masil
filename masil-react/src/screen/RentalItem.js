@@ -109,7 +109,7 @@ const RentalItem = () => {
               <div className="rental-price">
                 {item.postPrice ? item.postPrice.toLocaleString() : "error"}원
               </div>
-              <div className="rental-address">{item.userAddress}</div>
+              <div className="rental-address">{item.address}</div>
             </a>
           ))}
         </div>

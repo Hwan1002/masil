@@ -31,6 +31,7 @@ const SelectedRentalItem = () => {
       const res = await fetchPostItem(idx);
       if (res) {
         setItem(res.data);
+
       }
     };
 
@@ -81,6 +82,7 @@ const SelectedRentalItem = () => {
   };
 
   const prevImage = () => {
+    console.log("item",item)
     if (item.postPhotoPaths && currentImageIndex > 0) {
       setCurrentImageIndex(currentImageIndex - 1);
     }
@@ -169,9 +171,8 @@ const SelectedRentalItem = () => {
                 item.postPhotoPaths.map((_, index) => (
                   <span
                     key={index}
-                    className={`carousel-dot ${
-                      index === currentImageIndex ? "active" : ""
-                    }`}
+                    className={`carousel-dot ${index === currentImageIndex ? "active" : ""
+                      }`}
                     onClick={() => goToImage(index)}
                   ></span>
                 ))}
@@ -187,7 +188,7 @@ const SelectedRentalItem = () => {
               <div className="selected-rental-profile-text">
                 {item.userNickName}
               </div>
-              <div className="selected-rental-profile-text">{item.address}</div>
+              <div className="selected-rental-profile-text">{item.userAddress}</div>
             </div>
           </div>
         </div>
@@ -209,6 +210,12 @@ const SelectedRentalItem = () => {
               <div className="selected-dp-item-title">가격</div>
               <div className="selected-dp-item">
                 {curency(item.postPrice)}원
+              </div>
+            </div>
+            <div className="selected-dp-sub-container">
+              <div className="selected-dp-item-title">거래희망장소</div>
+              <div className="selected-dp-item">
+                {item.address}
               </div>
             </div>
           </div>
