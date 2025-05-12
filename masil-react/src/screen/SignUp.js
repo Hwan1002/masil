@@ -34,8 +34,8 @@ const SignUp = () => {
     userNickName: "",
     password: "",
     email: "",
-
   });
+  const [address, setAddress] = useState("");
 
   const { setIsLoading } = useContext(ProjectContext);
   const navigate = useNavigate();
@@ -269,6 +269,30 @@ const SignUp = () => {
       setLocation({}); // 항상 location 초기화
     }
   };
+  useEffect(() => {
+    const fetchLocation = async () => {
+      if (!navigator.geolocation) return; // 브라우저가 위치 정보를 지원하지 않으면 종료
+
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+
+          try {
+            const response = await axios.post("http://localhost:9090/location", {
+              lat: latitude,
+              lng: longitude,
+            });
+            const { address } = response.data; // 주소를 받아옴
+            setAddress(address); // input에 자동으로 주소 설정
+          } catch (err) {
+            console.error("서버 요청 실패:", err.message);
+          }
+        }
+      );
+    };
+
+    fetchLocation(); // 페이지 로드 시 위치 정보 자동으로 가져오기
+  }, []); // 컴포넌트가 처음 렌더링될 때만 실행
   // const [ip, setIp] = useState("");
   // const TIMESTAMP = Date.now().toString();
   // const ACCESS_KEY = "ncp_iam_BPAMKRArwHlymLpxZvb9"; // 네이버 클라우드 Access Key
@@ -324,7 +348,7 @@ const SignUp = () => {
             </button>
             <div className="postLocation">
               <div>
-                <LocationButton />
+                <LocationButton onAddressUpdate={setAddress} />
               </div>
               <div>
                 <LocationPicker />
@@ -356,6 +380,16 @@ const SignUp = () => {
               placeholder="이름을 입력하세요."
               onChange={(e) => handleInputChange(e)}
             />
+            <div>
+              <input
+                type="text"
+                name="address"
+                className="form-input"
+                placeholder="주소"
+                value={address}
+                readOnly // 입력 막고 싶을 경우만
+              />
+            </div>
             <div className="inputAndBtn">
               <input
                 type="text"

@@ -106,7 +106,7 @@ const PostRegist = () => {
       console.log("파일 업로드 성공:", response.data);
       openModal({
         title: `게시글 등록`,
-        message: isEdit
+        message: !isEdit
           ? `게시글이 등록되었습니다.`
           : "게시글이 수정되었습니다.",
         actions: [
