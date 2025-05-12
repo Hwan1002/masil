@@ -147,6 +147,15 @@ user객체속 lat, lng 추출 후 postRepository에서 lat,lng를 매개변수�
 
 
 
+
+
+
+
+
+
+
+
+
  
 	
 
