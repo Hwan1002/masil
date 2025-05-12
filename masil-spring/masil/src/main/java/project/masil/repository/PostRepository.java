@@ -24,4 +24,27 @@ public interface PostRepository extends JpaRepository<PostEntity,Integer >{
 	// 예: PostEntity.user 필드 → UserEntity.userId 참조
 	List<PostEntity> findByUser_UserId(String userId);
 	
+	 @Query(value = """
+		        SELECT * 
+		        FROM boards
+		        WHERE 
+		            (lat BETWEEN :minLat AND :maxLat)
+		            AND (lng BETWEEN :minLng AND :maxLng)
+		            AND (
+		                6371 * ACOS(
+		                    COS(RADIANS(:lat)) * COS(RADIANS(lat)) *
+		                    COS(RADIANS(lng) - RADIANS(:lng)) +
+		                    SIN(RADIANS(:lat)) * SIN(RADIANS(lat))
+		                ) <= 5
+		            )
+		        """, nativeQuery = true)
+		    List<PostEntity> findNearbyPosts(
+		        @Param("lat") double lat,
+		        @Param("lng") double lng,
+		        @Param("minLat") double minLat,
+		        @Param("maxLat") double maxLat,
+		        @Param("minLng") double minLng,
+		        @Param("maxLng") double maxLng
+		    );
+	
 }

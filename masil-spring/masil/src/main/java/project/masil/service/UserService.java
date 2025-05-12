@@ -121,11 +121,11 @@ public class UserService {
 	public ResponseDTO<String> signin(UserDTO dto) {
 		UserEntity user = userRepository.findByUserId(dto.getUserId());
 		if (user == null) {
-			throw new IdIsNotExistsException("아이디가 일치하지않습니다.");
+			throw new IdIsNotExistsException("아이디 또는 비밀번호가 일치하지않습니다.");
 		}
 
 		if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
-			throw new PasswordMismatchException("비밀번호가 일치하지않습니다.");
+			throw new PasswordMismatchException("아이디 또는 비밀번호가 일치하지않습니다.");
 		}
 
 		String accessToken = tokenProvider.generateAccessToken(user.getUserId());

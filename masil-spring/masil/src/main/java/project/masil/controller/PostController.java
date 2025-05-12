@@ -77,6 +77,11 @@ public class PostController {
 	}
 
 	
+	@GetMapping("/nearbyPost")
+	public ResponseEntity<?> naerbyPost(@AuthenticationPrincipal String userId){
+		return ResponseEntity.ok(service.nearbyPost(userId));
+	}
+	
 	
 	
 }
