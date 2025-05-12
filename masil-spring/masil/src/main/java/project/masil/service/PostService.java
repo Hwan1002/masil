@@ -146,6 +146,29 @@ public class PostService {
 		
 	}
 	
+	// 근처 게시물보기 (반경 5KM )
+	public List<PostDTO> nearbyPost(String userId){
+		UserEntity user = userRepository.findByUserId(userId) ;
+		double lat = user.getLat();
+		double lng = user.getLng();
+		
+		// postRepository 인터페이스에서 반경계산 후 반경안에 있는 게시물 찾는 query메서드 작성 
+	    // 5km에 해당하는 위도/경도 차이 계산
+	    double degree = 5 / 111.0; // 1도 ≈ 111km
+	    double minLat = lat - degree;
+	    double maxLat = lat + degree;
+	    double minLng = lng - (degree / Math.cos(Math.toRadians(lat)));
+	    double maxLng = lng + (degree / Math.cos(Math.toRadians(lat)));
+		
+	    List<PostEntity> posts = postRepository.findNearbyPosts(
+	            lat, lng, minLat, maxLat, minLng, maxLng
+	        );
+	    
+
+	    return posts.stream().map(this::toDTO).collect(Collectors.toList());
+	    
+	}
+	
 	
 	
 	
