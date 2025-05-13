@@ -148,11 +148,46 @@ user객체속 lat, lng 추출 후 postRepository에서 lat,lng를 매개변수�
 
 
 
+  useEffect(() => {
+    const fetchLocation = async () => {
+      if (!navigator.geolocation) return; // 브라우저가 위치 정보를 지원하지 않으면 종료
+
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+
+          try {
+            const response = await axios.post("http://localhost:9090/location", {
+              lat: latitude,
+              lng: longitude,
+            });
+            const { address } = response.data; // 주소를 받아옴
+            setAddress(address); // input에 자동으로 주소 설정
+	// 여기에 setLocation({ lat : latitude ,
+			  lng : longitude ,
+			address : address })
+	해줘야하고 
+	import
+
+          } catch (err) {
+            console.error("서버 요청 실패:", err.message);
+          }
+        }
+      );
+    };
 
 
 
 
+dto : 
+{
+asd : asd
 
+
+lat : 1231
+lng : 21312
+address : 
+}
 
 
 
