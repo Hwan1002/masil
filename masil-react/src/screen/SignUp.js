@@ -7,10 +7,8 @@ import Modal from "../component/Modal";
 import useModal from "../context/useModal";
 import LoadingModal from "../component/LoadingModal";
 import axios from "axios";
-import LocationButton from "../component/LocationButton";
 import LocationPicker from "../component/LocationPicker";
 const SignUp = () => {
-
   const { location, setLocation } = useContext(ProjectContext);
   //프로필사진 상태
   const [profilePhoto, setProfilePhoto] = useState(null);
@@ -35,8 +33,6 @@ const SignUp = () => {
     password: "",
     email: "",
   });
-
-  
 
   const { setIsLoading } = useContext(ProjectContext);
   const navigate = useNavigate();
@@ -198,8 +194,8 @@ const SignUp = () => {
     e.preventDefault();
     //빈값확인
     const isEmpty = Object.values(formData).some((value) => !value);
-    console.log("formdata", formData)
-    console.log("이건", isEmpty)
+    console.log("formdata", formData);
+    console.log("이건", isEmpty);
     if (isEmpty) {
       openModal({
         message: "빈칸을 입력해주세요.",
@@ -234,12 +230,17 @@ const SignUp = () => {
       }
       data.append(
         "dto",
-        new Blob([JSON.stringify({
-          ...formData,
-          address: location.address,
-          lat: location.lat,
-          lng: location.lng,
-        }),], { type: "application/json" })
+        new Blob(
+          [
+            JSON.stringify({
+              ...formData,
+              address: location.address,
+              lat: location.lat,
+              lng: location.lng,
+            }),
+          ],
+          { type: "application/json" }
+        )
       );
       const response = await axios.post("http://localhost:9090/user", data, {
         headers: {
@@ -275,26 +276,24 @@ const SignUp = () => {
     const fetchLocation = async () => {
       if (!navigator.geolocation) return; // 브라우저가 위치 정보를 지원하지 않으면 종료
 
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const { latitude, longitude } = position.coords;
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        const { latitude, longitude } = position.coords;
 
-          try {
-            const response = await axios.post("http://localhost:9090/location", {
-              lat: latitude,
-              lng: longitude,
-            });
-            const { address } = response.data; 
-            setLocation({
+        try {
+          const response = await axios.post("http://localhost:9090/location", {
+            lat: latitude,
+            lng: longitude,
+          });
+          const { address } = response.data;
+          setLocation({
             lat: latitude,
             lng: longitude,
             address,
-          }); 
-          } catch (err) {
-            console.error("서버 요청 실패:", err.message);
-          }
+          });
+        } catch (err) {
+          console.error("서버 요청 실패:", err.message);
         }
-      );
+      });
     };
 
     fetchLocation(); // 페이지 로드 시 위치 정보 자동으로 가져오기
@@ -352,9 +351,7 @@ const SignUp = () => {
             >
               프로필 사진
             </button>
-            <div className="postLocation">
-              
-            </div>
+            <div className="postLocation"></div>
             <input
               name="profilePhoto"
               type="file"

@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import useLoginStore from "../shared/useLoginStore";
 import useEditStore from "../shared/useEditStore";
 import useModal from "../context/useModal";
 import { Api, ProjectContext } from "../context/MasilContext";
@@ -9,7 +10,6 @@ import LocationButton from "../component/LocationButton";
 import LocationPicker from "../component/LocationPicker";
 import camera from "../css/img/photo/camera.png";
 import "../css/PostRegist.css";
-import useLoginStore from "../shared/useLoginStore";
 
 const PostRegist = () => {
   const [item, setItem] = useState({});
@@ -64,7 +64,7 @@ const PostRegist = () => {
       setEndDate(registData.postendDate);
     }
   }, [registData.postStartDate, registData.postendDate]);
-  console.log("get api 요청 데이터 : ", item);
+
   // 등록하기
   const handleSubmit = async (e) => {
     e.preventDefault();
