@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import useLoginStore from "../shared/useLoginStore";
+import { useNavigate, useParams } from "react-router-dom";
 import useEditStore from "../shared/useEditStore";
 import useModal from "../context/useModal";
 import { Api, ProjectContext } from "../context/MasilContext";
@@ -10,6 +9,7 @@ import LocationButton from "../component/LocationButton";
 import LocationPicker from "../component/LocationPicker";
 import camera from "../css/img/photo/camera.png";
 import "../css/PostRegist.css";
+import useLoginStore from "../shared/useLoginStore";
 
 const PostRegist = () => {
   const [item, setItem] = useState({});
@@ -54,7 +54,7 @@ const PostRegist = () => {
       };
       fetchPostItem();
     }
-  }, []);
+  }, [isEdit, idx]);
 
   useEffect(() => {
     if (registData.postStartDate) {
@@ -64,6 +64,7 @@ const PostRegist = () => {
       setEndDate(registData.postendDate);
     }
   }, [registData.postStartDate, registData.postendDate]);
+
 
   // 등록하기
   const handleSubmit = async (e) => {
@@ -276,7 +277,7 @@ const PostRegist = () => {
                 placeholder="게시물 제목"
                 maxLength="40"
                 onChange={handleChange}
-                value={item ? item.postTitle : registData.postTitle}
+                value={registData.postTitle}
               />
             </div>
             <div className="div-input">
@@ -286,16 +287,18 @@ const PostRegist = () => {
                 type="text"
                 placeholder="가격 입력"
                 onChange={handleChange}
-                value={item ? item.postPrice : registData.postPrice}
+                value={commaPrice}
               />
             </div>
             <div className="div-input">
               <RentalDatePicker
-                startDate={item ? item.postStartDate : registData.postStartDate}
-                endDate={item ? item.postEndDate : registData.postEndDate}
+                startDate={startDate}
+                endDate={endDate}
                 setStartDate={setStartDate}
                 setEndDate={setEndDate}
               />
+              {/* <RentalDatePicker onChange={handleDateChange} /> */}
+              {/* <DatePicker /> */}
             </div>
             <div className="div-input">
               <label>설명</label>
