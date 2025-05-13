@@ -54,7 +54,7 @@ const PostRegist = () => {
       };
       fetchPostItem();
     }
-  }, [isEdit, idx]);
+  }, []);
 
   useEffect(() => {
     if (registData.postStartDate) {
@@ -64,8 +64,7 @@ const PostRegist = () => {
       setEndDate(registData.postendDate);
     }
   }, [registData.postStartDate, registData.postendDate]);
-
-
+  console.log("get api 요청 데이터 : ", item);
   // 등록하기
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -277,7 +276,7 @@ const PostRegist = () => {
                 placeholder="게시물 제목"
                 maxLength="40"
                 onChange={handleChange}
-                value={registData.postTitle}
+                value={item ? item.postTitle : registData.postTitle}
               />
             </div>
             <div className="div-input">
@@ -287,18 +286,16 @@ const PostRegist = () => {
                 type="text"
                 placeholder="가격 입력"
                 onChange={handleChange}
-                value={commaPrice}
+                value={item ? item.postPrice : registData.postPrice}
               />
             </div>
             <div className="div-input">
               <RentalDatePicker
-                startDate={startDate}
-                endDate={endDate}
+                startDate={item ? item.postStartDate : registData.postStartDate}
+                endDate={item ? item.postEndDate : registData.postEndDate}
                 setStartDate={setStartDate}
                 setEndDate={setEndDate}
               />
-              {/* <RentalDatePicker onChange={handleDateChange} /> */}
-              {/* <DatePicker /> */}
             </div>
             <div className="div-input">
               <label>설명</label>
