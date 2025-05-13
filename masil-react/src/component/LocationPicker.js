@@ -47,12 +47,12 @@ const LocationPicker = () => {
           onClick={() => setIsOpen(false)}
         >
           <div className="location-modal" onClick={(e) => e.stopPropagation()}>
-            <button
+            <div
               className="location-close-btn"
               onClick={() => setIsOpen(false)}
             >
               ✕
-            </button>
+            </div>
             <h3>지역 검색</h3>
             <Autocomplete
               className="location-autocomplete"
@@ -69,24 +69,23 @@ const LocationPicker = () => {
             />
             {selectedPlace && (
               <div className="location-selected">
-                <div>
+                {/* <div>
                   <div className="div-selected">
                     <p className="selected-address">
                       {selectedPlace.formatted_address}
                     </p>
                   </div>
-                </div>
-                <button
+                </div> */}
+                <div
                   className="location-confirm-btn"
                   onClick={() => {
                     // 서버로 selectedPlace 정보 전송 등 추가 로직
                     postPlace();
                     setIsOpen(false);
                   }}
-                  type="button"
                 >
                   위치 설정 완료
-                </button>
+                </div>
               </div>
             )}
           </div>

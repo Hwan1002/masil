@@ -1,13 +1,12 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { ProjectContext } from "../context/MasilContext";
+import "../css/LocationButton.css"; //
 import axios from "axios";
-import "../css/LocationButton.css";
-
-const LocationButton = ({ onAddressUpdate }) => {
-  const [isOpen, setIsOpen] = useState(false);
+const LocationButton = () => {
+  const [isopen, setIsOpen] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [location, setLocation] = useState({ lat: null, lng: null });
-
+  const { location, setLocation } = useContext(ProjectContext);
   const handleGetLocation = async () => {
     setIsLoading(true);
     if (!navigator.geolocation) {
@@ -15,22 +14,19 @@ const LocationButton = ({ onAddressUpdate }) => {
       setIsLoading(false);
       return;
     }
-
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const { latitude, longitude } = position.coords;
-        setLocation({ lat: latitude, lng: longitude });
+        setLocation({ latitude, longitude });
         setIsOpen(true);
-
         try {
+          // 서버로 위치 데이터 전송
           const response = await axios.post(`http://localhost:9090/location`, {
             lat: latitude,
             lng: longitude,
           });
-
-          // 주소 추출
-          const { address } = response.data;
-          onAddressUpdate(address); // 부모에게 전달
+          console.log(response.data);
+          setLocation(response.data);
         } catch (err) {
           setError("서버 전송 실패: " + err.message);
         } finally {
@@ -55,12 +51,13 @@ const LocationButton = ({ onAddressUpdate }) => {
         {isLoading ? "처리 중..." : "나의 위치"}
       </button>
 
-      {isOpen && (
+      {isopen && (
         <div className="location-modal-backdrop">
           <div className="location-button-container">
             <div className="location-info">
-              <p>위도: {location.lat}</p>
+              <p>위도: {location.lat},</p>
               <p>경도: {location.lng}</p>
+              <p>주소 : {location.address}</p>
               {error && <p style={{ color: "red" }}>{error}</p>}
             </div>
             <button type="button" onClick={() => setIsOpen(false)}>
