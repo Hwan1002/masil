@@ -39,12 +39,17 @@ public class PostController {
 		return ResponseEntity.ok(service.postDetail(postIdx)) ;
 	}
 	
-	
-	
 	// 내 게시물 조회
 	@GetMapping("/myPost")
 	public ResponseEntity<?> getMyPost(@AuthenticationPrincipal String userId){		
 		return ResponseEntity.ok(service.myPost(userId)) ;
+	}
+	
+	
+	// 근처게시물 조회
+	@GetMapping("/nearbyPost")
+	public ResponseEntity<?> naerbyPost(@AuthenticationPrincipal String userId){
+		return ResponseEntity.ok(service.nearbyPost(userId));
 	}
 	
 	
@@ -76,11 +81,7 @@ public class PostController {
 		return ResponseEntity.ok(service.deletePost(userId , postIdx));
 	}
 
-	
-	@GetMapping("/nearbyPost")
-	public ResponseEntity<?> naerbyPost(@AuthenticationPrincipal String userId){
-		return ResponseEntity.ok(service.nearbyPost(userId));
-	}
+
 	
 	
 	
