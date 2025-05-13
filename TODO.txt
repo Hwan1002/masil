@@ -142,52 +142,67 @@ user객체속 lat, lng 추출 후 postRepository에서 lat,lng를 매개변수�
 (MySQL 의 point 타입을 사용하는방법이있지만 이미 entity설계가 끝나있는상황이니 point 는 다음에 사용.)
 
 
-채팅API 개발
+
 좋아요기능 개발
+- entity , dto , repository , service , controller 
+
+게시글속에 찜하기같은 버튼이있음 , 
+이버튼은 useEffect를통해서 wished라는 변수에 게시물이 찜되어있는지 안되어있는지에대해 설정 
+ 게시글이 최초 렌더링될때 , 의존배열에 wished를 넣어 wished의 값이 바뀌거나 최초렌더링시에 찜버튼의 하트 속을 채우거나 비어있거나 둘중하나의 상태로만드려고한다 . 
+위의 글은 적합한가 ?
+
+wished 토글버튼 -> 
+
+useEffect(() => {
+  // 게시글이 최초 렌더링될 때, 또는 wished가 바뀔 때 실행
+  // (최초 렌더링 시에만 서버 조회를 원한다면 의존성 배열을 [postId]로!)
+  fetch(`/api/favorites/check?postId=${postId}&userId=${userId}`)
+    .then(res => res.json())
+    .then(data => setWished(data.isWished));
+}, [postId, userId]); // wished를 의존성 배열에 넣으면, wished가 바뀔 때마다 다시 실행됨
+
+// 하트 버튼 클릭 핸들러
+const handleWishClick = () => {
+  if (wished) {
+    // 찜 해제 API 호출
+    setWished(false);
+  } else {
+    // 찜 추가 API 호출
+    setWished(true);
+  }
+};
+
+return (
+  <button onClick={handleWishClick}>
+    {wished ? <FilledHeartIcon /> : <EmptyHeartIcon />}
+  </button>
+);
+
+
+
+서버에서 받아야할것 .
+
+사용자가 빈하트를 눌렀을때의 시나리오
+
+매개변수로 무엇을 받을것인지 
+postIdx ,userIdx 
+
+accessToken (컨텍스트에 저장된 userId 를통해서 사용자확인) 
+
+userIdx 와 로그인되어있는 userId 비교로직 
+
+
+사용자가 하트를눌렀을때의 시나리오 
 
 
 
 
-  useEffect(() => {
-    const fetchLocation = async () => {
-      if (!navigator.geolocation) return; // 브라우저가 위치 정보를 지원하지 않으면 종료
 
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const { latitude, longitude } = position.coords;
 
-          try {
-            const response = await axios.post("http://localhost:9090/location", {
-              lat: latitude,
-              lng: longitude,
-            });
-            const { address } = response.data; // 주소를 받아옴
-            setAddress(address); // input에 자동으로 주소 설정
-	// 여기에 setLocation({ lat : latitude ,
-			  lng : longitude ,
-			address : address })
-	해줘야하고 
-	import
-
-          } catch (err) {
-            console.error("서버 요청 실패:", err.message);
-          }
-        }
-      );
-    };
+채팅API 개발
 
 
 
-
-dto : 
-{
-asd : asd
-
-
-lat : 1231
-lng : 21312
-address : 
-}
 
 
 

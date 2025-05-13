@@ -40,7 +40,6 @@ public class UserEntity {
 	private String email; // 이메일
 
 	private String profilePhotoPath; // 프로필사진 경로
-	
 
 	private String authProvider; // 소셜로그인공급자
 	
@@ -48,16 +47,18 @@ public class UserEntity {
 	
 	private String role ;  // 유저권한 .
 	
-	@OneToMany(mappedBy = "user" , cascade = CascadeType.ALL)
-	private List<PostEntity> posts = new ArrayList<>(); // 게시글
-
-	
 	private String address; // 주소
 	
 	private Double lat ; // 위도
 
 	private Double lng ; // 경도 
 	
+	@OneToMany(mappedBy = "user" , cascade = CascadeType.ALL)
+	private List<PostEntity> posts = new ArrayList<>(); // 게시글
+
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	private List<UserWishEntity> wishes = new ArrayList<>(); // 찜한 게시글 목록
+
 	
 	
 	

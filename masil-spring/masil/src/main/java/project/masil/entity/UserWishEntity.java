@@ -32,11 +32,11 @@ public class UserWishEntity {
 	private Long id ;
 	
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_idx")
     private UserEntity user;
 
     @ManyToOne
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "post_idx")
     private PostEntity post;
 
     @CreatedDate
