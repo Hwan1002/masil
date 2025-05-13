@@ -8,6 +8,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -18,6 +19,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,7 +30,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "boards")
+@Table(name = "posts")
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 public class PostEntity {
@@ -67,9 +69,18 @@ public class PostEntity {
 	private String address; // 주소
 
 	@ManyToOne
-	@JoinColumn(name = "user_id", // Post 테이블의 외래키 컬럼명
-				referencedColumnName = "user_id" // UserEntity의 DB 컬럼명 지정
-	)
+	@JoinColumn(name = "user_idx") // Post 테이블의 외래키 컬럼명	
 	private UserEntity user; // 게시글 작성자 정보 , 부모참조
 
+	
+	@OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+	private List<UserWishEntity> wishedBy = new ArrayList<>();
+	
+	
+	
+	
+	
+	
+	
+	
 }
