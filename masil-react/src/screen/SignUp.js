@@ -35,7 +35,8 @@ const SignUp = () => {
     password: "",
     email: "",
   });
-  const [address, setAddress] = useState("");
+
+  
 
   const { setIsLoading } = useContext(ProjectContext);
   const navigate = useNavigate();
@@ -269,6 +270,7 @@ const SignUp = () => {
       setLocation({}); // 항상 location 초기화
     }
   };
+
   useEffect(() => {
     const fetchLocation = async () => {
       if (!navigator.geolocation) return; // 브라우저가 위치 정보를 지원하지 않으면 종료
@@ -282,8 +284,12 @@ const SignUp = () => {
               lat: latitude,
               lng: longitude,
             });
-            const { address } = response.data; // 주소를 받아옴
-            setAddress(address); // input에 자동으로 주소 설정
+            const { address } = response.data; 
+            setLocation({
+            lat: latitude,
+            lng: longitude,
+            address,
+          }); 
           } catch (err) {
             console.error("서버 요청 실패:", err.message);
           }
@@ -347,12 +353,7 @@ const SignUp = () => {
               프로필 사진
             </button>
             <div className="postLocation">
-              <div>
-                <LocationButton onAddressUpdate={setAddress} />
-              </div>
-              <div>
-                <LocationPicker />
-              </div>
+              
             </div>
             <input
               name="profilePhoto"
@@ -380,15 +381,18 @@ const SignUp = () => {
               placeholder="이름을 입력하세요."
               onChange={(e) => handleInputChange(e)}
             />
-            <div>
+            <div className="inputAndBtn">
               <input
                 type="text"
                 name="address"
                 className="form-input"
                 placeholder="주소"
-                value={address}
-                readOnly // 입력 막고 싶을 경우만
+                value={location.address || ""}
+                readOnly
               />
+              <div>
+                <LocationPicker />
+              </div>
             </div>
             <div className="inputAndBtn">
               <input
@@ -408,6 +412,7 @@ const SignUp = () => {
               className="form-input"
               placeholder="닉네임을 입력하세요"
               onChange={(e) => handleInputChange(e)}
+              autoComplete="username"
             />
             <input
               type="password"
@@ -415,12 +420,14 @@ const SignUp = () => {
               className="form-input"
               placeholder="비밀번호를 입력하세요."
               onChange={(e) => handleInputChange(e)}
+              autoComplete="new-password"
             />
             <input
               type="password"
               className="form-input"
               placeholder="비밀번호 확인"
               onChange={(e) => setPwdConfirm(e.target.value)}
+              autoComplete="new-password"
             />
             <div className="inputAndBtn">
               <input

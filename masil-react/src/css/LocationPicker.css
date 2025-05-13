@@ -63,14 +63,24 @@ h3 {
   border: none;
   border-radius: 4px;
   width: 150px;
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0.5rem 0;
 }
 
 .location-close-btn {
   position: absolute;
   top: 10px;
-  right: 10px;
+  right: 20px;
   background: none;
   border: none;
+  color: black;
   font-size: 20px;
   cursor: pointer;
+}
+
+.location-close-btn:hover{
+  color: red;
+  transform: scale(1.2)
 }
