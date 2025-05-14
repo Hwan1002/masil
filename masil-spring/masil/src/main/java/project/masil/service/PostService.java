@@ -30,6 +30,7 @@ public class PostService {
 
 	
 	// 게시글 업로드
+	@Transactional
 	public ResponseDTO<String> upload(String userId,PostDTO dto,List<MultipartFile> postPhotos) {
 		UserEntity user = userRepository.findByUserId(userId) ;		
 			
@@ -40,7 +41,7 @@ public class PostService {
 		if(dto.getLat() == null  || dto.getLng()==null || dto.getAddress() ==null ) {
 			throw new NotExistLocation("위치를 설정해주세요 .");						
 		}
-		
+		dto.setIsDone(false);
 		String uploadDir = System.getProperty("user.dir") + "/uploads";
 		dto.setPostPhotoPaths(FileUploadUtil.saveFiles(postPhotos, uploadDir, "postPhoto"));
 		
@@ -65,8 +66,32 @@ public class PostService {
 	
 	// 내 게시물 조회 .
 	public List<PostDTO> myPost(String userId) {
-		return postRepository.findByUser_UserId(userId).stream().map(this::toDTO).collect(Collectors.toList());
+		return postRepository.findByUser_Idx(userRepository.findByUserId(userId).getIdx()).stream().map(this::toDTO).collect(Collectors.toList());
 	}
+	
+	// 근처 게시물조회 (반경 5KM )
+	public List<PostDTO> nearbyPost(String userId){
+		UserEntity user = userRepository.findByUserId(userId) ;
+		double lat = user.getLat();
+		double lng = user.getLng();
+		
+		// postRepository 인터페이스에서 반경계산 후 반경안에 있는 게시물 찾는 query메서드 작성 
+	    // 5km에 해당하는 위도/경도 차이 계산
+	    double degree = 5 / 111.0; // 1도 ≈ 111km
+	    double minLat = lat - degree;
+	    double maxLat = lat + degree;
+	    double minLng = lng - (degree / Math.cos(Math.toRadians(lat)));
+	    double maxLng = lng + (degree / Math.cos(Math.toRadians(lat)));
+		
+	    List<PostEntity> posts = postRepository.findNearbyPosts(
+	            lat, lng, minLat, maxLat, minLng, maxLng
+	        );
+	    
+
+	    return posts.stream().map(this::toDTO).collect(Collectors.toList());
+	    
+	}
+	
 	
 	
 	// 게시글 수정
@@ -129,11 +154,24 @@ public class PostService {
 		return ResponseDTO.<String>builder().status(201).value("게시물이 수정되었습니다 .").build();
 	}
 	
-	
-
-	
+	// 게시글 거래상태 수정
 	@Transactional
+	public ResponseDTO<String> isDone(String userId , PostDTO dto){
+		
+		PostEntity post = postRepository.findByPostIdxWithUser(dto.getPostIdx());
+		
+		if(!post.getUser().getUserId().equals(userId)) {
+			throw new AccessDeniedException("본인이 작성한 게시글만 수정할 수 있습니다.");
+	    }
+		post.setIsDone(dto.getIsDone());		
+		postRepository.save(post) ;
+		return ResponseDTO.<String>builder().status(201).value("게시물이 수정되었습니다 .").build();
+				
+	}
+
+
 	// 게시글 삭제.
+	@Transactional
 	public ResponseDTO<String> deletePost(String userId, Integer postIdx){
 		PostEntity post = postRepository.findByPostIdxWithUser(postIdx) ;
 		if(!post.getUser().getUserId().equals(userId)) {
@@ -146,28 +184,7 @@ public class PostService {
 		
 	}
 	
-	// 근처 게시물보기 (반경 5KM )
-	public List<PostDTO> nearbyPost(String userId){
-		UserEntity user = userRepository.findByUserId(userId) ;
-		double lat = user.getLat();
-		double lng = user.getLng();
-		
-		// postRepository 인터페이스에서 반경계산 후 반경안에 있는 게시물 찾는 query메서드 작성 
-	    // 5km에 해당하는 위도/경도 차이 계산
-	    double degree = 5 / 111.0; // 1도 ≈ 111km
-	    double minLat = lat - degree;
-	    double maxLat = lat + degree;
-	    double minLng = lng - (degree / Math.cos(Math.toRadians(lat)));
-	    double maxLng = lng + (degree / Math.cos(Math.toRadians(lat)));
-		
-	    List<PostEntity> posts = postRepository.findNearbyPosts(
-	            lat, lng, minLat, maxLat, minLng, maxLng
-	        );
-	    
 
-	    return posts.stream().map(this::toDTO).collect(Collectors.toList());
-	    
-	}
 	
 	
 	
@@ -214,6 +231,7 @@ public class PostService {
 				.lat(entity.getLat())
 				.lng(entity.getLng())
 				.address(entity.getAddress()) 
+				.isDone(entity.getIsDone())
 				.build();
 	}
 
@@ -230,6 +248,7 @@ public class PostService {
 				.lat(dto.getLat())
 				.lng(dto.getLng())
 				.address(dto.getAddress()) 
+				.isDone(dto.getIsDone())
 				.build();
 	}
 }

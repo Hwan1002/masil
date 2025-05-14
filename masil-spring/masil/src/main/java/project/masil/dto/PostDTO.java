@@ -49,6 +49,8 @@ public class PostDTO {
 	
 	private String address ; // 주소 
 	
+	private Boolean isDone; // 거래 상태
+	
 	
 	
 	

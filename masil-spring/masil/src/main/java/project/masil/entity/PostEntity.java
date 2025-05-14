@@ -61,6 +61,8 @@ public class PostEntity {
 
 	@LastModifiedDate
 	private LocalDateTime updateDate; // 수정날짜 .
+	
+	private Boolean isDone; // 거래상태
 
 	private Double lat; // 위도
 
