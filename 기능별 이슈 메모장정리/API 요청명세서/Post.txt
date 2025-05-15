@@ -191,5 +191,127 @@ Api.delete(`/post/${postIdx}`)
 }
 
 
+6. 내 게시물 조회
+URL :localhost:9090/post/myPost
+
+Method : GET
+
+Request Headers: AccessToken (로그인사용자는  만들어놓은 axios인스턴스 (변수명 : Api ) 를 사용하여 요청을보내면 헤더에 포함됨 .)
+
+status Code : 200 OK
+
+response Body : 작성게시물 반환 
+
+요청예시
+Api.get(/post/myPost)
+응답예시  :   
+  [
+	{
+        "postIdx": 152,
+        "registrationDate": "2025-04-01T01:38:11.741788",
+        "updateDate": "2025-04-01T01:38:11.741788",
+        "postTitle": "test1",
+        "postPrice": 200000,
+        "postPhotoPaths": [
+            "/uploads/postPhoto/1743439091696_test1.jpg",
+            "/uploads/postPhoto/1743439091700_test2.jpg",
+            "/uploads/postPhoto/1743439091701_test3.jpg"
+        ],
+        "postStartDate": "2025-03-31T16:37:48.444",
+        "postEndDate": "2025-03-31T16:37:48.444",
+        "description": "test1",
+        "userNickName": "123"
+    },
+    {
+        "postIdx": 153,
+        "registrationDate": "2025-04-01T01:52:21.864148",
+        "updateDate": "2025-04-01T01:52:21.864148",
+        "postTitle": "test2",
+        "postPrice": 200000,
+        "postPhotoPaths": [
+            "/uploads/postPhoto/1743439941860_test3.jpg"
+        ],
+        "postStartDate": "2025-03-31T16:42:48.682",
+        "postEndDate": "2025-03-31T16:42:48.682",
+        "description": "test2",
+        "userNickName": "123"
+    }
+	
+]
+
+7 내 근처게시물 조회
+
+URL :localhost:9090/post/nearbyPost
+
+Method : GET
+
+Request Headers: AccessToken (로그인사용자는  만들어놓은 axios인스턴스 (변수명 : Api ) 를 사용하여 요청을보내면 헤더에 포함됨 .)
+
+status Code : 200 OK
+
+response Body : 근처게시물 반환 
+
+요청예시
+Api.get(/post/nearbyPost)
+응답예시  :   
+  [
+	{
+        "postIdx": 152,
+        "registrationDate": "2025-04-01T01:38:11.741788",
+        "updateDate": "2025-04-01T01:38:11.741788",
+        "postTitle": "test1",
+        "postPrice": 200000,
+        "postPhotoPaths": [
+            "/uploads/postPhoto/1743439091696_test1.jpg",
+            "/uploads/postPhoto/1743439091700_test2.jpg",
+            "/uploads/postPhoto/1743439091701_test3.jpg"
+        ],
+        "postStartDate": "2025-03-31T16:37:48.444",
+        "postEndDate": "2025-03-31T16:37:48.444",
+        "description": "test1",
+        "userNickName": "123"
+    },
+    {
+        "postIdx": 153,
+        "registrationDate": "2025-04-01T01:52:21.864148",
+        "updateDate": "2025-04-01T01:52:21.864148",
+        "postTitle": "test2",
+        "postPrice": 200000,
+        "postPhotoPaths": [
+            "/uploads/postPhoto/1743439941860_test3.jpg"
+        ],
+        "postStartDate": "2025-03-31T16:42:48.682",
+        "postEndDate": "2025-03-31T16:42:48.682",
+        "description": "test2",
+        "userNickName": "123"
+    }
+	
+]
+
+
+8 게시글 거래상태변경 
+
+URL : localhost:9090/post/isDone
+
+Method : PUT
+
+Request Headers: AccessToken (로그인사용자는  만들어놓은 axios인스턴스 (변수명 : Api ) 를 사용하여 요청을보내면 헤더에 포함됨 .)
+
+Request Body : dto객체 {postIdx: "" , isDone:(true,false)}
+
+status Code : 201 OK
+
+response Body :   ResponseDTO<String> (수정 성공 메시지)
+
+요청예시 : Api.put(/post/isDone),dto객체
+
+응답 예시 : 
+{
+    "status": 201,
+    "data": null,
+    "value": "게시글이 성공적으로 수정되었습니다.",
+    "error": null,
+    "accessToken": null
+}
 
 

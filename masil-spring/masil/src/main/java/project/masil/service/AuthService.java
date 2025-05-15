@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import project.masil.dto.ResponseDTO;
 import project.masil.entity.UserEntity;
 import project.masil.repository.UserRepository;
@@ -55,7 +56,8 @@ public class AuthService {
 		
 	}
 
-	// logout시 RefreshToken 삭제 
+	// logout시 RefreshToken 삭제
+	@Transactional
 	public ResponseDTO<String> logout(String refreshToken , HttpServletResponse response) {
 		
 		if(refreshToken ==null || refreshToken.isEmpty()) {

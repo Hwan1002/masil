@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import project.masil.common.FileUploadUtil;
 import project.masil.dto.OAuthAttributes;
 import project.masil.dto.ResponseDTO;
@@ -46,6 +47,7 @@ public class UserService {
 	}
 
 	// 회원가입
+	@Transactional
 	public ResponseDTO<String> signUp(UserDTO dto, MultipartFile profilePhoto) {
 		// 사진을 저장하고 사진의 경로를 얻는 stirng 반환받은후 그 반환받은 값을 profilePhoto에 직접 넣어준다 .
 		if (userRepository.existsByEmail(dto.getEmail())) {
@@ -73,6 +75,7 @@ public class UserService {
 	}
 
 	// 소셜로그인
+	@Transactional
 	public ResponseDTO<String> socialSignin(String authProvider, OAuthAttributes attributes,HttpServletResponse response) {
 
 	
@@ -118,6 +121,7 @@ public class UserService {
 	}
 
 	// 로그인
+	@Transactional
 	public ResponseDTO<String> signin(UserDTO dto) {
 		UserEntity user = userRepository.findByUserId(dto.getUserId());
 		if (user == null) {
@@ -139,6 +143,7 @@ public class UserService {
 	}
 
 	// 회원정보수정
+	@Transactional
 	public ResponseDTO<String> modify(String userId, MultipartFile profilePhoto, UserDTO dto) {
 		UserEntity user = userRepository.findByUserId(userId);
 
@@ -187,6 +192,7 @@ public class UserService {
 	}
 
 	// 비밀번호 재설정
+	@Transactional
 	public ResponseDTO<String> resetPassword(UserDTO dto) {
 		UserEntity user = userRepository.findByEmail(dto.getEmail()).get();
 		user.setPassword(passwordEncoder.encode(dto.getPassword()));

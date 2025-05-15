@@ -21,8 +21,8 @@ public interface PostRepository extends JpaRepository<PostEntity,Integer >{
 	void deleteByPostIdx(Integer postIdx) ;
 	
 	// @ManyToOne 관계일떄 " _ " 로 속성경로 명시해줘야함 ;
-	// 예: PostEntity.user 필드 → UserEntity.userId 참조
-	List<PostEntity> findByUser_UserId(String userId);
+	// 예: PostEntity.user 필드 → UserEntity.userIdx 참조
+	List<PostEntity> findByUser_Idx(Integer userIdx);
 	
 	 @Query(value = """
 		        SELECT * 

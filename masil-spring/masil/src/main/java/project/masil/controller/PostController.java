@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,12 +40,17 @@ public class PostController {
 		return ResponseEntity.ok(service.postDetail(postIdx)) ;
 	}
 	
-	
-	
 	// 내 게시물 조회
 	@GetMapping("/myPost")
 	public ResponseEntity<?> getMyPost(@AuthenticationPrincipal String userId){		
 		return ResponseEntity.ok(service.myPost(userId)) ;
+	}
+	
+	
+	// 근처게시물 조회
+	@GetMapping("/nearbyPost")
+	public ResponseEntity<?> naerbyPost(@AuthenticationPrincipal String userId){
+		return ResponseEntity.ok(service.nearbyPost(userId));
 	}
 	
 	
@@ -62,13 +68,15 @@ public class PostController {
 	@PutMapping(value ="/modify" , consumes = {"multipart/form-data"})
 	public  ResponseEntity<?> modifyPost(@AuthenticationPrincipal String userId, 
 										@RequestPart(value = "dto") PostDTO dto , 
-										@RequestPart(value = "postPhoto", required= false) List<MultipartFile> postPhotos){
-		
-		ResponseDTO<String> response = service.modify(userId,dto,postPhotos) ;
-		
-		return ResponseEntity.ok(response) ;
+										@RequestPart(value = "postPhoto", required= false) List<MultipartFile> postPhotos){	
+		return ResponseEntity.ok(service.modify(userId,dto,postPhotos)) ;
 	}
 	
+	// 게시물 거래상태 변경
+	@PutMapping("/isDone")
+	public ResponseEntity<?> isDone(@AuthenticationPrincipal String userId, @RequestBody PostDTO dto){
+		return ResponseEntity.ok(service.isDone(userId,dto)) ;
+	}
 	
 	// 게시물 삭제 
 	@DeleteMapping("/{postIdx}")
@@ -76,11 +84,7 @@ public class PostController {
 		return ResponseEntity.ok(service.deletePost(userId , postIdx));
 	}
 
-	
-	@GetMapping("/nearbyPost")
-	public ResponseEntity<?> naerbyPost(@AuthenticationPrincipal String userId){
-		return ResponseEntity.ok(service.nearbyPost(userId));
-	}
+
 	
 	
 	

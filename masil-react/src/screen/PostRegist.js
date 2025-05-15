@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useEditStore from "../shared/useEditStore";
 import useModal from "../context/useModal";
 import { Api, ProjectContext } from "../context/MasilContext";
@@ -26,7 +26,7 @@ const PostRegist = () => {
   const { isEdit, setEdit } = useEditStore();
   const { idx } = useLoginStore();
   const [registData, setRegistData] = useState({
-    postTitle: "",
+    postTitle: item? item.postTitle : "",
     postPrice: "",
     postStartDate: startDate,
     postEndDate: endDate,
@@ -55,7 +55,7 @@ const PostRegist = () => {
       fetchPostItem();
     }
   }, [isEdit, idx]);
-
+    console.log(item);
   useEffect(() => {
     if (registData.postStartDate) {
       setStartDate(registData.postStartDate);
