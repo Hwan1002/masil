@@ -121,7 +121,7 @@ const SelectedRentalItem = () => {
           {userId === item.userId ? (
             <>
               <button className="selected-u" onClick={handleEditBtn}>
-                <a href={`/post/item/${idx}`}>수정</a>
+                수정
               </button>
 
               <button

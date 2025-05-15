@@ -25,8 +25,10 @@ const PostRegist = () => {
   const navigate = useNavigate();
   const { isEdit, setEdit } = useEditStore();
   const { idx } = useLoginStore();
+
+
   const [registData, setRegistData] = useState({
-    postTitle: item? item.postTitle : "",
+    postTitle: "",
     postPrice: "",
     postStartDate: startDate,
     postEndDate: endDate,
@@ -55,7 +57,8 @@ const PostRegist = () => {
       fetchPostItem();
     }
   }, [isEdit, idx]);
-    console.log(item);
+
+  
   useEffect(() => {
     if (registData.postStartDate) {
       setStartDate(registData.postStartDate);
@@ -69,7 +72,42 @@ const PostRegist = () => {
   // 등록하기
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    if(isEdit){
+        try {
+          const formData = new FormData();
+          formData.append(
+            "dto",
+            new Blob(
+              [
+                JSON.stringify({
+                  postTitle: registData.postTitle,
+                  postPrice: registData.postPrice || "0",
+                  postStartDate: startDate.toISOString(),
+                  postEndDate: endDate.toISOString(),
+                  description: registData.description,
+                  address: location.address,
+                  lat: location.lat,
+                  lng: location.lng,
+                }),
+              ],
+              { type: "application/json" }
+            )
+          );
+          selectedImages.forEach((file) => {
+            const blob = new Blob([file], { type: file.type }); // 파일을 Blob으로 변환
+            formData.append("postPhoto", blob, file.name); // 'postPhoto'라는 이름으로 파일을 Blob으로 추가
+          });
+          const response = await Api.put("/post/modify", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
+          console.log("수정 성공:", response.data);
+        } catch (error) {
+          console.error("수정 실패:", error.response?.data || error.message);
+        }
+      return
+    }
     const formData = new FormData();
 
     // DTO 데이터를 FormData에 추가 (JSON 문자열로 변환)
@@ -277,7 +315,7 @@ const PostRegist = () => {
                 placeholder="게시물 제목"
                 maxLength="40"
                 onChange={handleChange}
-                value={registData.postTitle}
+                value={item? item.postTitle : registData.postTitle}
               />
             </div>
             <div className="div-input">
@@ -287,7 +325,9 @@ const PostRegist = () => {
                 type="text"
                 placeholder="가격 입력"
                 onChange={handleChange}
-                value={commaPrice}
+                value={item?.postPrice != null 
+                  ? item.postPrice.toLocaleString() 
+                  : commaPrice}
               />
             </div>
             <div className="div-input">
