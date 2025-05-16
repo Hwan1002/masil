@@ -29,12 +29,12 @@ public class UserWishController {
 	public ResponseEntity<Map<String, Object>> toggleWish(
 	        @RequestBody UserWishDTO requestDto,
 	        @RequestHeader("user-id") Long userId) {
-	    boolean wished = userWishService.toggleWish(userId, requestDto.getPostId());
-	    long wishCount = userWishRepository.countByPostId(requestDto.getPostId());
+//	    boolean wished = userWishService.toggleWish(userId, requestDto.getPostId());
+//	    long wishCount = userWishRepository.countByPostId(requestDto.getPostId());
 
 	    Map<String, Object> response = new HashMap<>();
-	    response.put("wished", wished);
-	    response.put("wishCount", wishCount);
+//	    response.put("wished", wished);
+//	    response.put("wishCount", wishCount);
 	    return ResponseEntity.ok(response);
 	}
 	
