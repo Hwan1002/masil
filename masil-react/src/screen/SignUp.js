@@ -254,7 +254,7 @@ const SignUp = () => {
         });
       }
     } catch (error) {
-      //이메일 value 값 초기화
+      //이메일 v
       setFormData({ ...formData, email: "" });
       setIsReadOnly(false);
       openModal({
