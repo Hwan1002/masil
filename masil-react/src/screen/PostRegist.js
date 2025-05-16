@@ -12,12 +12,11 @@ import "../css/PostRegist.css";
 import useLoginStore from "../shared/useLoginStore";
 
 const PostRegist = () => {
-  const [item, setItem] = useState({});
-  const [selectedImages, setSelectedImages] = useState([]); // 여러 이미지를 저장하는 배열
-  const [imagePreviews, setImagePreviews] = useState([]);
+  // 이미지 관련 상태
+  const [selectedImages, setSelectedImages] = useState([]);
   const [commaPrice, setCommaPrice] = useState("");
 
-  //DatePicker 에서 값 받아옴
+  // DatePicker 관련 상태
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const { location, setLocation } = useContext(ProjectContext);
@@ -26,7 +25,7 @@ const PostRegist = () => {
   const { isEdit, setEdit } = useEditStore();
   const { idx } = useLoginStore();
 
-
+  // 폼 데이터 상태
   const [registData, setRegistData] = useState({
     postTitle: "",
     postPrice: "",
@@ -34,6 +33,7 @@ const PostRegist = () => {
     postEndDate: endDate,
     description: "",
   });
+
   const {
     isModalOpen,
     modalTitle,
@@ -43,143 +43,212 @@ const PostRegist = () => {
     closeModal,
   } = useModal();
 
+  // 수정 모드일 때 기존 데이터 불러오기
   useEffect(() => {
     if (isEdit) {
       const fetchPostItem = async () => {
         try {
           const response = await Api.get(`/post/item/${idx}`);
-          setItem(response.data);
+          const data = response.data;
+
+          // 기존 폼 데이터 설정
+          setRegistData({
+            postTitle: data.postTitle,
+            postPrice: data.postPrice,
+            postStartDate: new Date(data.postStartDate),
+            postEndDate: new Date(data.postEndDate),
+            description: data.description,
+          });
+
+          // 가격 콤마 처리 (값 가져올 때 콤마가 제거되어 있어서 다시 설정)
+          setCommaPrice(Number(data.postPrice).toLocaleString());
+
+          // 날짜 설정
+          setStartDate(new Date(data.postStartDate));
+          setEndDate(new Date(data.postEndDate));
+
+          // 위치 정보 설정
+          setLocation({
+            address: data.address,
+            lat: data.lat,
+            lng: data.lng,
+          });
+
+          // 기존 이미지 설정
+          if (data.postPhotoPaths && data.postPhotoPaths.length > 0) {
+            const imageUrls = data.postPhotoPaths.map(
+              (path) => `http://localhost:9090${path}`
+            );
+
+            // 이미지 URL을 File 객체로 변환
+            const fetchImages = async () => {
+              const imageFiles = await Promise.all(
+                imageUrls.map(async (url) => {
+                  const response = await fetch(url);
+                  const blob = await response.blob();
+                  return new File([blob], url.split("/").pop(), {
+                    type: blob.type,
+                  });
+                })
+              );
+              setSelectedImages(imageFiles);
+            };
+
+            fetchImages();
+          }
         } catch (error) {
           console.error("데이터 요청 실패:", error);
-          return null;
         }
       };
       fetchPostItem();
     }
-  }, [isEdit, idx]);
+  }, [isEdit, idx, setLocation]);
 
-  
-  useEffect(() => {
-    if (registData.postStartDate) {
-      setStartDate(registData.postStartDate);
-    }
-    if (registData.postendDate) {
-      setEndDate(registData.postendDate);
-    }
-  }, [registData.postStartDate, registData.postendDate]);
-
-
-  // 등록하기
-  const handleSubmit = async (e) => {
+  // 게시글 수정 처리
+  const handleModify = async (e) => {
     e.preventDefault();
-    if(isEdit){
-        try {
-          const formData = new FormData();
-          formData.append(
-            "dto",
-            new Blob(
-              [
-                JSON.stringify({
-                  postTitle: registData.postTitle,
-                  postPrice: registData.postPrice || "0",
-                  postStartDate: startDate.toISOString(),
-                  postEndDate: endDate.toISOString(),
-                  description: registData.description,
-                  address: location.address,
-                  lat: location.lat,
-                  lng: location.lng,
-                }),
-              ],
-              { type: "application/json" }
-            )
-          );
-          selectedImages.forEach((file) => {
-            const blob = new Blob([file], { type: file.type }); // 파일을 Blob으로 변환
-            formData.append("postPhoto", blob, file.name); // 'postPhoto'라는 이름으로 파일을 Blob으로 추가
-          });
-          const response = await Api.put("/post/modify", formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          });
-          console.log("수정 성공:", response.data);
-        } catch (error) {
-          console.error("수정 실패:", error.response?.data || error.message);
-        }
-      return
-    }
-    const formData = new FormData();
-
-    // DTO 데이터를 FormData에 추가 (JSON 문자열로 변환)
-    formData.append(
-      "dto",
-      new Blob(
-        [
-          JSON.stringify({
-            postTitle: registData.postTitle,
-            postPrice: registData.postPrice || "0",
-            postStartDate: startDate.toISOString(),
-            postEndDate: endDate.toISOString(),
-            description: registData.description,
-            address: location.address,
-            lat: location.lat,
-            lng: location.lng,
-          }),
-        ],
-        { type: "application/json" }
-      )
-    );
-
-    // 선택된 파일들을 FormData에 추가 (Blob으로 변환)
-    selectedImages.forEach((file) => {
-      const blob = new Blob([file], { type: file.type }); // 파일을 Blob으로 변환
-      formData.append("postPhoto", blob, file.name); // 'postPhoto'라는 이름으로 파일을 Blob으로 추가
-    });
 
     try {
-      const response = await Api.post("/post/upload", formData, {
-        // 'Content-Type'은 FormData를 사용할 때 자동으로 설정되므로 명시적으로 설정할 필요 없음
+      const formData = new FormData();
+
+      //DTO 데이터를 FormData에 추가
+      formData.append(
+        "dto",
+        new Blob(
+          [
+            JSON.stringify({
+              postIdx: idx,
+              postTitle: registData.postTitle,
+              postPrice: registData.postPrice || "0",
+              postStartDate: startDate.toISOString(),
+              postEndDate: endDate.toISOString(),
+              description: registData.description,
+              address: location.address,
+              lat: location.lat,
+              lng: location.lng,
+            }),
+          ],
+          { type: "application/json" }
+        )
+      );
+
+      //이미지 파일 추가해서 같이 보내기
+      if (selectedImages.length > 0) {
+        selectedImages.forEach((file) => {
+          formData.append("postPhoto", file);
+        });
+      }
+
+      //수정 API 호출
+      const response = await Api.put("/post/modify", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
 
-      console.log("파일 업로드 성공:", response.data);
-      openModal({
-        title: `게시글 등록`,
-        message: !isEdit
-          ? `게시글이 등록되었습니다.`
-          : "게시글이 수정되었습니다.",
-        actions: [
-          {
-            label: "확인",
-            onClick: () => {
-              setEdit(false);
-              navigate("/rentalitem");
+      if (response.data) {
+        openModal({
+          title: "게시글 수정",
+          message: "게시글이 성공적으로 수정되었습니다.",
+          actions: [
+            {
+              label: "확인",
+              onClick: () => {
+                setEdit(false);
+                navigate("/rentalitem");
+                closeModal();
+              },
             },
-          },
-        ],
-      });
-      // navigate('/rentalitem'); // 성공 시 다른 페이지로 이동
+          ],
+        });
+      }
     } catch (error) {
-      console.error("파일 업로드 실패:", error);
+      console.error("수정 실패:", error);
       openModal({
-        title: `경고`,
-        message: error.response?.data?.error,
+        title: "오류",
+        message:
+          error.response?.data?.message ||
+          "게시글 수정 중 오류가 발생했습니다.",
+        actions: [{ label: "확인", onClick: closeModal }],
       });
-    } finally {
-      setLocation({}); // 항상 location 초기화
     }
   };
 
-  //가격 인풋창 변경상태
+  // 게시글 등록 처리
+  const handleRegister = async (e) => {
+    e.preventDefault();
+
+    try {
+      const formData = new FormData();
+
+      // DTO 데이터를 FormData에 추가
+      formData.append(
+        "dto",
+        new Blob(
+          [
+            JSON.stringify({
+              postTitle: registData.postTitle,
+              postPrice: registData.postPrice || "0",
+              postStartDate: startDate.toISOString(),
+              postEndDate: endDate.toISOString(),
+              description: registData.description,
+              address: location.address,
+              lat: location.lat,
+              lng: location.lng,
+            }),
+          ],
+          { type: "application/json" }
+        )
+      );
+
+      // 이미지 파일 추가
+      selectedImages.forEach((file) => {
+        formData.append("postPhoto", file);
+      });
+
+      // 등록 API 호출
+      const response = await Api.post("/post/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      if (response.data) {
+        openModal({
+          title: "게시글 등록",
+          message: "게시글이 성공적으로 등록되었습니다.",
+          actions: [
+            {
+              label: "확인",
+              onClick: () => {
+                navigate("/rentalitem");
+                closeModal();
+              },
+            },
+          ],
+        });
+      }
+    } catch (error) {
+      console.error("등록 실패:", error);
+      openModal({
+        title: "오류",
+        message:
+          error.response?.data?.message ||
+          "게시글 등록 중 오류가 발생했습니다.",
+        actions: [{ label: "확인", onClick: closeModal }],
+      });
+    } finally {
+      setLocation({});
+    }
+  };
+
+  //입력 필드 변경 처리
   const handleChange = (e) => {
     const { name, value } = e.target;
 
     if (name === "postPrice") {
-      const numericValue = value.replace(/[^0-9]/g, ""); // 숫자만 추출
-
-      // 포맷된 값 설정 (콤마를 넣은 가격)
+      const numericValue = value.replace(/[^0-9]/g, "");
       setCommaPrice(numericValue ? Number(numericValue).toLocaleString() : "");
-
-      // 숫자만 저장 (실제 가격 값)
       setRegistData((prev) => ({
         ...prev,
         [name]: numericValue,
@@ -192,30 +261,26 @@ const PostRegist = () => {
     }
   };
 
+  //이미지 파일 선택 처리
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
 
-    // selectedImages (이미 선택된 이미지 개수) + 새로 선택한 files 개수가 5가 안 넘는지 확인
+    //이미지 개수 제한 체크
     if (selectedImages.length + files.length > 4) {
       alert("최대 4개의 사진만 등록할 수 있습니다.");
       return;
     }
 
-    // 미리보기용 URL로 변환 (서버로 전송하는 것은 파일 객체)
-    // const imageUrls = files.map((file) => URL.createObjectURL(file));
-
-    // 선택된 이미지들을 상태에 추가 (URL이 아니라 실제 파일 객체만 저장)
     setSelectedImages((prevImages) => [...prevImages, ...files]);
-
-    // 파일 선택 창 초기화 방지
     e.target.value = "";
   };
 
+  //파일 선택 창 열기
   const triggerFileInput = () => {
-    document.getElementById("fileInput").click(); // 버튼 클릭 시 파일 선택창 열기
+    document.getElementById("fileInput").click();
   };
 
-  // 이미지 미리보기 삭제
+  //이미지 삭제 처리
   const handleRemoveImage = (indexToRemove) => {
     openModal({
       message: "선택한 사진을 삭제하시겠습니까?",
@@ -223,143 +288,128 @@ const PostRegist = () => {
         {
           label: "확인",
           onClick: () => {
-            // 선택된 이미지에서 삭제할 이미지 제외하고 상태 업데이트
             setSelectedImages((prevImages) =>
               prevImages.filter((_, index) => index !== indexToRemove)
             );
-
-            // 미리보기 이미지 상태에서 삭제할 이미지 제외하고 상태 업데이트
-            setImagePreviews((prevPreviews) =>
-              prevPreviews.filter((_, index) => index !== indexToRemove)
-            );
-
-            // 모달 닫기
             closeModal();
           },
         },
-        { label: "취소", onClick: closeModal }, // 취소 버튼 클릭 시 모달 닫기
+        { label: "취소", onClick: closeModal },
       ],
     });
   };
 
-  useEffect(() => {
-    return () => {
-      selectedImages.forEach((file) => URL.revokeObjectURL(file.preview));
-    };
-  }, [selectedImages]);
-
   return (
     <div className="postRegist">
       <div className="postRegist-title">
-        <h2>{!isEdit ? "게시물 등록" : "게시물 수정"}</h2>
-        {/* <h2>게시물 등록</h2> */}
+        <h2>{isEdit ? "게시글 수정" : "게시글 등록"}</h2>
       </div>
-      <form onSubmit={(e) => handleSubmit(e)}>
-        <div className="formDiv">
-          <div className="photoContainer">
-            <div className="photoUploadBtn">
-              <div>
+      <form
+        onSubmit={isEdit ? handleModify : handleRegister}
+        className="postRegist-form"
+      >
+        <div className="photoContainer">
+          <input
+            type="file"
+            id="fileInput"
+            multiple
+            accept="image/*"
+            onChange={handleFileChange}
+            style={{ display: "none" }}
+          />
+          <div className="photoUploadBtn">
+            {selectedImages.map((file, index) => (
+              <div key={index} className="preview-wrapper">
+                <img
+                  src={URL.createObjectURL(file)}
+                  alt={`미리보기 ${index + 1}`}
+                  className="preview-image"
+                />
                 <button
                   type="button"
-                  className="registPhoto"
-                  onClick={triggerFileInput}
+                  onClick={() => handleRemoveImage(index)}
+                  className="remove-preview"
                 >
-                  <img src={camera} alt="사진 등록" />
+                  ×
                 </button>
+              </div>
+            ))}
+            {selectedImages.length < 4 && (
+              <button
+                type="button"
+                onClick={triggerFileInput}
+                className="upload-button"
+              >
+                <img src={camera} alt="카메라" className="camera-icon" />
+                <span>{selectedImages.length}/4</span>
+              </button>
+            )}
+          </div>
+        </div>
+        <div className="formDiv">
+          <div className="postRegist-photo">
+            <div className="div-grid">
+              <div className="postLocation">
+                <div>
+                  <LocationButton />
+                </div>
+                <div>
+                  <LocationPicker />
+                </div>
+              </div>
+              <div className="div-input">
+                <label>제목</label>
                 <input
-                  id="fileInput"
-                  name="profilePhoto"
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  style={{ display: "none" }}
-                  onChange={handleFileChange}
+                  name="postTitle"
+                  type="text"
+                  placeholder="게시물 제목"
+                  maxLength="40"
+                  onChange={handleChange}
+                  value={registData.postTitle}
                 />
               </div>
-              <label>사진({selectedImages.length}/4)</label>
-            </div>
-            {/* 선택된 여러 이미지 미리보기 */}
-            <div className="imagePreviewContainer">
-              {selectedImages.map((image, index) => (
-                <div key={index} className="imageWrapper">
-                  <img
-                    src={URL.createObjectURL(image)}
-                    alt={`선택된 이미지 ${index + 1}`}
-                    className="previewImage"
-                  />
-                  <button
-                    type="button"
-                    className="deleteButton"
-                    onClick={() => handleRemoveImage(index)}
-                  >
-                    ✖
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="div-grid">
-            <div className="postLocation">
-              <div>
-                <LocationButton />
+              <div className="div-input">
+                <label>가격</label>
+                <input
+                  name="postPrice"
+                  type="text"
+                  placeholder="가격 입력"
+                  onChange={handleChange}
+                  value={commaPrice}
+                />
               </div>
-              <div>
-                <LocationPicker />
+              <div className="div-input">
+                <RentalDatePicker
+                  startDate={startDate}
+                  endDate={endDate}
+                  setStartDate={setStartDate}
+                  setEndDate={setEndDate}
+                />
               </div>
-            </div>
-            <div className="div-input">
-              <label>제목</label>
-              <input
-                name="postTitle"
-                type="text"
-                placeholder="게시물 제목"
-                maxLength="40"
-                onChange={handleChange}
-                value={item? item.postTitle : registData.postTitle}
-              />
-            </div>
-            <div className="div-input">
-              <label>가격</label>
-              <input
-                name="postPrice"
-                type="text"
-                placeholder="가격 입력"
-                onChange={handleChange}
-                value={item?.postPrice != null 
-                  ? item.postPrice.toLocaleString() 
-                  : commaPrice}
-              />
-            </div>
-            <div className="div-input">
-              <RentalDatePicker
-                startDate={startDate}
-                endDate={endDate}
-                setStartDate={setStartDate}
-                setEndDate={setEndDate}
-              />
-              {/* <RentalDatePicker onChange={handleDateChange} /> */}
-              {/* <DatePicker /> */}
-            </div>
-            <div className="div-input">
-              <label>설명</label>
-              <textarea
-                className="registdescription"
-                name="description"
-                placeholder="등록할 물건의 설명을 작성해주세요."
-                value={registData.description}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="registnavigate">
-              <button
-                onClick={() => {
-                  navigate("/rentalitem");
-                  setEdit(false);
-                }}
-              >
-                뒤로가기
-              </button>
-              <button type="submit">{isEdit ? "수정하기" : "등록하기"}</button>
+              <div className="div-input">
+                <label>설명</label>
+                <textarea
+                  className="registdescription"
+                  name="description"
+                  placeholder="등록할 물건의 설명을 작성해주세요."
+                  value={registData.description}
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="registnavigate">
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigate("/rentalitem");
+                    setEdit(false);
+                  }}
+                >
+                  뒤로가기
+                </button>
+                <button type="submit">
+                  {isEdit ? "수정하기" : "등록하기"}
+                </button>
+              </div>
             </div>
           </div>
         </div>

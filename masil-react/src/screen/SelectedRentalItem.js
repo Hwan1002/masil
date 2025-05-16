@@ -31,7 +31,6 @@ const SelectedRentalItem = () => {
       const res = await fetchPostItem(idx);
       if (res) {
         setItem(res.data);
-
       }
     };
 
@@ -82,7 +81,7 @@ const SelectedRentalItem = () => {
   };
 
   const prevImage = () => {
-    console.log("item",item)
+    console.log("item", item);
     if (item.postPhotoPaths && currentImageIndex > 0) {
       setCurrentImageIndex(currentImageIndex - 1);
     }
@@ -144,85 +143,85 @@ const SelectedRentalItem = () => {
         </div>
       </div>
       <div className="selected-item-container">
-        <div className="selected-photo-container">
-          <div className="selected-title">{item.postTitle}</div>
-          <div className="carousel-container">
-            {item.postPhotoPaths && item.postPhotoPaths.length > 0 && (
-              <>
-                <img
-                  src={`http://localhost:9090${item.postPhotoPaths[currentImageIndex]}`}
-                  className="selected-rental-image"
-                  alt="이미지"
-                />
-                {currentImageIndex > 0 && (
-                  <div className="carousel-prev" onClick={prevImage}>
-                    ❮
-                  </div>
-                )}
-                {currentImageIndex < item.postPhotoPaths.length - 1 && (
-                  <div className="carousel-next" onClick={nextImage}>
-                    ❯
-                  </div>
-                )}
-              </>
-            )}
-            <div className="carousel-indicators">
-              {item.postPhotoPaths &&
-                item.postPhotoPaths.map((_, index) => (
-                  <span
-                    key={index}
-                    className={`carousel-dot ${index === currentImageIndex ? "active" : ""
+        <div className="selected-title">{item.postTitle}</div>
+        <div className="seleceted-div-container">
+          <div className="selected-photo-container">
+            <div className="carousel-container">
+              {item.postPhotoPaths && item.postPhotoPaths.length > 0 && (
+                <>
+                  <img
+                    src={`http://localhost:9090${item.postPhotoPaths[currentImageIndex]}`}
+                    className="selected-rental-image"
+                    alt="이미지"
+                  />
+                  {currentImageIndex > 0 && (
+                    <div className="carousel-prev" onClick={prevImage}>
+                      ❮
+                    </div>
+                  )}
+                  {currentImageIndex < item.postPhotoPaths.length - 1 && (
+                    <div className="carousel-next" onClick={nextImage}>
+                      ❯
+                    </div>
+                  )}
+                </>
+              )}
+              <div className="carousel-indicators">
+                {item.postPhotoPaths &&
+                  item.postPhotoPaths.map((_, index) => (
+                    <span
+                      key={index}
+                      className={`carousel-dot ${
+                        index === currentImageIndex ? "active" : ""
                       }`}
-                    onClick={() => goToImage(index)}
-                  ></span>
-                ))}
-            </div>
-          </div>
-          <div className="selected-bottom-title">
-            <img
-              src={`http://localhost:9090${item.userProfilePhotoPath}`}
-              alt={item.postIdx}
-              className="selected-rental-profile-image"
-            />
-            <div className="selected-explanation">
-              <div className="selected-rental-profile-text">
-                {item.userNickName}
-              </div>
-              <div className="selected-rental-profile-text">{item.userAddress}</div>
-            </div>
-          </div>
-        </div>
-        <div className="selected-description-container">
-          <div className="selected-dp-title">
-            <div className="selected-dp-sub-container">
-              <div className="selected-dp-item-title">등록일</div>
-              <div className="selected-dp-item">
-                {formatDate(item.updateDate)}
-              </div>
-            </div>
-            <div className="selected-dp-sub-container">
-              <div className="selected-dp-item-title">대여일</div>
-              <div className="selected-dp-item">
-                {formatDate(item.postStartDate)}
-              </div>
-            </div>
-            <div className="selected-dp-sub-container">
-              <div className="selected-dp-item-title">가격</div>
-              <div className="selected-dp-item">
-                {curency(item.postPrice)}원
-              </div>
-            </div>
-            <div className="selected-dp-sub-container">
-              <div className="selected-dp-item-title">거래희망장소</div>
-              <div className="selected-dp-item">
-                {item.address}
+                      onClick={() => goToImage(index)}
+                    ></span>
+                  ))}
               </div>
             </div>
           </div>
-          <div className="selected-dp">
-            <div className="selected-explanation">{item.description}</div>
+          <div className="selected-description-container">
+            <div className="selected-bottom-title">
+              <img
+                src={`http://localhost:9090${item.userProfilePhotoPath}`}
+                alt={item.postIdx}
+                className="selected-rental-profile-image"
+              />
+              <div className="selected-explanation">
+                <div>{item.userNickName}</div>
+                <div>{item.userAddress}</div>
+              </div>
+            </div>
+            <div className="selected-dp-title">
+              <div className="selected-dp-sub-container">
+                <div className="selected-dp-item-title">등록일</div>
+                <div className="selected-dp-item">
+                  {formatDate(item.updateDate)}
+                </div>
+              </div>
+              <div className="selected-dp-sub-container">
+                <div className="selected-dp-item-title">대여일</div>
+                <div className="selected-dp-item">
+                  {formatDate(item.postStartDate)}
+                </div>
+              </div>
+              <div className="selected-dp-sub-container">
+                <div className="selected-dp-item-title">가격</div>
+                <div className="selected-dp-item">
+                  {curency(item.postPrice)}원
+                </div>
+              </div>
+              <div className="selected-dp-sub-container">
+                <div className="selected-dp-item-title">거래희망장소</div>
+                <div className="selected-dp-item">{item.address}</div>
+              </div>
+            </div>
+            <div className="selected-dp">
+              <div className="selected-explanation">{item.description}</div>
+            </div>
           </div>
         </div>
+
         <Modal
           isOpen={isModalOpen}
           onClose={closeModal}
