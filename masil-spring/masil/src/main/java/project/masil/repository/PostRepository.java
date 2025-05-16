@@ -26,7 +26,7 @@ public interface PostRepository extends JpaRepository<PostEntity,Integer >{
 	
 	 @Query(value = """
 		        SELECT * 
-		        FROM boards
+		        FROM posts
 		        WHERE 
 		            (lat BETWEEN :minLat AND :maxLat)
 		            AND (lng BETWEEN :minLng AND :maxLng)

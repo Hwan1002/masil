@@ -303,7 +303,7 @@ status Code : 201 OK
 
 response Body :   ResponseDTO<String> (수정 성공 메시지)
 
-요청예시 : Api.put(/post/isDone),dto객체
+요청예시 : Api.put(/post/isDone),dto객체 so
 
 응답 예시 : 
 {

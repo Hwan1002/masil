@@ -146,6 +146,17 @@ const SelectedRentalItem = () => {
         <div className="selected-title">{item.postTitle}</div>
         <div className="seleceted-div-container">
           <div className="selected-photo-container">
+            <div className="selected-bottom-title">
+              <img
+                src={`http://localhost:9090${item.userProfilePhotoPath}`}
+                alt={item.postIdx}
+                className="selected-rental-profile-image"
+              />
+              <div className="selected-explanation">
+                <div>{item.userNickName}</div>
+                <div>{item.userAddress}</div>
+              </div>
+            </div>
             <div className="carousel-container">
               {item.postPhotoPaths && item.postPhotoPaths.length > 0 && (
                 <>
@@ -181,17 +192,6 @@ const SelectedRentalItem = () => {
             </div>
           </div>
           <div className="selected-description-container">
-            <div className="selected-bottom-title">
-              <img
-                src={`http://localhost:9090${item.userProfilePhotoPath}`}
-                alt={item.postIdx}
-                className="selected-rental-profile-image"
-              />
-              <div className="selected-explanation">
-                <div>{item.userNickName}</div>
-                <div>{item.userAddress}</div>
-              </div>
-            </div>
             <div className="selected-dp-title">
               <div className="selected-dp-sub-container">
                 <div className="selected-dp-item-title">등록일</div>
