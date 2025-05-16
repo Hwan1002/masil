@@ -8,6 +8,7 @@ import LoadingModal from "../component/LoadingModal";
 import "../css/MyPage.css";
 import { Api } from "../context/MasilContext";
 import userDefault from "../css/img/userDefault.svg";
+import LocationPicker from "../component/LocationPicker";
 const MyPage = () => {
   const [formData, setFormData] = useState({});
   const { imagePreview, setImagePreview, accessToken } =
@@ -17,6 +18,7 @@ const MyPage = () => {
   const [password, setPassWord] = useState(""); // 새 비밀번호 입력값 관리: 사용자가 입력하는 새 비밀번호
   const [pwdConfirm, setPwdConfirm] = useState(""); // 비밀번호 확인 입력값 관리: 새 비밀번호와 일치하는지 확인
   const [verifyCode, setVerifyCode] = useState(""); // 인증 코드 입력값 관리: 사용자가 입력한 인증 코드
+  const { location, setLocation } = useContext(ProjectContext);
   const {
     isModalOpen,
     modalTitle,
@@ -163,7 +165,7 @@ const MyPage = () => {
 
   const putUserInfo = async () => {
     const data = new FormData();
-
+    console.log('폼데이터',formData)
     if (imagePreview && formData.profilePhotoPath !== "default") {
       data.append("profilePhoto", inputImgRef.current.files[0]);
     }
@@ -175,7 +177,6 @@ const MyPage = () => {
 
     try {
       const response = await Api.put(`/user/modify`, data);
-
       if (response.status === 200) {
         openModal({
           message: response.data.value,
@@ -239,6 +240,14 @@ const MyPage = () => {
       [name]: value,
     });
   };
+  const updateAddress = ({ address, lat, lng }) => {
+  setFormData(prev => ({
+      ...prev,
+      address,
+      lat,
+      lng,
+    }));
+  };
 
   const handleProfileClick = () => {
     if (inputImgRef.current) {
@@ -276,6 +285,9 @@ const MyPage = () => {
     }));
     setImagePreview(userDefault); // 기본 이미지 파일 경로로 설정
   };
+
+
+
 
   return (
     <div className="signup_form">
@@ -326,6 +338,19 @@ const MyPage = () => {
           </div>
 
           <div className="inputAll">
+             <div className="inputAndBtn">
+              <input
+                type="text"
+                name="address"
+                className="form-input"
+                placeholder="주소"
+                value={formData.address || ""}
+                readOnly
+              />
+              <div>
+                <LocationPicker myPageChange={updateAddress} />
+              </div>
+            </div>
             <label for="id" className="dpLabel">아이디</label>
             <input
               type="text"

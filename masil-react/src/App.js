@@ -12,6 +12,7 @@ import UserFindId from "./screen/UserFindId";
 import UserFindPwd from "./screen/UserFindPwd";
 import PostRegist from "./screen/PostRegist";
 import RentalItem from "./screen/RentalItem";
+import MyRental from "./screen/MyRental";
 import SelectedRentalItem from "./screen/SelectedRentalItem";
 
 function App() {
@@ -48,6 +49,7 @@ function App() {
           />
 
           <Route path="/rentalitem" element={<RentalItem />} />
+          <Route path="/myrental" element={<MyRental />} />
           <Route path="/post/item/:idx" element={<SelectedRentalItem />} />
         </Routes>
         <Modal

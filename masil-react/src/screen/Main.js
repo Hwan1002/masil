@@ -18,6 +18,6 @@ const Main = () => {
         <LocationPicker />
       </div>
     </>
-  );
-};
+  )
+}
 export default Main;
