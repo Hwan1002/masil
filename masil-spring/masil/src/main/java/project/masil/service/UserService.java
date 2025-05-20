@@ -157,7 +157,10 @@ public class UserService {
 			user.setProfilePhotoPath(FileUploadUtil.saveFile(profilePhoto, uploadDir, "profilePhotos"));
 		}
 		user.setUserNickName(dto.getUserNickName());
-
+		user.setAddress(dto.getAddress());
+		user.setLat(dto.getLat());
+		user.setLng(dto.getLng());
+		
 		// 프로필사진 변경시 기존프로필사진 삭제 .
 		if (dto.getProfilePhotoPath().equals("default")) { // 기본이미지로 변경시 기존 프로필사진 삭제 및 기본이미지 경로로 업데이트
 			user.setProfilePhotoPath(DEFAULT_PROFILE_PHOTO);

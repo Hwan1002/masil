@@ -1,19 +1,19 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Modal from "./Modal";
 import useModal from "../context/useModal";
 import { Api, ProjectContext } from "../context/MasilContext";
 
 const Header = () => {
-  const { loginSuccess, setLoginSuccess, accessToken, setAccessToken } =
+  const { loginSuccess, setLoginSuccess, setAccessToken } =
     useContext(ProjectContext);
   const navigate = useNavigate();
-  const scrollToSection = (sectionId) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
-  };
+  // const scrollToSection = (sectionId) => {
+  //   const element = document.getElementById(sectionId);
+  //   if (element) {
+  //     element.scrollIntoView({ behavior: "smooth" });
+  //   }
+  // };
   const {
     isModalOpen,
     modalTitle,
@@ -56,6 +56,9 @@ const Header = () => {
           <nav className="navBar">
             <button onClick={() => navigate("/rentalitem")}>렌탈물품</button>
             <button onClick={() => navigate("/myrental")}>내 게시글</button>
+            <button onClick={() => navigate("/mywishpost")}>
+              내가 찜한게시물
+            </button>
           </nav>
           <div>
             {loginSuccess ? (

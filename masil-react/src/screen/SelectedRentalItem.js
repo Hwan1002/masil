@@ -112,116 +112,132 @@ const SelectedRentalItem = () => {
 
   return (
     <div className="selected-container">
-      <div className="selected-ud">
-        <div>
-          <button onClick={handleGoBack}>뒤로가기</button>
-        </div>
-        <div>
-          {userId === item.userId ? (
-            <>
-              <button className="selected-u" onClick={handleEditBtn}>
-                수정
-              </button>
-
-              <button
-                onClick={() =>
-                  openModal({
-                    message: "정말 삭제하시겠습니까?",
-                    actions: [
-                      { label: "돌아가기", onClick: closeModal },
-                      { label: "삭제", onClick: () => deletePostItem(idx) },
-                    ],
-                  })
-                }
-              >
-                삭제
-              </button>
-            </>
-          ) : (
-            "응~ 안보여~"
-          )}
-        </div>
-      </div>
-      <div className="selected-item-container">
-        <div className="selected-title">{item.postTitle}</div>
-        <div className="seleceted-div-container">
-          <div className="selected-photo-container">
-            <div className="selected-bottom-title">
+      <div className="selected-content">
+        <div className="select-post-container">
+          <div className="selected-title">{item.postTitle}</div>
+          <div className="user-info">
+            <div className="userInfo-img">
               <img
                 src={`http://localhost:9090${item.userProfilePhotoPath}`}
                 alt={item.postIdx}
                 className="selected-rental-profile-image"
               />
-              <div className="selected-explanation">
-                <div>{item.userNickName}</div>
-                <div>{item.userAddress}</div>
+            </div>
+            <div className="userInfo-text">
+              <div>{item.userNickName}</div>
+              <div>{item.userAddress}</div>
+            </div>
+          </div>
+          <div className="selected-imagePost">
+            <div className="selected-image-container">
+              <div className="selected-image-wrapper">
+                {item.postPhotoPaths && item.postPhotoPaths.length > 0 && (
+                  <>
+                    <img
+                      src={`http://localhost:9090${item.postPhotoPaths[currentImageIndex]}`}
+                      className="selected-rental-image"
+                      alt="이미지"
+                    />
+                    {item.postPhotoPaths.length > 1 && (
+                      <>
+                        <button
+                          className="carousel-arrow carousel-prev"
+                          onClick={prevImage}
+                          style={{
+                            display: currentImageIndex > 0 ? "flex" : "none",
+                          }}
+                        >
+                          ❮
+                        </button>
+                        <button
+                          className="carousel-arrow carousel-next"
+                          onClick={nextImage}
+                          style={{
+                            display:
+                              currentImageIndex < item.postPhotoPaths.length - 1
+                                ? "flex"
+                                : "none",
+                          }}
+                        >
+                          ❯
+                        </button>
+                      </>
+                    )}
+                  </>
+                )}
+                <div className="carousel-indicators">
+                  {item.postPhotoPaths &&
+                    item.postPhotoPaths.map((_, index) => (
+                      <span
+                        key={index}
+                        className={`carousel-dot ${
+                          index === currentImageIndex ? "active" : ""
+                        }`}
+                        onClick={() => goToImage(index)}
+                      ></span>
+                    ))}
+                </div>
               </div>
             </div>
-            <div className="carousel-container">
-              {item.postPhotoPaths && item.postPhotoPaths.length > 0 && (
-                <>
-                  <img
-                    src={`http://localhost:9090${item.postPhotoPaths[currentImageIndex]}`}
-                    className="selected-rental-image"
-                    alt="이미지"
-                  />
-                  {currentImageIndex > 0 && (
-                    <div className="carousel-prev" onClick={prevImage}>
-                      ❮
-                    </div>
-                  )}
-                  {currentImageIndex < item.postPhotoPaths.length - 1 && (
-                    <div className="carousel-next" onClick={nextImage}>
-                      ❯
-                    </div>
-                  )}
-                </>
-              )}
-              <div className="carousel-indicators">
-                {item.postPhotoPaths &&
-                  item.postPhotoPaths.map((_, index) => (
-                    <span
-                      key={index}
-                      className={`carousel-dot ${
-                        index === currentImageIndex ? "active" : ""
-                      }`}
-                      onClick={() => goToImage(index)}
-                    ></span>
-                  ))}
+            <div className="selected-post-info">
+              <div className="selected-info">
+                <div className="div-flex">
+                  <label>등록일 : </label>
+                  <p>{formatDate(item.updateDate)}</p>
+                </div>
+                <div className="div-flex">
+                  <label>대여일 : </label>
+                  <p>{formatDate(item.postStartDate)}</p>
+                </div>
+                <div className="div-flex">
+                  <label>가격 : </label>
+                  <p>{curency(item.postPrice)}원</p>
+                </div>
+                <div className="div-flex">
+                  <label>거래희망장소 : </label>
+                  {item.address}
+                </div>
+              </div>
+              <div className="selected-description">
+                <label>설명 : </label>
+                <p>{item.description}</p>
               </div>
             </div>
           </div>
-          <div className="selected-description-container">
-            <div className="selected-dp-title">
-              <div className="selected-dp-sub-container">
-                <div className="selected-dp-item-title">등록일</div>
-                <div className="selected-dp-item">
-                  {formatDate(item.updateDate)}
-                </div>
-              </div>
-              <div className="selected-dp-sub-container">
-                <div className="selected-dp-item-title">대여일</div>
-                <div className="selected-dp-item">
-                  {formatDate(item.postStartDate)}
-                </div>
-              </div>
-              <div className="selected-dp-sub-container">
-                <div className="selected-dp-item-title">가격</div>
-                <div className="selected-dp-item">
-                  {curency(item.postPrice)}원
-                </div>
-              </div>
-              <div className="selected-dp-sub-container">
-                <div className="selected-dp-item-title">거래희망장소</div>
-                <div className="selected-dp-item">{item.address}</div>
-              </div>
+          <div className="selected-buttons">
+            <div>
+              <button className="back-btn" onClick={handleGoBack}>
+                뒤로가기
+              </button>
             </div>
-            <div className="selected-dp">
-              <div className="selected-explanation">{item.description}</div>
+            <div className="edit-button">
+              {userId === item.userId ? (
+                <>
+                  <button className="update-btn" onClick={handleEditBtn}>
+                    수정
+                  </button>
+
+                  <button
+                    className="delete-btn"
+                    onClick={() =>
+                      openModal({
+                        message: "정말 삭제하시겠습니까?",
+                        actions: [
+                          { label: "돌아가기", onClick: closeModal },
+                          { label: "삭제", onClick: () => deletePostItem(idx) },
+                        ],
+                      })
+                    }
+                  >
+                    삭제
+                  </button>
+                </>
+              ) : (
+                ""
+              )}
             </div>
           </div>
         </div>
-
         <Modal
           isOpen={isModalOpen}
           onClose={closeModal}
