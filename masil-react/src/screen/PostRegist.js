@@ -51,7 +51,6 @@ const PostRegist = () => {
           const response = await Api.get(`/post/item/${idx}`);
           const data = response.data;
 
-          // 기존 폼 데이터 설정
           setRegistData({
             postTitle: data.postTitle,
             postPrice: data.postPrice,
@@ -60,27 +59,22 @@ const PostRegist = () => {
             description: data.description,
           });
 
-          // 가격 콤마 처리 (값 가져올 때 콤마가 제거되어 있어서 다시 설정)
           setCommaPrice(Number(data.postPrice).toLocaleString());
 
-          // 날짜 설정
           setStartDate(new Date(data.postStartDate));
           setEndDate(new Date(data.postEndDate));
 
-          // 위치 정보 설정
           setLocation({
             address: data.address,
             lat: data.lat,
             lng: data.lng,
           });
 
-          // 기존 이미지 설정
           if (data.postPhotoPaths && data.postPhotoPaths.length > 0) {
             const imageUrls = data.postPhotoPaths.map(
               (path) => `http://localhost:9090${path}`
             );
 
-            // 이미지 URL을 File 객체로 변환
             const fetchImages = async () => {
               const imageFiles = await Promise.all(
                 imageUrls.map(async (url) => {
@@ -98,11 +92,21 @@ const PostRegist = () => {
           }
         } catch (error) {
           console.error("데이터 요청 실패:", error);
+          return null;
         }
       };
       fetchPostItem();
     }
   }, [isEdit, idx, setLocation]);
+
+  // 페이지를 벗어날 때 isEdit 상태 초기화
+  useEffect(() => {
+    return () => {
+      if (window.location.pathname !== "/postRegist") {
+        setEdit(false);
+      }
+    };
+  }, [setEdit]);
 
   // 게시글 수정 처리
   const handleModify = async (e) => {
@@ -233,8 +237,7 @@ const PostRegist = () => {
       openModal({
         title: "오류",
         message:
-          error.response?.data?.message ||
-          "게시글 등록 중 오류가 발생했습니다.",
+          error.response?.data.error || "게시글 등록 중 오류가 발생했습니다.",
         actions: [{ label: "확인", onClick: closeModal }],
       });
     } finally {
