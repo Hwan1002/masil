@@ -1,20 +1,29 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useNavigate } from "react-router-dom";
-import useEditStore from "../shared/useEditStore";
-import { ProjectContext } from "../context/MasilContext";
 import axios from "axios";
 import "../css/RentalItem.css";
+import { ProjectContext } from "../context/MasilContext";
+import { useNavigate } from "react-router-dom";
+import useModal from "../context/useModal";
+import Modal from "../component/Modal";
+import useEditStore from "../shared/useEditStore";
 
 const RentalItem = () => {
+  const { loginSuccess } = useContext(ProjectContext);
   const navigate = useNavigate();
+  const {
+    isModalOpen,
+    modalTitle,
+    modalMessage,
+    modalActions,
+    openModal,
+    closeModal,
+  } = useModal();
   const [showSoldOnly, setShowSoldOnly] = useState(false);
   const [items, setItems] = useState([]);
   const { setEdit } = useEditStore();
   const [currentPage, setCurrentPage] = useState(1);
   const [addressKeyword, setAddressKeyword] = useState("");
   const itemsPerPage = 15;
-
-  const { loginSuccess } = useContext(ProjectContext);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,6 +68,26 @@ const RentalItem = () => {
     setCurrentPage(pageNum);
   };
 
+  const handleItemClick = (e, item) => {
+    e.preventDefault();
+    if (loginSuccess) {
+      navigate(`/post/item/${item.postIdx}`);
+    } else {
+      openModal({
+        message: "로그인이 필요한 서비스입니다.",
+        actions: [
+          {
+            label: "확인",
+            onClick: () => {
+              closeModal();
+              navigate("/");
+            },
+          },
+        ],
+      });
+    }
+  };
+
   return (
     <div className="page-container">
       {/* 필터 섹션 */}
@@ -92,6 +121,7 @@ const RentalItem = () => {
               href={`/post/item/${item.postIdx}`}
               className="rental-item"
               key={item.postIdx}
+              onClick={(e) => handleItemClick(e, item)}
             >
               {item.isSold && <span className="sold-badge">대여 완료</span>}
               {console.log("이미지 경로:", item.postPhotoPaths[0])}
@@ -154,6 +184,14 @@ const RentalItem = () => {
           +
         </button>
       )}
+
+      <Modal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        title={modalTitle}
+        content={modalMessage}
+        actions={modalActions}
+      />
     </div>
   );
 };
