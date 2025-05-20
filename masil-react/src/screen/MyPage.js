@@ -18,7 +18,7 @@ const MyPage = () => {
   const [password, setPassWord] = useState(""); // 새 비밀번호 입력값 관리: 사용자가 입력하는 새 비밀번호
   const [pwdConfirm, setPwdConfirm] = useState(""); // 비밀번호 확인 입력값 관리: 새 비밀번호와 일치하는지 확인
   const [verifyCode, setVerifyCode] = useState(""); // 인증 코드 입력값 관리: 사용자가 입력한 인증 코드
-  const { location, setLocation } = useContext(ProjectContext);
+  const { location } = useContext(ProjectContext);
   const {
     isModalOpen,
     modalTitle,
@@ -32,7 +32,7 @@ const MyPage = () => {
     const getUserInfo = async () => {
       //accessToken이 없으면 요청하지않음.
       if (!accessToken) return;
-
+      
       try {
         const response = await Api.get(`/user/userInfo`);
 
@@ -56,6 +56,17 @@ const MyPage = () => {
       getUserInfo();
     }
   }, [accessToken]);
+
+  useEffect(() => {
+    if (location?.address) {
+      setFormData((prev) => ({
+        ...prev,
+        address: location.address,
+        lat: location.lat,
+        lng: location.lng,
+      }));
+    }
+  }, [location]);
 
   //이메일 인증번호 전송 요청
   const sendCertifyNumber = async (e) => {
@@ -240,14 +251,6 @@ const MyPage = () => {
       [name]: value,
     });
   };
-  const updateAddress = ({ address, lat, lng }) => {
-  setFormData(prev => ({
-      ...prev,
-      address,
-      lat,
-      lng,
-    }));
-  };
 
   const handleProfileClick = () => {
     if (inputImgRef.current) {
@@ -348,7 +351,7 @@ const MyPage = () => {
                 readOnly
               />
               <div>
-                <LocationPicker myPageChange={updateAddress} />
+                <LocationPicker />
               </div>
             </div>
             <label for="id" className="dpLabel">아이디</label>

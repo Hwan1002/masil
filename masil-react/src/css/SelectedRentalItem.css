@@ -236,3 +236,18 @@ body {
   background-color: #fff;
   transform: scale(1.2);
 }
+
+.arrow-left, .arrow-right {
+  background-color: rgb(151, 184, 255);
+}
+
+.arrow-left:hover {
+  background-color: rgb(115, 160, 255);
+}
+
+.arrow-right:hover{
+  background-color: rgb(115, 160, 255);
+}
+
+
+

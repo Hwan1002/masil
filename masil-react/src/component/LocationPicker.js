@@ -4,7 +4,7 @@ import "../css/LocationPicker.css"; // CSS 파일 import
 import { Api, ProjectContext } from "../context/MasilContext";
 import axios from "axios";
 
-const LocationPicker = ({ myPageChange }) => {
+const LocationPicker = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [latLng, setLatLng] = useState({ lat: null, lng: null });
@@ -28,13 +28,13 @@ const LocationPicker = ({ myPageChange }) => {
       lng: latLng.lng,
     });
     setLocation(response.data);
-    console.log("이값은", response.data);
+    // console.log("이값은", response.data);
 
-    myPageChange({
-      address: response.data.address,
-      lat: response.data.lat,
-      lng: response.data.lng,
-    });
+    // myPageChange({
+    //   address: response.data.address,
+    //   lat: response.data.lat,
+    //   lng: response.data.lng,
+    // });
   };
 
   return (

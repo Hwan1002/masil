@@ -7,6 +7,7 @@ import useLoginStore from "../shared/useLoginStore";
 import Modal from "../component/Modal";
 import moment from "moment";
 import "../css/SelectedRentalItem.css";
+import axios from "axios";
 
 const SelectedRentalItem = () => {
   const { idx } = useParams();
@@ -14,6 +15,9 @@ const SelectedRentalItem = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const { setEdit } = useEditStore();
   const { userId, setIdx } = useLoginStore();
+  const itemIdx = parseInt(idx);
+  const [items, setItems] = useState([]);
+
 
   const navigate = useNavigate();
 
@@ -36,6 +40,19 @@ const SelectedRentalItem = () => {
 
     loadData();
   }, [idx]);
+
+  // 전체게시글 idx값 찾기위한 전체게시글 조회
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:9090/post`);
+        if (response) setItems(response.data);
+      } catch (error) {
+        console.error("데이터 불러오기 실패:", error);
+      }
+    };
+    fetchData();
+  }, []);
 
   const fetchPostItem = async (idx) => {
     try {
@@ -109,6 +126,32 @@ const SelectedRentalItem = () => {
     setEdit(true);
     navigate("/postRegist");
   };
+
+const handlePrev = () => {
+  const prevItems = items.filter(item => item.postIdx < itemIdx);
+  if (prevItems.length === 0) {
+    openModal({
+      message: "첫 번째 게시글입니다.",
+      actions: [{ label: "확인", onClick: closeModal }],
+    });
+  } else {
+    const prevIdx = Math.max(...prevItems.map(item => item.postIdx));
+    navigate(`/post/item/${prevIdx}`);
+  }
+};
+
+const handleNext = () => {
+  const nextItems = items.filter(item => item.postIdx > itemIdx);
+  if (nextItems.length === 0) {
+    openModal({
+      message: "마지막 게시글입니다.",
+      actions: [{ label: "확인", onClick: closeModal }],
+    });
+  } else {
+    const nextIdx = Math.min(...nextItems.map(item => item.postIdx));
+    navigate(`/post/item/${nextIdx}`);
+  }
+};
 
   return (
     <div className="selected-container">
@@ -237,6 +280,10 @@ const SelectedRentalItem = () => {
               )}
             </div>
           </div>
+           <div className="selected-buttons">
+              <button className="arrow-left" onClick={handlePrev}>이전</button>
+              <button className="arrow-right" onClick={handleNext}>다음 </button>
+          </div>
         </div>
         <Modal
           isOpen={isModalOpen}
@@ -247,6 +294,7 @@ const SelectedRentalItem = () => {
         />
       </div>
     </div>
+
   );
 };
 

@@ -149,7 +149,7 @@ const PostRegist = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-
+            console.log('리스폰데이터',response.data)
       if (response.data) {
         openModal({
           title: "게시글 수정",
