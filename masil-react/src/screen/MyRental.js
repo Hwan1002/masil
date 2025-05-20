@@ -69,7 +69,7 @@ const RentalItem = () => {
           <input
             type="text"
             className="filter-text"
-            placeholder="구 이름으로 검색 (예: 부평구)"
+            placeholder="동 이름으로 검색 (예: 부평동)"
             onChange={filterAddress}
             maxLength={5}
           />
