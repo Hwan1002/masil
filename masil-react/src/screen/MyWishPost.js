@@ -1,4 +1,5 @@
 // 내가 찜한 게시물
-export const MyWishPost = () => {
+const MyWishPost = () => {
   return <div>MyWishPost</div>;
 };
+export default MyWishPost;

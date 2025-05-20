@@ -14,7 +14,7 @@ import PostRegist from "./screen/PostRegist";
 import RentalItem from "./screen/RentalItem";
 import MyRental from "./screen/MyRental";
 import SelectedRentalItem from "./screen/SelectedRentalItem";
-import { MyWishPost } from "./screen/MyWishPost";
+import MyWishPost from "./screen/MyWishPost";
 
 function App() {
   const {
