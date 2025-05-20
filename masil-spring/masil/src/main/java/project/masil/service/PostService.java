@@ -149,6 +149,9 @@ public class PostService {
 		post.setPostPrice(dto.getPostPrice());
 		post.setPostStartDate(dto.getPostStartDate());
 		post.setPostEndDate(dto.getPostEndDate());
+		post.setAddress(dto.getAddress());
+		post.setLat(dto.getLat());
+		post.setLng(dto.getLng());
 		postRepository.save(post);
 		
 		return ResponseDTO.<String>builder().status(201).value("게시물이 수정되었습니다 .").build();
