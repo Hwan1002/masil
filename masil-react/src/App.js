@@ -14,6 +14,7 @@ import PostRegist from "./screen/PostRegist";
 import RentalItem from "./screen/RentalItem";
 import MyRental from "./screen/MyRental";
 import SelectedRentalItem from "./screen/SelectedRentalItem";
+import { MyWishPost } from "./screen/MyWishPost";
 
 function App() {
   const {
@@ -43,6 +44,7 @@ function App() {
                   <Route path="/userfindid" element={<UserFindId />} />
                   <Route path="/userfindpwd" element={<UserFindPwd />} />
                   <Route path="/postRegist" element={<PostRegist />} />
+                  <Route path="/mywishpost" element={<MyWishPost />} />
                 </Routes>
               </div>
             }
@@ -53,7 +55,6 @@ function App() {
           <Route path="/post/item/:idx" element={<SelectedRentalItem />} />
         </Routes>
         <Modal
-        
           isOpen={isModalOpen}
           onClose={closeModal}
           title={modalTitle}
