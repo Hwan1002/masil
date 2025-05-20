@@ -56,7 +56,7 @@ const Header = () => {
           <nav className="navBar">
             <button onClick={() => navigate("/rentalitem")}>렌탈물품</button>
             <button onClick={() => navigate("/myrental")}>내 게시글</button>
-            <button onClick={() => navigate("/myrental")}>
+            <button onClick={() => navigate("/mywishpost")}>
               내가 찜한게시물
             </button>
           </nav>
