@@ -29,7 +29,7 @@ public class UserWishEntity {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id ;
+	private Integer id ;
 	
     @ManyToOne
     @JoinColumn(name = "user_idx")
@@ -39,7 +39,5 @@ public class UserWishEntity {
     @JoinColumn(name = "post_idx")
     private PostEntity post;
 
-    @CreatedDate
-    private LocalDateTime createdAt;
 	
 }

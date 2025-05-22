@@ -37,7 +37,7 @@ public class PostController {
 	// 특정 게시물 조회
 	@GetMapping("/item/{postIdx}")
 	public ResponseEntity<?> getPostDetail(@AuthenticationPrincipal String userId  ,@PathVariable("postIdx") Integer postIdx) {
-		return ResponseEntity.ok(service.postDetail(postIdx)) ;
+		return ResponseEntity.ok(service.postDetail(userId ,postIdx)) ;
 	}
 	
 	// 내 게시물 조회

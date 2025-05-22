@@ -176,15 +176,34 @@ return (
 사용자가 빈하트를 눌렀을때의 시나리오
 
 매개변수로 무엇을 받을것인지 
-postIdx ,userIdx 
-
 accessToken (컨텍스트에 저장된 userId 를통해서 사용자확인) 
+postIdx ,userId (인증객체를 통해 userId 를 받는다 .) 
+postIdx 를통해서 postentity를 찾아온다 , postEntity에서 userId 를 찾을수있음
+찾아온 userId 와 userId 가 동일한지 검증이 필요함 .
 
-userIdx 와 로그인되어있는 userId 비교로직 
+전송한 postIdx를 
 
+// 리액트에서 사용할 찜기능 / 찜해제기능에 대한 코드 
+try {
+  await axios.post('/api/wishes', { postIdx });
+  setWished(true); // 찜 성공 시 빨간 하트
+} catch (error) {
+  const status = error.response?.status;
+  const message = error.response?.data?.error;
 
-사용자가 하트를눌렀을때의 시나리오 
-
+  if (status === 409) {
+    // 이미 찜한 상태
+    setWished(true); // 빨간 하트 유지
+    // optional: toast("이미 찜한 게시글입니다.");
+  } else if (status === 400) {
+    // 찜하지 않은 게시글에 찜 해제 요청
+    setWished(false); // 빈 하트로 변경
+    // optional: toast("찜한 게시글이 아닙니다.");
+  } else {
+    // 기타 에러 처리
+    // toast("오류가 발생했습니다.");
+  }
+}
 
 
 
@@ -204,7 +223,9 @@ userIdx 와 로그인되어있는 userId 비교로직
    채팅API 개발 후 채팅기능 만들기 채팅목록
 
  
-	
 
+찜 버튼을 눌렀을경우	
+
+userIdx , postIdx  전송
 
 

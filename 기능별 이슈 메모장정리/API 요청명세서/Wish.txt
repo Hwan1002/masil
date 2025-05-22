@@ -1,0 +1,194 @@
+1. 내가 찜한 게시글 목록 조회
+URL: localhost:9090/wish
+
+Method: GET
+
+인증: 필요 (로그인 사용자)
+
+Request Parameters: 없음 (userId는 인증 객체에서 추출)
+
+요청 예시 (axios)
+Api.get('/wish')
+
+Response
+Status Code: 200 OK
+
+Body: List<PostDTO>
+
+각 PostDTO에는 게시글 정보와 wishCount(찜 개수)가 포함됨
+
+응답 예시
+json
+[
+  {
+    "postIdx": 152,
+    "registrationDate": "2025-04-01T01:38:11.741788",
+    "updateDate": "2025-04-01T01:38:11.741788",
+    "postTitle": "test1",
+    "postPrice": 200000,
+    "postPhotoPaths": [
+      "/uploads/postPhoto/1743439091696_test1.jpg",
+      "/uploads/postPhoto/1743439091700_test2.jpg",
+      "/uploads/postPhoto/1743439091701_test3.jpg"
+    ],
+    "postStartDate": "2025-03-31T16:37:48.444",
+    "postEndDate": "2025-03-31T16:37:48.444",
+    "description": "test1",
+    "userNickName": "123",
+    "wishCount": 5
+  },
+  {
+    "postIdx": 153,
+    "registrationDate": "2025-04-01T01:52:21.864148",
+    "updateDate": "2025-04-01T01:52:21.864148",
+    "postTitle": "test2",
+    "postPrice": 200000,
+    "postPhotoPaths": [
+      "/uploads/postPhoto/1743439941860_test3.jpg"
+    ],
+    "postStartDate": "2025-03-31T16:42:48.682",
+    "postEndDate": "2025-03-31T16:42:48.682",
+    "description": "test2",
+    "userNickName": "123",
+    "wishCount": 2
+  }
+]
+
+
+2. 찜 추가
+URL: localhost:9090/wish
+
+Method: POST
+
+Request Body: UserWishDTO
+
+필수: postIdx (찜할 게시글의 식별자)
+
+요청 예시
+Api.post(`/wish' , { postIdx: 152 } )
+
+Response
+Status Code: 200 OK
+
+Body: UserWishDTO (찜 성공 결과)
+
+예시: wished: true, wishCount: 6
+
+응답 예시
+
+성공시 
+
+json
+{
+  "postIdx": 152,
+  "wished": true,
+  "wishCount": 6
+}
+
+실패 시 (이미 찜한 게시글에 또 찜 요청)
+json
+{
+    "status": 409,
+    "data": null,
+    "value": null,
+    "error": "이미 찜한 게시글입니다.",
+    "accessToken": null,
+    "userId": null,
+    "hasAddress": null
+}
+
+
+3. 찜 해제
+URL: localhost:9090/wish
+
+Method: DELETE
+
+필수: postIdx (찜 해제할 게시글의 식별자)
+
+요청 예시
+Api.delete(`/wish/${postIdx}`) ;
+
+Response
+Status Code: 200 OK
+
+Body: UserWishDTO (찜 해제 결과)
+
+예시: wished: false, wishCount: 5
+
+응답 예시
+
+성공시
+
+json
+{
+  "postIdx": 152,
+  "wished": false,
+  "wishCount": 5
+}
+
+실패시
+
+{
+    "status": 400,
+    "data": null,
+    "value": null,
+    "error": "찜 기록이 없습니다.",
+    "accessToken": null,
+    "userId": null,
+    "hasAddress": null
+}
+
+
+
+
+참고
+모든 요청은 인증(로그인)이 필요하며,
+만들어놓은 Api(axios 인스턴스) 사용
+
+찜 추가에는 RequestBody , 찜 해제에는 URL 파라미터로 PostIdx를 전달해야합니다 . 헷갈리지마세요 .
+
+wishCount는 찜 추가/해제 후 변경된 값을 응답에 포함합니다.
+
+예외 상황(이미 찜함, 찜하지 않은 게시글 해제 등)은 글로벌 예외처리에서 적절한 메시지와 상태코드로 응답합니다.
+
+***
+찜성공과 실패시에 error에 해당하는 메세지는 사용자에게 보여줄필요가없고 저 상태코드혹은 저 error 메세지에따라서 
+
+중복 찜했을경우에는 빨간하트아이콘을 띄우고 
+
+찜 기록이 없는경우에 찜해제 요청을 보냈을경우에는 비어있는 하트아이콘을 띄우면 됩니다 , 따로 예외던지기 안하셔도됩니다.
+
+// 찜추가 함수
+try {
+  await Api.post('/wishes', { postIdx });
+  setWished(true); // 찜 성공 시 빨간 하트
+} catch (error) {
+  const status = error.response?.status;
+  const message = error.response?.data?.error;
+  if (status === 409 || message === "이미 찜한 게시글입니다.") {
+    // 이미 찜한 상태
+    setWished(true); // 이미 찜한 상태 -> 빨간 하트 유지
+ }else {
+    // 기타 에러 처리
+
+// 찜해제 함수
+try {
+  await Api.delete(`/wishes/${postIdx}`);
+  setWished(false); // 찜 해제 성공 시 빈 하트
+} catch (error) {
+  const status = error.response?.status;
+  const message = error.response?.data?.error;
+  if (status === 400 || message === "찜 기록이 없습니다." ) {
+    // 찜하지 않은 게시글에 찜 해제 요청
+    setWished(false); // 찜하지 않은 게시글에 찜 해제 요청 -> 빈 하트 유지
+  } else {
+    // 기타 에러 처리   
+  }
+}
+사용 예시 한번 적어봤는데 참고부탁드립니다 .
+
+
+
+
+
+

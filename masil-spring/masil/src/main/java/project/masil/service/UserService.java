@@ -41,7 +41,7 @@ public class UserService {
 
 	// 회원정보 조회 ()
 	public ResponseDTO<UserDTO> getInfo(String userId) {
-		UserEntity entity = userRepository.findByUserId(userId);
+		UserEntity entity = userRepository.findByUserId(userId).get();
 		return ResponseDTO.<UserDTO>builder().status(200).value(toDTO(entity)).build();
 
 	}
@@ -123,11 +123,8 @@ public class UserService {
 	// 로그인
 	@Transactional
 	public ResponseDTO<String> signin(UserDTO dto) {
-		UserEntity user = userRepository.findByUserId(dto.getUserId());
-		if (user == null) {
-			throw new IdIsNotExistsException("아이디 또는 비밀번호가 일치하지않습니다.");
-		}
-
+		UserEntity user = userRepository.findByUserId(dto.getUserId()).orElseThrow(
+				() ->  new IdIsNotExistsException("아이디 또는 비밀번호가 일치하지않습니다."));
 		if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
 			throw new PasswordMismatchException("아이디 또는 비밀번호가 일치하지않습니다.");
 		}
@@ -145,7 +142,7 @@ public class UserService {
 	// 회원정보수정
 	@Transactional
 	public ResponseDTO<String> modify(String userId, MultipartFile profilePhoto, UserDTO dto) {
-		UserEntity user = userRepository.findByUserId(userId);
+		UserEntity user = userRepository.findByUserId(userId).get();
 
 		// 기존 프로필사진경로
 		String existingPhoto = user.getProfilePhotoPath();

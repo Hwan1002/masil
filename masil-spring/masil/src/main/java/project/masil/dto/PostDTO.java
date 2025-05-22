@@ -51,7 +51,9 @@ public class PostDTO {
 	
 	private Boolean isDone; // 거래 상태
 	
-	
+    private Boolean wished; // 찜 여부
+    
+    private Integer wishCount; // 찜 갯수
 	
 	
 	

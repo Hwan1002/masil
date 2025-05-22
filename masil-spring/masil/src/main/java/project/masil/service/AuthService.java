@@ -38,7 +38,7 @@ public class AuthService {
         
 
         // 데이터베이스에서 사용자 조회 및 토큰 일치 여부 확인
-        UserEntity user = userRepository.findByUserId(userId);
+        UserEntity user = userRepository.findByUserId(userId).get();
         if (user == null || !refreshToken.equals(user.getRefreshToken())) {
             throw new InvalidTokenException("RefreshToken이 유효하지 않습니다.");
         }
