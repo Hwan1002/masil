@@ -184,48 +184,28 @@ postIdx 를통해서 postentity를 찾아온다 , postEntity에서 userId 를 �
 전송한 postIdx를 
 
 // 리액트에서 사용할 찜기능 / 찜해제기능에 대한 코드 
-try {
-  await axios.post('/api/wishes', { postIdx });
-  setWished(true); // 찜 성공 시 빨간 하트
-} catch (error) {
-  const status = error.response?.status;
-  const message = error.response?.data?.error;
-
-  if (status === 409) {
-    // 이미 찜한 상태
-    setWished(true); // 빨간 하트 유지
-    // optional: toast("이미 찜한 게시글입니다.");
-  } else if (status === 400) {
-    // 찜하지 않은 게시글에 찜 해제 요청
-    setWished(false); // 빈 하트로 변경
-    // optional: toast("찜한 게시글이 아닙니다.");
-  } else {
-    // 기타 에러 처리
-    // toast("오류가 발생했습니다.");
-  }
-}
 
 
 
+특정 게시글조회 dto 안에 wished와 wishCount 가 있다 . 
+wishCount를 통해서 찜의개수를 렌더링할 수 있고 , 
+wished(Boolean) 의 값을통해서 비어있는하트 , 색이있는 하트로 찜을 구분할 수 있다 
 
 
-채팅API 개발
+item.wished ? 빨간하트 렌더링 : 빈하트렌더링 
+onclick = { () => 빨간하트일때 delete 요청함수 빈하트일떄 post 요청함수 }
 
 
+찜한 게시글보기 , 유저 프로필눌렀을때 게시글보기
+
+채팅API 개발   
+
+내 근처게시물조회 , 내 게시물 조회  명세서작성 // 완료   
+거래완료기능 // 완료
+
+찜버튼 만들기 
+채팅API 개발 후 채팅기능 만들기 채팅목록 
 
 
-   
-
-   내 근처게시물조회 , 내 게시물 조회  명세서작성 // 완료   
-   거래완료기능 // 완료
-
-   찜버튼 만들기 
-   채팅API 개발 후 채팅기능 만들기 채팅목록
-
- 
-
-찜 버튼을 눌렀을경우	
-
-userIdx , postIdx  전송
 
 

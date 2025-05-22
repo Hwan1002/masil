@@ -42,7 +42,7 @@ public class PostService {
 		if (dto.getLat() == null || dto.getLng() == null || dto.getAddress() == null) {
 			throw new NotExistLocation("위치를 설정해주세요 .");
 		}
-		dto.setIsDone(false);
+		dto.setDone(false);
 		String uploadDir = System.getProperty("user.dir") + "/uploads";
 		dto.setPostPhotoPaths(FileUploadUtil.saveFiles(postPhotos, uploadDir, "postPhoto"));
 
@@ -186,7 +186,7 @@ public class PostService {
 		if (!post.getUser().getUserId().equals(userId)) {
 			throw new AccessDeniedException("본인이 작성한 게시글만 수정할 수 있습니다.");
 		}
-		post.setIsDone(dto.getIsDone());
+		post.setDone(dto.isDone());
 		postRepository.save(post);
 		return ResponseDTO.<String>builder().status(201).value("게시물이 수정되었습니다 .").build();
 
@@ -237,7 +237,7 @@ public class PostService {
 				.description(entity.getDescription()).userNickName(entity.getUser().getUserNickName())
 				.userProfilePhotoPath(entity.getUser().getProfilePhotoPath()).userId(entity.getUser().getUserId())
 				.userAddress(entity.getUser().getAddress()).lat(entity.getLat()).lng(entity.getLng())
-				.address(entity.getAddress()).isDone(entity.getIsDone()).wishCount(wishCount).build();
+				.address(entity.getAddress()).isDone(entity.isDone()).wishCount(wishCount).build();
 	}
 
 	// dto -> entity
@@ -246,6 +246,6 @@ public class PostService {
 				.postPrice(dto.getPostPrice()).postPhotoPaths(dto.getPostPhotoPaths())
 				.postStartDate(dto.getPostStartDate()).postEndDate(dto.getPostEndDate())
 				.description(dto.getDescription()).lat(dto.getLat()).lng(dto.getLng()).address(dto.getAddress())
-				.isDone(dto.getIsDone()).build();
+				.isDone(dto.isDone()).build();
 	}
 }
