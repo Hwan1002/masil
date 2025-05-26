@@ -1,6 +1,5 @@
 import React, { useContext, useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"; // 아이콘 가져오기
-import "../css/Login.css";
 import kakao from "../css/img/socialImg/kakao.png";
 import google from "../css/img/socialImg/google.jpg";
 import naver from "../css/img/socialImg/naver.png";
@@ -10,6 +9,8 @@ import axios from "axios";
 import { ProjectContext } from "../context/MasilContext";
 import { useNavigate } from "react-router-dom";
 import useLoginStore from "../shared/useLoginStore";
+import "../css/Login.css";
+
 const Login = () => {
   // 비밀번호 보이기, 숨기기 버튼 상태
   const [showPassword, setShowPassword] = useState(false);
@@ -113,10 +114,10 @@ const Login = () => {
 
         // 성공 케이스
         if (event.data.success) {
-          setLoginSuccess(true); 
+          setLoginSuccess(true);
           // hasAddress ( 주소값이 설정되어있을때 true)
           if (event.data.data.hasAddress) {
-            // 주소값이 설정되어있을때의 로그인 로직 
+            // 주소값이 설정되어있을때의 로그인 로직
             openModal({
               message: event.data.data.value,
               actions: [
@@ -125,7 +126,7 @@ const Login = () => {
                   onClick: () => {
                     savedUserId(event.data.data.userId);
                     closeModal();
-                    navigate("/");;
+                    navigate("/");
                   },
                 },
               ],
@@ -148,7 +149,7 @@ const Login = () => {
             // 또는 React Router를 사용한다면
             // navigate("/register-address");
           }
-        // 실패 케이스
+          // 실패 케이스
         } else {
           openModal({
             message: event.data.error,
@@ -225,19 +226,22 @@ const Login = () => {
         {/* SNS 로그인 */}
         <div className="sns_container">
           <div className="sns_item">
-            <a onClick={(e) => socialLogin("kakao")}>
+            <button onClick={() => socialLogin("kakao")} className="sns_button">
               <img src={kakao} alt="카카오 로그인" className="sns_image" />
-            </a>
+            </button>
           </div>
           <div className="sns_item">
-            <a onClick={(e) => socialLogin("google")}>
+            <button
+              onClick={() => socialLogin("google")}
+              className="sns_button"
+            >
               <img src={google} alt="구글 로그인" className="sns_image" />
-            </a>
+            </button>
           </div>
           <div className="sns_item">
-            <a onClick={(e) => socialLogin("naver")}>
+            <button onClick={() => socialLogin("naver")} className="sns_button">
               <img src={naver} alt="네이버 로그인" className="sns_image" />
-            </a>
+            </button>
           </div>
         </div>
       </form>

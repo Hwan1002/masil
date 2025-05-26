@@ -1,4 +1,5 @@
-html,body{
+html,
+body {
   display: flex;
   flex: 1;
   height: 100%;
@@ -18,14 +19,14 @@ html,body{
 
 .filter-section {
   display: flex;
-  width: 210px;
+  width: 20em;
   flex-direction: column;
   padding: 16px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.filter-text{ 
+.filter-text {
   padding: 5px;
   margin-bottom: 15px;
   border: 1px solid #707070;
@@ -86,7 +87,7 @@ html,body{
 }
 
 @media (max-width: 500px) {
-  .filter-section{
+  .filter-section {
     display: none;
   }
   .rental-container {
@@ -109,8 +110,6 @@ html,body{
   position: relative;
   text-decoration: none;
 }
-
-
 
 /* 이미지 스타일 */
 .rental-image {
@@ -148,7 +147,7 @@ html,body{
   color: #333;
 }
 
-.rental-address{
+.rental-address {
   color: #707070;
   padding-top: 5px;
   font-size: 12px;
@@ -197,15 +196,15 @@ html,body{
 }
 
 .pagination {
-  position: fixed;      /* 화면에 고정 */
-  bottom: 0;            /* 화면의 맨 아래 */
-  left: 0;              /* 좌측 정렬 */
-  right: 0;             /* 우측 정렬 (가운데 정렬을 위해 필요) */
-  margin-top: 0;        /* 위 마진 제거 */
-  padding: 12px 0;      /* 위아래 간격 추가 (선택 사항) */
+  position: fixed; /* 화면에 고정 */
+  bottom: 0; /* 화면의 맨 아래 */
+  left: 0; /* 좌측 정렬 */
+  right: 0; /* 우측 정렬 (가운데 정렬을 위해 필요) */
+  margin-top: 0; /* 위 마진 제거 */
+  padding: 12px 0; /* 위아래 간격 추가 (선택 사항) */
   display: flex;
   gap: 8px;
   justify-content: center;
   width: 100%;
-  z-index: 0;         /* 다른 요소 위에 보이도록 */
+  z-index: 0; /* 다른 요소 위에 보이도록 */
 }

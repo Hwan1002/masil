@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import "../css/RentalItem.css";
 import { ProjectContext } from "../context/MasilContext";
 import { useNavigate } from "react-router-dom";
 import useModal from "../context/useModal";
 import Modal from "../component/Modal";
 import useEditStore from "../shared/useEditStore";
+import "../css/RentalItem.css";
 
 const RentalItem = () => {
   const { loginSuccess } = useContext(ProjectContext);
@@ -92,24 +92,44 @@ const RentalItem = () => {
     <div className="page-container">
       {/* 필터 섹션 */}
       <aside className="filter-section">
-        <h3>필터</h3>
-        <div className="filter-options">
-          <input
-            type="text"
-            className="filter-text"
-            placeholder="구 이름으로 검색 (예: 부평구)"
-            onChange={filterAddress}
-            maxLength={5}
-          />
-          <label>
+        <div className="flex flex-col gap-y-3">
+          <h3>검색 필터</h3>
+          <div className="filter-options">
+            <input
+              type="text"
+              className="border-2 border-gray-300 rounded-md p-2"
+              placeholder="구 이름으로 검색 (예: 부평구)"
+              onChange={filterAddress}
+              maxLength={5}
+            />
+          </div>
+          <div className="flex items-center gap-x-2">
             <input
               type="checkbox"
               name="sold"
               checked={showSoldOnly}
               onChange={handleFilterChange}
             />
-            판매 완료만 보기
-          </label>
+            <label>판매 완료만 보기</label>
+          </div>
+          <div className="flex items-center gap-x-2">
+            <input
+              type="checkbox"
+              name="sold"
+              checked={showSoldOnly}
+              onChange={handleFilterChange}
+            />
+            <label>내 근처 게시물 보기</label>
+          </div>
+          <div className="flex items-center gap-x-2">
+            <input
+              type="checkbox"
+              name="sold"
+              checked={showSoldOnly}
+              onChange={handleFilterChange}
+            />
+            <label>전체 게시물 보기</label>
+          </div>
         </div>
       </aside>
 
