@@ -19,6 +19,9 @@ const RentalItem = () => {
     closeModal,
   } = useModal();
   const [showSoldOnly, setShowSoldOnly] = useState(false);
+  const [showNearOnly, setShowNearOnly] = useState(false);
+  const [showAllPosts, setShowAllPosts] = useState(true);
+
   const [items, setItems] = useState([]);
   const { setEdit } = useEditStore();
   const [currentPage, setCurrentPage] = useState(1);
@@ -54,10 +57,20 @@ const RentalItem = () => {
 
   const handleFilterChange = (event) => {
     const { name, checked } = event.target;
+    // 모든 체크박스 상태를 먼저 false로 설정
+    setShowSoldOnly(false);
+    setShowNearOnly(false);
+    setShowAllPosts(false);
+
+    // 선택된 체크박스만 true로 설정
     if (name === "sold") {
       setShowSoldOnly(checked);
-      setCurrentPage(1);
+    } else if (name === "near") {
+      setShowNearOnly(checked);
+    } else if (name === "All") {
+      setShowAllPosts(checked);
     }
+    setCurrentPage(1);
   };
 
   const filterAddress = (e) => {
@@ -97,7 +110,7 @@ const RentalItem = () => {
           <div className="filter-options">
             <input
               type="text"
-              className="border-2 border-gray-300 rounded-md p-2"
+              className="border-2 border-gray-300 rounded-md p-2 transition-all duration-300 ease-in-out focus:outline-none focus:border-[#00C68E] focus:ring-1 focus:ring-[#00C68E]"
               placeholder="구 이름으로 검색 (예: 부평구)"
               onChange={filterAddress}
               maxLength={5}
@@ -109,24 +122,27 @@ const RentalItem = () => {
               name="sold"
               checked={showSoldOnly}
               onChange={handleFilterChange}
+              className="w-4 h-4 accent-[#00C68E] cursor-pointer"
             />
             <label>판매 완료만 보기</label>
           </div>
           <div className="flex items-center gap-x-2">
             <input
               type="checkbox"
-              name="sold"
-              checked={showSoldOnly}
+              name="near"
+              checked={showNearOnly}
               onChange={handleFilterChange}
+              className="w-4 h-4 accent-[#00C68E] cursor-pointer"
             />
             <label>내 근처 게시물 보기</label>
           </div>
           <div className="flex items-center gap-x-2">
             <input
               type="checkbox"
-              name="sold"
-              checked={showSoldOnly}
+              name="All"
+              checked={showAllPosts}
               onChange={handleFilterChange}
+              className="w-4 h-4 accent-[#00C68E] cursor-pointer"
             />
             <label>전체 게시물 보기</label>
           </div>
