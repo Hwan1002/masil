@@ -43,6 +43,8 @@ dependencies {
    // OAUth2 의존성 추가 
    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
+   // websocket 의존성 추가 
+   implementation 'org.springframework.boot:spring-boot-starter-websocket'
    
    
    // Apache Commons Validator 라이브러리 이메일 형식 검증을위해 추가 (프론트에서 정규식 사용예정)
