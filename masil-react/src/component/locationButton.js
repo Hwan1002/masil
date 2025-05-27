@@ -1,7 +1,8 @@
 import React, { useContext, useState } from "react";
 import { ProjectContext } from "../context/MasilContext";
-import "../css/LocationButton.css"; //
 import axios from "axios";
+import "../css/LocationButton.css"; //
+
 const LocationButton = () => {
   const [isopen, setIsOpen] = useState(false);
   const [error, setError] = useState("");

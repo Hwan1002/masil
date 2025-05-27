@@ -44,38 +44,17 @@ h3,
 h4,
 h5 {
   font-family: "S-CoreDream-3Light";
+  font-weight: bold;
 }
-div,
-button,
-span,
-p,
-li,
-a {
-  font-family: "Pretendard-Regular";
-}
+
 button {
-  cursor: pointer;
-  background: #a9ddb7;
-  border: none;
-  color: #fff;
-  font-size: 0.8rem;
-  width: 6em;
-  height: 2em;
-  border-radius: 10px;
-  transition: 0.5s;
-  text-decoration: none;
-  outline: none;
-}
-button:hover {
-  background: #00a32c;
+  @apply cursor-pointer bg-[#a9ddb7] border-none text-white text-sm w-24 h-8 rounded-lg active:text-white transition-all duration-200 ease-in-out;
 }
 button:focus,
 button:active,
 a:focus,
 a:active {
-  outline: none;
-  text-decoration: none;
-  color: inherit; /* 클릭 시 색상 변경 방지 */
+  @apply text-white no-underline outline-none;
 }
 /* .logo{
     font-size: 25px;
@@ -85,40 +64,37 @@ a:active {
 
 /* 헤더영역 */
 .header {
-  background: #a9ddb7;
-  position: fixed;
-  top: 0;
-  right: 0;
-  left: 0;
-  z-index: 10;
-  transition: opacity 0.3s linear;
+  @apply fixed top-0 right-0 left-0 z-10 bg-[#a9ddb7] transition-opacity duration-300;
 }
-.navBar {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 2rem;
-}
-.navBar button {
-  font-size: 1rem;
-  transition: color 0.5s ease;
-  width: auto;
-}
+
 .header_container {
-  width: 100%;
-  max-width: 71.25rem;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 4.5rem;
-  padding: 1.25rem 1.5rem;
+  @apply w-full max-w-[71.25rem] mx-auto px-6 py-5 flex justify-between items-center h-[4.5rem];
 }
-.header_container button {
-  border: none;
-  background: transparent;
-  color: #fff;
+
+.header_left {
+  @apply flex-1;
 }
+
+.logo_btn {
+  @apply w-auto p-0 text-2xl font-bold text-white transition-all duration-200 ease-in-out bg-transparent active:text-white;
+}
+
+.header_center {
+  @apply flex-[2] flex justify-center gap-8;
+}
+
+.nav_btn {
+  @apply w-auto text-base text-white transition-all duration-200 ease-in-out bg-transparent active:text-white;
+}
+
+.header_right {
+  @apply flex justify-end flex-1;
+}
+
+.auth_btn {
+  @apply w-auto px-4 py-2 text-sm text-white transition-all duration-200 ease-in-out bg-transparent active:text-white;
+}
+
 /* 컨텐츠 부모 태그 */
 .container {
   position: relative;

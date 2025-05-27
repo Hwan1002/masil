@@ -8,7 +8,6 @@ body {
 
 .page-container {
   display: flex;
-  flex-direction: row;
   padding: 5em 10%;
   box-sizing: border-box;
   height: 100vh;
@@ -20,7 +19,6 @@ body {
 .filter-section {
   display: flex;
   width: 20em;
-  flex-direction: column;
   padding: 16px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -55,47 +53,6 @@ body {
   /* ✅ flex 내부에서 그리드가 영역 채움 */
 }
 
-/* 반응형 조정 */
-@media (max-width: 1900px) {
-  .rental-container {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-@media (max-width: 1580px) {
-  .rental-container {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-@media (max-width: 1280px) {
-  .rental-container {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 1000px) {
-  .rental-container {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 880px) {
-  .rental-container {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 500px) {
-  .filter-section {
-    display: none;
-  }
-  .rental-container {
-    width: 100%;
-    grid-template-columns: 1fr;
-  }
-}
-
 /* rental-item 카드 */
 .rental-item {
   width: 250px;
@@ -120,12 +77,12 @@ body {
   transition: transform 0.3s ease;
   transform-origin: center;
   border-radius: 8px;
-  box-shadow: 0 0px 2px #999, 0px 0px 10px #999;
+  box-shadow: 0 0px 1px #999, 0px 0px 5px #999;
 }
 
 /* 이미지 확대 효과 */
-.rental-item:hover .rental-image {
-  transform: scale(1.12);
+.rental-image:hover {
+  transform: scale(1.1);
 }
 
 /* 제목 스타일 */
@@ -207,4 +164,81 @@ body {
   justify-content: center;
   width: 100%;
   z-index: 0; /* 다른 요소 위에 보이도록 */
+}
+
+/* 검색 입력 필드 스타일 */
+.search-input {
+  @apply text-sm pl-2 border border-gray-300 rounded-md p-1 transition-all duration-200 ease-in-out focus:outline-none focus:border-[#00C68E] focus:ring-1 focus:ring-[#00C68E];
+}
+
+/* 체크박스 스타일 */
+.custom-checkbox {
+  @apply relative w-4 h-4 transition-all duration-300 ease-in-out border border-gray-300 rounded appearance-none cursor-pointer;
+}
+
+.custom-checkbox:checked {
+  @apply bg-[#00C68E] border-gray-300;
+}
+
+.custom-checkbox:checked::after {
+  content: "✓";
+  @apply absolute text-xs text-white transition-transform duration-200 transform scale-110;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* 체크박스 컨테이너 스타일 */
+.checkbox-container {
+  @apply flex items-center transition-opacity duration-200 gap-x-2 hover:opacity-90;
+}
+
+.checkbox-container label {
+  @apply text-sm cursor-pointer select-none;
+}
+
+/* 필터 섹션 레이아웃 */
+.filter-layout {
+  @apply flex flex-col gap-y-2;
+}
+
+/* 반응형 조정 */
+@media (max-width: 1900px) {
+  .rental-container {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 1580px) {
+  .rental-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 1280px) {
+  .rental-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 1000px) {
+  .rental-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 880px) {
+  .rental-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 500px) {
+  .filter-section {
+    display: none;
+  }
+  .rental-container {
+    width: 100%;
+    grid-template-columns: 1fr;
+  }
 }

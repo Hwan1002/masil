@@ -1,17 +1,18 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import useEditStore from "../shared/useEditStore";
-import { Api,ProjectContext } from "../context/MasilContext";
-import axios from "axios";
+import { Api, ProjectContext } from "../context/MasilContext";
 import "../css/RentalItem.css";
 
 const RentalItem = () => {
-  const navigate = useNavigate();
-  const [showSoldOnly, setShowSoldOnly] = useState(false);
   const [items, setItems] = useState([]);
-  const { setEdit } = useEditStore();
+  const [showSoldOnly, setShowSoldOnly] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [addressKeyword, setAddressKeyword] = useState("");
+
+  const navigate = useNavigate();
+  const { setEdit } = useEditStore();
+
   const itemsPerPage = 15;
 
   const { loginSuccess } = useContext(ProjectContext);
@@ -21,7 +22,7 @@ const RentalItem = () => {
       try {
         const response = await Api.get(`/post/myPost`);
         if (response) setItems(response.data);
-        console.log(response.data)
+        console.log(response.data);
       } catch (error) {
         console.error("데이터 불러오기 실패:", error);
       }
@@ -62,26 +63,29 @@ const RentalItem = () => {
 
   return (
     <div className="page-container">
-      {/* 필터 섹션 */}
       <aside className="filter-section">
-        <h3>필터</h3>
-        <div className="filter-options">
-          <input
-            type="text"
-            className="filter-text"
-            placeholder="동 이름으로 검색 (예: 부평동)"
-            onChange={filterAddress}
-            maxLength={5}
-          />
-          <label>
+        <div className="flex flex-col gap-y-3">
+          <h3 className="text-lg font-bold">검색 필터</h3>
+          <div className="filter-options">
+            <input
+              type="text"
+              className="search-input"
+              placeholder="동 이름으로 검색 (예: 부평동)"
+              onChange={filterAddress}
+              maxLength={5}
+            />
+          </div>
+
+          <div className="checkbox-container">
             <input
               type="checkbox"
               name="sold"
               checked={showSoldOnly}
               onChange={handleFilterChange}
+              className="custom-checkbox"
             />
-            판매 완료만 보기
-          </label>
+            <label>판매 완료만 보기</label>
+          </div>
         </div>
       </aside>
       {/* 콘텐츠 섹션 */}

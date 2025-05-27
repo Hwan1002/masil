@@ -1,19 +1,14 @@
 import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import Modal from "./Modal";
-import useModal from "../context/useModal";
 import { Api, ProjectContext } from "../context/MasilContext";
+import useModal from "../context/useModal";
+import Modal from "./Modal";
 
 const Header = () => {
   const { loginSuccess, setLoginSuccess, setAccessToken } =
     useContext(ProjectContext);
   const navigate = useNavigate();
-  // const scrollToSection = (sectionId) => {
-  //   const element = document.getElementById(sectionId);
-  //   if (element) {
-  //     element.scrollIntoView({ behavior: "smooth" });
-  //   }
-  // };
+
   const {
     isModalOpen,
     modalTitle,
@@ -50,21 +45,27 @@ const Header = () => {
     <>
       <header className="header">
         <div className="header_container">
-          <button className="logo" onClick={() => navigate("/")}>
-            Masil
-          </button>
-          <nav className="navBar">
-            <button onClick={() => navigate("/rentalitem")}>렌탈물품</button>
-            <button onClick={() => navigate("/myrental")}>내 게시글</button>
-            <button onClick={() => navigate("/mywishpost")}>
+          <div className="header_left">
+            <button className="logo_btn" onClick={() => navigate("/")}>
+              Masil
+            </button>
+          </div>
+          <nav className="header_center">
+            <button className="nav_btn" onClick={() => navigate("/rentalitem")}>
+              렌탈물품
+            </button>
+            <button className="nav_btn" onClick={() => navigate("/myrental")}>
+              내 게시글
+            </button>
+            <button className="nav_btn" onClick={() => navigate("/mywishpost")}>
               내가 찜한게시물
             </button>
           </nav>
-          <div>
+          <div className="header_right">
             {loginSuccess ? (
               <>
-                {/* 로그아웃시 쿠키랑 토큰 삭제 시키는 axios 함수 추가로 인해 onClick안에 하나의 함수로 묶어서 정의 */}
                 <button
+                  className="auth_btn"
                   onClick={() =>
                     openModal({
                       message: "로그아웃 하시겠습니까?",
@@ -82,12 +83,24 @@ const Header = () => {
                 >
                   LOGOUT
                 </button>
-                <button onClick={() => navigate("/mypage")}>MYPAGE</button>
+                <button
+                  className="auth_btn"
+                  onClick={() => navigate("/mypage")}
+                >
+                  MYPAGE
+                </button>
               </>
             ) : (
               <>
-                <button onClick={() => navigate("/signup")}>SIGNUP</button>
-                <button onClick={() => navigate("/login")}>LOGIN</button>
+                <button
+                  className="auth_btn"
+                  onClick={() => navigate("/signup")}
+                >
+                  SIGNUP
+                </button>
+                <button className="auth_btn" onClick={() => navigate("/login")}>
+                  LOGIN
+                </button>
               </>
             )}
           </div>

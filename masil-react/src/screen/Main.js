@@ -12,12 +12,13 @@ const Main = () => {
     <>
       <div className="mainContents">
         <div>메인페이지다 </div>
-        <div>메인페이지다 </div>
-        <div>메인페이지다 </div>
-        <LocationButton />
-        <LocationPicker />
+
+        <div className="flex gap-x-2">
+          <LocationButton />
+          <LocationPicker />
+        </div>
       </div>
     </>
-  )
-}
+  );
+};
 export default Main;

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import axios from "axios";
-import { ProjectContext } from "../context/MasilContext";
+import { ProjectContext, Api } from "../context/MasilContext";
 import { useNavigate } from "react-router-dom";
 import useModal from "../context/useModal";
 import Modal from "../component/Modal";
@@ -8,8 +7,21 @@ import useEditStore from "../shared/useEditStore";
 import "../css/RentalItem.css";
 
 const RentalItem = () => {
+  const [items, setItems] = useState([]);
+
+  const [showSoldOnly, setShowSoldOnly] = useState(false);
+  const [showNearOnly, setShowNearOnly] = useState(false);
+  const [showAllPosts, setShowAllPosts] = useState(true);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [addressKeyword, setAddressKeyword] = useState("");
+
+  const { setEdit } = useEditStore();
+
   const { loginSuccess } = useContext(ProjectContext);
+
   const navigate = useNavigate();
+
   const {
     isModalOpen,
     modalTitle,
@@ -18,20 +30,13 @@ const RentalItem = () => {
     openModal,
     closeModal,
   } = useModal();
-  const [showSoldOnly, setShowSoldOnly] = useState(false);
-  const [showNearOnly, setShowNearOnly] = useState(false);
-  const [showAllPosts, setShowAllPosts] = useState(true);
 
-  const [items, setItems] = useState([]);
-  const { setEdit } = useEditStore();
-  const [currentPage, setCurrentPage] = useState(1);
-  const [addressKeyword, setAddressKeyword] = useState("");
   const itemsPerPage = 15;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:9090/post`);
+        const response = await Api.get("/post");
         if (response) setItems(response.data);
       } catch (error) {
         console.error("데이터 불러오기 실패:", error);
@@ -55,20 +60,43 @@ const RentalItem = () => {
     startIndex + itemsPerPage
   );
 
-  const handleFilterChange = (event) => {
+  const handleFilterChange = async (event) => {
     const { name, checked } = event.target;
     // 모든 체크박스 상태를 먼저 false로 설정
     setShowSoldOnly(false);
     setShowNearOnly(false);
     setShowAllPosts(false);
 
-    // 선택된 체크박스만 true로 설정
     if (name === "sold") {
       setShowSoldOnly(checked);
     } else if (name === "near") {
       setShowNearOnly(checked);
+      if (checked) {
+        try {
+          const response = await Api.get("/post/nearbyPost");
+          if (response) setItems(response.data);
+          console.log("근처 게시물", response.data);
+        } catch (error) {
+          console.error("근처 게시물 불러오기 실패:", error);
+        }
+      } else {
+        //체크 해제시 전체 게시물 다시 불러오기
+        try {
+          const response = await Api.get("/post");
+          setShowAllPosts(true);
+          if (response) setItems(response.data);
+        } catch (error) {
+          console.error("데이터 불러오기 실패:", error);
+        }
+      }
     } else if (name === "All") {
       setShowAllPosts(checked);
+      try {
+        const response = await Api.get("/post");
+        if (response) setItems(response.data);
+      } catch (error) {
+        console.error("데이터 불러오기 실패:", error);
+      }
     }
     setCurrentPage(1);
   };
@@ -103,48 +131,49 @@ const RentalItem = () => {
 
   return (
     <div className="page-container">
-      {/* 필터 섹션 */}
       <aside className="filter-section">
         <div className="flex flex-col gap-y-3">
-          <h3>검색 필터</h3>
+          <h3 className="text-lg font-bold">검색 필터</h3>
           <div className="filter-options">
             <input
               type="text"
-              className="border-2 border-gray-300 rounded-md p-2 transition-all duration-300 ease-in-out focus:outline-none focus:border-[#00C68E] focus:ring-1 focus:ring-[#00C68E]"
+              className="search-input"
               placeholder="구 이름으로 검색 (예: 부평구)"
               onChange={filterAddress}
               maxLength={5}
             />
           </div>
-          <div className="flex items-center gap-x-2">
-            <input
-              type="checkbox"
-              name="sold"
-              checked={showSoldOnly}
-              onChange={handleFilterChange}
-              className="w-4 h-4 accent-[#00C68E] cursor-pointer"
-            />
-            <label>판매 완료만 보기</label>
-          </div>
-          <div className="flex items-center gap-x-2">
-            <input
-              type="checkbox"
-              name="near"
-              checked={showNearOnly}
-              onChange={handleFilterChange}
-              className="w-4 h-4 accent-[#00C68E] cursor-pointer"
-            />
-            <label>내 근처 게시물 보기</label>
-          </div>
-          <div className="flex items-center gap-x-2">
-            <input
-              type="checkbox"
-              name="All"
-              checked={showAllPosts}
-              onChange={handleFilterChange}
-              className="w-4 h-4 accent-[#00C68E] cursor-pointer"
-            />
-            <label>전체 게시물 보기</label>
+          <div className="filter-layout">
+            <div className="checkbox-container">
+              <input
+                type="checkbox"
+                name="sold"
+                checked={showSoldOnly}
+                onChange={handleFilterChange}
+                className="custom-checkbox"
+              />
+              <label>판매 완료만 보기</label>
+            </div>
+            <div className="checkbox-container">
+              <input
+                type="checkbox"
+                name="near"
+                checked={showNearOnly}
+                onChange={handleFilterChange}
+                className="custom-checkbox"
+              />
+              <label>내 근처 게시물 보기</label>
+            </div>
+            <div className="checkbox-container">
+              <input
+                type="checkbox"
+                name="All"
+                checked={showAllPosts}
+                onChange={handleFilterChange}
+                className="custom-checkbox"
+              />
+              <label>전체 게시물 보기</label>
+            </div>
           </div>
         </div>
       </aside>
@@ -160,7 +189,6 @@ const RentalItem = () => {
               onClick={(e) => handleItemClick(e, item)}
             >
               {item.isSold && <span className="sold-badge">대여 완료</span>}
-              {console.log("이미지 경로:", item.postPhotoPaths[0])}
               <div className="rental-image-wrapper">
                 {item.postPhotoPaths && item.postPhotoPaths.length > 0 && (
                   <img

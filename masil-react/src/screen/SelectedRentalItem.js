@@ -7,17 +7,17 @@ import useLoginStore from "../shared/useLoginStore";
 import Modal from "../component/Modal";
 import moment from "moment";
 import "../css/SelectedRentalItem.css";
-import axios from "axios";
 
 const SelectedRentalItem = () => {
   const { idx } = useParams();
+  const [items, setItems] = useState([]);
   const [item, setItem] = useState([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const { setEdit } = useEditStore();
   const { userId, setIdx } = useLoginStore();
   const itemIdx = parseInt(idx);
-  const [items, setItems] = useState([]);
-
+  const [isWished, setIsWished] = useState(false);
+  // const [wishCount, setWishCount] = useState(0);
 
   const navigate = useNavigate();
 
@@ -35,6 +35,9 @@ const SelectedRentalItem = () => {
       const res = await fetchPostItem(idx);
       if (res) {
         setItem(res.data);
+        if (res.data.wished !== undefined) {
+          setIsWished(res.data.wished);
+        }
       }
     };
 
@@ -45,7 +48,7 @@ const SelectedRentalItem = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:9090/post`);
+        const response = await Api.get(`/post`);
         if (response) setItems(response.data);
       } catch (error) {
         console.error("데이터 불러오기 실패:", error);
@@ -127,37 +130,98 @@ const SelectedRentalItem = () => {
     navigate("/postRegist");
   };
 
-const handlePrev = () => {
-  const prevItems = items.filter(item => item.postIdx < itemIdx);
-  if (prevItems.length === 0) {
-    openModal({
-      message: "첫 번째 게시글입니다.",
-      actions: [{ label: "확인", onClick: closeModal }],
-    });
-  } else {
-    const prevIdx = Math.max(...prevItems.map(item => item.postIdx));
-    navigate(`/post/item/${prevIdx}`);
-  }
-};
+  const handlePrev = () => {
+    const prevItems = items.filter((item) => item.postIdx < itemIdx);
+    if (prevItems.length === 0) {
+      openModal({
+        message: "첫 번째 게시글입니다.",
+        actions: [{ label: "확인", onClick: closeModal }],
+      });
+    } else {
+      const prevIdx = Math.max(...prevItems.map((item) => item.postIdx));
+      navigate(`/post/item/${prevIdx}`);
+    }
+  };
 
-const handleNext = () => {
-  const nextItems = items.filter(item => item.postIdx > itemIdx);
-  if (nextItems.length === 0) {
-    openModal({
-      message: "마지막 게시글입니다.",
-      actions: [{ label: "확인", onClick: closeModal }],
-    });
-  } else {
-    const nextIdx = Math.min(...nextItems.map(item => item.postIdx));
-    navigate(`/post/item/${nextIdx}`);
-  }
-};
+  const handleNext = () => {
+    const nextItems = items.filter((item) => item.postIdx > itemIdx);
+    if (nextItems.length === 0) {
+      openModal({
+        message: "마지막 게시글입니다.",
+        actions: [{ label: "확인", onClick: closeModal }],
+      });
+    } else {
+      const nextIdx = Math.min(...nextItems.map((item) => item.postIdx));
+      navigate(`/post/item/${nextIdx}`);
+    }
+  };
+
+  const handleWishClick = async () => {
+    try {
+      let response;
+      const wishDto = {
+        postIdx: itemIdx,
+        wished: !isWished,
+        wishCount: null,
+      };
+      //찜이 되어있는 상태면 삭제 요청
+      if (isWished === true) {
+        response = await Api.delete(`/wish/${itemIdx}`);
+        console.log("위시 삭제:", response);
+      } else {
+        //찜이 안되어있는 상태면 추가 요청
+        try {
+          response = await Api.post("/wish", wishDto);
+          console.log("위시 추가:", response);
+        } catch (error) {
+          if (error.response?.status === 409) {
+            //이미 찜한 게시물인 경우일때 모달 띄우기
+            openModal({
+              message: "이미 찜한 게시물입니다.",
+              actions: [{ label: "확인", onClick: closeModal }],
+            });
+            //찜 상태를 true로 설정해서 서버에 던지기
+            setIsWished(true);
+            return;
+          }
+          throw error; //그외 에러들은 기존 에러 처리로 전달
+        }
+      }
+
+      if (response.status === 200) {
+        setIsWished(!isWished);
+        openModal({
+          message: isWished
+            ? "위시리스트에서 제거되었습니다."
+            : "위시리스트에 추가되었습니다.",
+          actions: [{ label: "확인", onClick: closeModal }],
+        });
+      }
+    } catch (error) {
+      console.error("위시리스트 처리 실패:", error);
+      openModal({
+        message:
+          error.response?.data?.message ||
+          "위시리스트 처리 중 오류가 발생했습니다.",
+        actions: [{ label: "확인", onClick: closeModal }],
+      });
+    }
+  };
 
   return (
     <div className="selected-container">
       <div className="selected-content">
         <div className="select-post-container">
-          <div className="selected-title">{item.postTitle}</div>
+          <div className="selected-title">
+            {item.postTitle}
+            <button onClick={handleWishClick} className="wish-btn">
+              <i
+                className={`wish-icon fa-heart ${
+                  isWished ? "fas is-wished" : "far"
+                }`}
+              ></i>
+            </button>
+          </div>
           <div className="user-info">
             <div className="userInfo-img">
               <img
@@ -280,9 +344,13 @@ const handleNext = () => {
               )}
             </div>
           </div>
-           <div className="selected-buttons">
-              <button className="arrow-left" onClick={handlePrev}>이전</button>
-              <button className="arrow-right" onClick={handleNext}>다음 </button>
+          <div className="selected-buttons">
+            <button className="arrow-left" onClick={handlePrev}>
+              이전
+            </button>
+            <button className="arrow-right" onClick={handleNext}>
+              다음{" "}
+            </button>
           </div>
         </div>
         <Modal
@@ -294,7 +362,6 @@ const handleNext = () => {
         />
       </div>
     </div>
-
   );
 };
 

@@ -32,7 +32,7 @@ const MyPage = () => {
     const getUserInfo = async () => {
       //accessToken이 없으면 요청하지않음.
       if (!accessToken) return;
-      
+
       try {
         const response = await Api.get(`/user/userInfo`);
 
@@ -104,7 +104,7 @@ const MyPage = () => {
         setIsVerified(true);
         openModal({
           message: response.data.value,
-          message: "비밀번호 설정 페이지로 넘어갑니다.",
+          // message: "비밀번호 설정 페이지로 넘어갑니다.",
         });
       }
     } catch (error) {
@@ -176,7 +176,7 @@ const MyPage = () => {
 
   const putUserInfo = async () => {
     const data = new FormData();
-    console.log('폼데이터',formData)
+    console.log("폼데이터", formData);
     if (imagePreview && formData.profilePhotoPath !== "default") {
       data.append("profilePhoto", inputImgRef.current.files[0]);
     }
@@ -289,9 +289,6 @@ const MyPage = () => {
     setImagePreview(userDefault); // 기본 이미지 파일 경로로 설정
   };
 
-
-
-
   return (
     <div className="signup_form">
       <h2>내 정보</h2>
@@ -341,7 +338,7 @@ const MyPage = () => {
           </div>
 
           <div className="inputAll">
-             <div className="inputAndBtn">
+            <div className="inputAndBtn">
               <input
                 type="text"
                 name="address"
@@ -354,7 +351,9 @@ const MyPage = () => {
                 <LocationPicker />
               </div>
             </div>
-            <label for="id" className="dpLabel">아이디</label>
+            <label for="id" className="dpLabel">
+              아이디
+            </label>
             <input
               type="text"
               name="user_name"
@@ -363,7 +362,9 @@ const MyPage = () => {
               value={formData.userId || ""}
               readOnly
             />
-            <label for="userNick" className="dpLabel">닉네임</label>
+            <label for="userNick" className="dpLabel">
+              닉네임
+            </label>
             <input
               type="text"
               name="userNickName"
@@ -380,7 +381,9 @@ const MyPage = () => {
               <>
                 <div className="myPageEmailContainer">
                   <div className="myPageEmailInput">
-                  <label for="email" className="dpLabel">이메일</label>
+                    <label for="email" className="dpLabel">
+                      이메일
+                    </label>
                     <input
                       className="FindId_input"
                       type="email"

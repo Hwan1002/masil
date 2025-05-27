@@ -36,11 +36,11 @@ public class UserWishController {
     public ResponseEntity<?> wishPost (@AuthenticationPrincipal String userId , @RequestBody UserWishDTO dto) {
         return ResponseEntity.ok(userWishService.wishPost(userId ,dto.getPostIdx()));
     }
-
-    // 찜 해제 
+    
+    //찜 해제
     @DeleteMapping("/{postIdx}")
-    public ResponseEntity<?> unWishPost (@AuthenticationPrincipal String userId,@PathVariable UserWishDTO dto) {
-        return ResponseEntity.ok(userWishService.unWishPost(userId,dto.getPostIdx()));
+    public ResponseEntity<?> unWishPost (@AuthenticationPrincipal String userId,Integer postIdx) {
+        return ResponseEntity.ok(userWishService.unWishPost(userId,postIdx));
     }
     
 

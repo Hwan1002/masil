@@ -1,66 +1,49 @@
 /* Modal.css */
 .modal-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.5s ease, transform 0.5s ease-in-out,
-    visibility 0.5s linear 0.5s;
-  transform: scale(0.1);
-  z-index: 11;
+  @apply fixed top-0 left-0 w-full h-full flex justify-center items-center invisible z-[11];
+  background-color: rgba(0, 0, 0, 0);
+  transition: background-color 200ms ease-out, visibility 0ms linear 200ms;
 }
+
 .modal-backdrop.open {
-  visibility: visible;
-  opacity: 1;
-  transform: scale(1);
+  @apply visible;
+  background-color: rgba(0, 0, 0, 0.5);
+  transition: background-color 200ms ease-out;
 }
 
 /* 모달창 기본 공통 css */
 .modal-content {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-  background: white;
-  padding: 1em;
-  border-radius: 8px;
-  min-width: 20em;
-  min-height: 8em;
+  @apply flex flex-col justify-center items-center gap-4 bg-white p-4 rounded-lg min-w-[20em] min-h-[8em];
+  transform: translateY(20px);
+  opacity: 0;
+  transition: transform 200ms ease-out, opacity 200ms ease-out;
+}
+
+.modal-backdrop.open .modal-content {
+  transform: translateY(0);
+  opacity: 1;
 }
 
 .modal-content h2 {
-  margin: 0;
-  font-size: 1.1rem;
+  @apply m-0 text-lg;
 }
+
 .modal-content p {
-  font-size: 0.8rem;
+  @apply text-sm;
 }
+
 .modal-actions {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
+  @apply flex items-center justify-center gap-4;
 }
 
 .modal-actions button {
-  background-color: #a9ddb7;
-  color: white;
-  width: 5em;
-  height: 2em;
+  @apply bg-[#a9ddb7] text-white w-20 h-8;
 }
 
 .modal-actions button[type="submit"] {
-  background-color: #4caf50;
-  color: white;
+  @apply bg-[#4caf50] text-white;
 }
+
 .modal-actions button:hover {
-  background-color: #4caf50;
+  @apply bg-[#4caf50];
 }
