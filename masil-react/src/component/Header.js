@@ -60,6 +60,9 @@ const Header = () => {
             <Link to="/mywishpost" className="nav_btn">
               찜<i className="ml-1 text-red-500 fas fa-heart"></i>
             </Link>
+            <Link to="/chat" className="nav_btn">
+              채팅<i className="ml-1 fas fa-comment-dots"></i>
+            </Link>
           </nav>
           <div className="header_right">
             {loginSuccess ? (
