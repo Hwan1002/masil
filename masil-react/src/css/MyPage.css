@@ -25,7 +25,7 @@
 
 .inputWrapper input {
   width: 100%;
-  padding: 10px 40px 10px 10px;  /* 오른쪽 여백을 추가하여 버튼 공간 확보 */
+  padding: 10px 40px 10px 10px; /* 오른쪽 여백을 추가하여 버튼 공간 확보 */
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 16px;
@@ -37,7 +37,7 @@
   top: 50%; /* 버튼을 세로 중앙에 위치시킴 */
   transform: translateY(-50%); /* 정확히 중앙에 맞추기 */
   padding: 5px 15px;
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   border: none;
   border-radius: 4px;
@@ -60,33 +60,33 @@
   width: 100%; /* 입력 필드가 버튼과 함께 맞춰질 수 있도록 */
 }
 
-.myPageSendBtn{
-    position: absolute;
-    top: 60%;
-    right: 5px; /* 입력 필드 오른쪽에 버튼 위치 */
-    transform: translateY(-75%); /* 버튼을 수직 중앙 정렬 */
-    font-size: 0.9rem;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+.myPageSendBtn {
+  position: absolute;
+  top: 60%;
+  right: 5px; /* 입력 필드 오른쪽에 버튼 위치 */
+  transform: translateY(-75%); /* 버튼을 수직 중앙 정렬 */
+  font-size: 0.9rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-.profilePhoto{
+.profilePhoto {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.photoImg{
+.photoImg {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.profileChangeBtn{
+.profileChangeBtn {
   margin-bottom: 5px;
 }
 
-.dpLabel{
+.dpLabel {
   display: flex;
 }

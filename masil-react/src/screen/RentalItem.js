@@ -207,7 +207,6 @@ const RentalItem = () => {
             </a>
           ))}
         </div>
-
         {/* 페이지네이션 */}
         <div className="pagination-wrapper">
           <div className="pagination">

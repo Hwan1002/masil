@@ -32,6 +32,18 @@
     border-color: orange;
   }
 }
+
+@keyframes line-spread {
+  0% {
+    width: 0;
+    left: 50%;
+  }
+  100% {
+    width: 100%;
+    left: 0;
+  }
+}
+
 *,
 :after,
 :before {
@@ -48,27 +60,20 @@ h5 {
 }
 
 button {
-  @apply cursor-pointer bg-[#a9ddb7] border-none text-white text-sm w-24 h-8 rounded-lg active:text-white transition-all duration-200 ease-in-out;
+  @apply cursor-pointer bg-[#a9ddb7] text-white border-none text-sm w-24 h-8 rounded-lg active:text-white transition-all duration-200 ease-in-out;
 }
-button:focus,
 button:active,
-a:focus,
 a:active {
   @apply text-white no-underline outline-none;
 }
-/* .logo{
-    font-size: 25px;
-    font-weight: bold;
-    color: #fff;
-} */
 
 /* 헤더영역 */
 .header {
-  @apply fixed top-0 right-0 left-0 z-10 bg-[#a9ddb7] transition-opacity duration-300;
+  @apply fixed top-0 z-10 transition-opacity duration-300 w-[70rem] h-[72px] my-4 mx-auto left-1/2 -translate-x-1/2 bg-white rounded-[20px] shadow-[0_0_15px_3px_#a9ddb7];
 }
 
 .header_container {
-  @apply w-full max-w-[71.25rem] mx-auto px-6 py-5 flex justify-between items-center h-[4.5rem];
+  @apply w-full max-w-[71.25rem] mx-auto px-6 flex justify-between items-center h-full;
 }
 
 .header_left {
@@ -76,7 +81,7 @@ a:active {
 }
 
 .logo_btn {
-  @apply w-auto p-0 text-2xl font-bold text-white transition-all duration-200 ease-in-out bg-transparent active:text-white;
+  @apply w-auto p-0 text-2xl font-bold text-[#a9ddb7] transition-all duration-200 ease-in-out bg-transparent no-underline block;
 }
 
 .header_center {
@@ -84,7 +89,35 @@ a:active {
 }
 
 .nav_btn {
-  @apply w-auto text-base text-white transition-all duration-200 ease-in-out bg-transparent active:text-white;
+  @apply relative w-auto text-base text-black no-underline transition-colors duration-500 ease-in-out bg-transparent hover:text-[#a9ddb7];
+  padding: 4px 0;
+}
+
+.nav_btn::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  width: 0;
+  height: 1.5px;
+  transform: translateX(-50%);
+  border-radius: 1px;
+  opacity: 0;
+}
+
+.nav_btn:hover::after {
+  width: 100%;
+  left: 0;
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.nav_btn:active {
+  @apply text-[#a9ddb7];
+}
+
+.nav_btn:hover {
+  @apply text-[#a9ddb7];
 }
 
 .header_right {
@@ -92,20 +125,27 @@ a:active {
 }
 
 .auth_btn {
-  @apply w-auto px-4 py-2 text-sm text-white transition-all duration-200 ease-in-out bg-transparent active:text-white;
+  @apply w-auto px-4 py-2 text-sm text-black no-underline transition-colors duration-500 ease-in-out bg-transparent hover:text-[#a9ddb7];
+}
+
+.auth_btn:active {
+  @apply text-[#a9ddb7];
 }
 
 /* 컨텐츠 부모 태그 */
 .container {
-  position: relative;
-  padding-top: 72px; /* Header 높이만큼 패딩 추가 */
-  display: flex;
+  margin-top: calc(72px + 2rem); /* 헤더 높이 + 상단 여백 */
+  min-height: calc(100vh - (72px + 2rem));
   width: 100%;
+  display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  min-height: calc(100vh - 72px); /* 전체 높이에서 Header 높이 제외 */
+  align-items: stretch;
   box-sizing: border-box;
+  position: relative;
+  padding: 0;
+  margin-left: 0;
+  margin-right: 0;
+  overflow-y: auto;
 }
 /* loading중 스타일 */
 .loadingDiv {

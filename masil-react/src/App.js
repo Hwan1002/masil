@@ -1,4 +1,3 @@
-import "./css/reset.css";
 import Header from "./component/Header";
 import { Route, Routes } from "react-router-dom";
 import { ProjectProvider } from "./context/MasilContext";
@@ -15,22 +14,13 @@ import RentalItem from "./screen/RentalItem";
 import MyRental from "./screen/MyRental";
 import SelectedRentalItem from "./screen/SelectedRentalItem";
 import MyWishPost from "./screen/MyWishPost";
+import "./css/reset.css";
 
 function App() {
-  const {
-    isModalOpen,
-    modalTitle,
-    modalMessage,
-    modalActions,
-    openModal,
-    closeModal,
-  } = useModal();
   return (
     <ProjectProvider>
       <div className="App">
         <Header />
-
-        {/* Routes 구분: container 적용 대상 */}
         <Routes>
           <Route
             path="/*"
@@ -41,6 +31,8 @@ function App() {
                   <Route path="/signup" element={<SignUp />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/mypage" element={<MyPage />} />
+                  <Route path="/rentalitem" element={<RentalItem />} />
+                  <Route path="/myrental" element={<MyRental />} />
                   <Route path="/userfindid" element={<UserFindId />} />
                   <Route path="/userfindpwd" element={<UserFindPwd />} />
                   <Route path="/postRegist" element={<PostRegist />} />
@@ -49,18 +41,10 @@ function App() {
               </div>
             }
           />
-
           <Route path="/rentalitem" element={<RentalItem />} />
           <Route path="/myrental" element={<MyRental />} />
           <Route path="/post/item/:idx" element={<SelectedRentalItem />} />
         </Routes>
-        <Modal
-          isOpen={isModalOpen}
-          onClose={closeModal}
-          title={modalTitle}
-          content={modalMessage}
-          actions={modalActions}
-        />
       </div>
     </ProjectProvider>
   );

@@ -9,6 +9,7 @@ import "../css/MyPage.css";
 import { Api } from "../context/MasilContext";
 import userDefault from "../css/img/userDefault.svg";
 import LocationPicker from "../component/LocationPicker";
+
 const MyPage = () => {
   const [formData, setFormData] = useState({});
   const { imagePreview, setImagePreview, accessToken } =

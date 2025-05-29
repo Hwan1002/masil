@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Api, ProjectContext } from "../context/MasilContext";
 import useModal from "../context/useModal";
 import Modal from "./Modal";
@@ -46,20 +46,20 @@ const Header = () => {
       <header className="header">
         <div className="header_container">
           <div className="header_left">
-            <button className="logo_btn" onClick={() => navigate("/")}>
+            <a href="/" className="logo_btn">
               Masil
-            </button>
+            </a>
           </div>
           <nav className="header_center">
-            <button className="nav_btn" onClick={() => navigate("/rentalitem")}>
+            <Link to="/rentalitem" className="nav_btn">
               렌탈물품
-            </button>
-            <button className="nav_btn" onClick={() => navigate("/myrental")}>
+            </Link>
+            <Link to="/myrental" className="nav_btn">
               나의 게시글
-            </button>
-            <button className="nav_btn" onClick={() => navigate("/mywishpost")}>
-              찜목록
-            </button>
+            </Link>
+            <Link to="/mywishpost" className="nav_btn">
+              찜<i className="ml-1 text-red-500 fas fa-heart"></i>
+            </Link>
           </nav>
           <div className="header_right">
             {loginSuccess ? (
@@ -83,24 +83,18 @@ const Header = () => {
                 >
                   LOGOUT
                 </button>
-                <button
-                  className="auth_btn"
-                  onClick={() => navigate("/mypage")}
-                >
+                <Link to="/mypage" className="auth_btn">
                   MYPAGE
-                </button>
+                </Link>
               </>
             ) : (
               <>
-                <button
-                  className="auth_btn"
-                  onClick={() => navigate("/signup")}
-                >
+                <Link to="/signup" className="auth_btn">
                   SIGNUP
-                </button>
-                <button className="auth_btn" onClick={() => navigate("/login")}>
+                </Link>
+                <Link to="/login" className="auth_btn">
                   LOGIN
-                </button>
+                </Link>
               </>
             )}
           </div>
