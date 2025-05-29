@@ -49,7 +49,7 @@ body {
   display: grid;
   grid-template-columns: repeat(5, minmax(100px, 1fr));
   flex-direction: row;
-  gap: 12px 16px;
+  gap: 1;
   /* ✅ flex 내부에서 그리드가 영역 채움 */
 }
 
@@ -61,7 +61,6 @@ body {
   flex-direction: column;
   justify-content: space-between;
   background: #fff;
-  padding: 14px;
   border-radius: 10px;
   box-sizing: border-box;
   position: relative;
@@ -205,7 +204,7 @@ body {
 /* 반응형 조정 */
 @media (max-width: 1900px) {
   .rental-container {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 

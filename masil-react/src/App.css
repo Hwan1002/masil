@@ -1,5 +1,8 @@
 .App {
   text-align: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .App-logo {
@@ -35,4 +38,13 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.container {
+  flex: 1;
+  padding-top: 80px; /* Header 높이만큼 여백 */
+  width: 100%;
+  max-width: 1920px;
+  margin: 0 auto;
+  box-sizing: border-box;
 }

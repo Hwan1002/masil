@@ -98,15 +98,14 @@ a:active {
 /* 컨텐츠 부모 태그 */
 .container {
   position: relative;
-  left: 0;
-  top: 5em;
+  padding-top: 72px; /* Header 높이만큼 패딩 추가 */
   display: flex;
   width: 100%;
-  padding: 0px 16px;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  min-height: 45em;
+  min-height: calc(100vh - 72px); /* 전체 높이에서 Header 높이 제외 */
+  box-sizing: border-box;
 }
 /* loading중 스타일 */
 .loadingDiv {
