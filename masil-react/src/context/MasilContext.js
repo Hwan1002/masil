@@ -1,6 +1,7 @@
 import React, { createContext, useEffect, useRef, useState } from "react";
 import userDefault from "../css/img/userDefault.svg";
 import axios from "axios";
+import LoadingSpinner from "../component/LoadingSpinner";
 
 export const ProjectContext = createContext();
 
@@ -167,7 +168,7 @@ export const ProjectProvider = ({ children }) => {
   };
 
   if (isTokenLoading) {
-    return <div>Loading...</div>;
+    return <LoadingSpinner />;
   }
   return (
     <ProjectContext.Provider value={value}>{children}</ProjectContext.Provider>
