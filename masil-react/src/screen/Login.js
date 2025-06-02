@@ -170,7 +170,7 @@ const Login = () => {
   };
 
   return (
-    <>
+    <div className="login">
       <form className="login_container" onSubmit={(e) => loginSubmit(e)}>
         <h2>로그인</h2>
         {/* 일반 로그인 */}
@@ -252,7 +252,7 @@ const Login = () => {
         content={modalMessage}
         actions={modalActions}
       />
-    </>
+    </div>
   );
 };
 

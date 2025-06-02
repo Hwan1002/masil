@@ -1,5 +1,4 @@
 import React, { useState, useRef, useContext, useEffect } from "react";
-import "../css/SignUp.css";
 import userDefault from "../css/img/userDefault.svg";
 import { ProjectContext } from "../context/MasilContext";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +7,7 @@ import useModal from "../context/useModal";
 import LoadingModal from "../component/LoadingModal";
 import axios from "axios";
 import LocationPicker from "../component/LocationPicker";
-
+import "../css/SignUp.css";
 
 const SignUp = () => {
   const { location, setLocation } = useContext(ProjectContext);
@@ -57,7 +56,7 @@ const SignUp = () => {
   }, []);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-   
+
     setFormData({ ...formData, [name]: value });
   };
 
@@ -295,145 +294,203 @@ const SignUp = () => {
 
   return (
     <div className="signup_form">
-      <h2>회원가입</h2>
-      <form onSubmit={(e) => submitFormData(e)}>
-        <div className="form_input">
-          <div className="profilePhoto">
+      <div className="signup_form_container">
+        <h2>회원가입</h2>
+
+        <form onSubmit={submitFormData}>
+          {/* Profile Photo Section */}
+          <section className="profilePhoto">
             <div className="photoImg">
-              <img src={imagePreview} alt="preview" />
+              <img src={imagePreview} alt="프로필 사진" />
             </div>
             <button
               type="button"
-              className="profileChangeBtn"
               onClick={handleProfileClick}
+              className="profileChangeBtn"
             >
-              프로필 사진
+              프로필 사진 변경
             </button>
-            <div className="postLocation"></div>
             <input
-              name="profilePhoto"
               type="file"
-              accept="image/*"
               ref={inputImgRef}
               onChange={ImageUpload}
-              style={{ display: "none" }}
+              accept="image/*"
+              className="hidden"
             />
-          </div>
-          <div>
-            {/* <button type="button" onClick={checkGeoLocation}>
-              위치
-            </button> */}
-            {/* <h3>현재 위치</h3>
-          <p>위도: {geolocation.latitude}</p>
-          <p>경도: {geolocation.longitude}</p>
-          <p>정확도: {geolocation.accuracy}</p> */}
-          </div>
-          <div className="inputAll">
-            <input
-              type="text"
-              name="userName"
-              className="form-input"
-              placeholder="이름을 입력하세요."
-              onChange={(e) => handleInputChange(e)}
-            />
-            <div className="inputAndBtn">
-              <input
-                type="text"
-                name="address"
-                className="form-input"
-                placeholder="주소"
-                value={location.address || ""}
-                readOnly
-              />
-              <div>
-                <LocationPicker />
-              </div>
+            {/* Location Picker Section */}
+            <div className="inputAll">
+              <label className="dpLabel">나의 위치</label>
+              <LocationPicker />
             </div>
-            <div className="inputAndBtn">
-              <input
-                type="text"
-                name="userId"
-                className="form-input"
-                placeholder="아이디를 입력하세요"
-                onChange={(e) => handleInputChange(e)}
-              />
-              <button type="button" onClick={(e) => idDuplicate(e)}>
-                중복확인
-              </button>
-            </div>
-            <input
-              type="text"
-              name="userNickName"
-              className="form-input"
-              placeholder="닉네임을 입력하세요"
-              onChange={(e) => handleInputChange(e)}
-              autoComplete="username"
-            />
-            <input
-              type="password"
-              name="password"
-              className="form-input"
-              placeholder="비밀번호를 입력하세요."
-              onChange={(e) => handleInputChange(e)}
-              autoComplete="new-password"
-            />
-            <input
-              type="password"
-              className="form-input"
-              placeholder="비밀번호 확인"
-              onChange={(e) => setPwdConfirm(e.target.value)}
-              autoComplete="new-password"
-            />
-            <div className="inputAndBtn">
-              <input
-                type="email"
-                name="email"
-                className="form-input"
-                placeholder="이메일을 입력하세요."
-                onChange={(e) => handleInputChange(e)}
-                readOnly={isReadonly}
-              />
-              {certifiedBtn === false && timer <= 0 ? (
-                <button type="button" onClick={(e) => sendCertifyNumber(e)}>
-                  인증
-                </button>
-              ) : (
-                <button type="button" onClick={(e) => sendCertifyNumber(e)}>
-                  재인증
-                </button>
-              )}
-            </div>
-            {timer > 0 && certifiedBtn ? (
-              <div className="inputAndBtn emailCertified">
+          </section>
+
+          {/* User Information Section */}
+          <section className="form_input">
+            {/* ID Field */}
+            <div className="inputAll">
+              <label className="dpLabel" htmlFor="userId">
+                아이디
+              </label>
+              <div className="inputAndBtn">
                 <input
                   type="text"
-                  placeholder="인증번호를 입력해주세요."
+                  id="userId"
+                  name="userId"
                   className="form-input"
-                  onChange={(e) => setVerifyCode(e.target.value)}
+                  value={formData.userId}
+                  onChange={handleInputChange}
+                  placeholder="아이디를 입력하세요"
                 />
-                <button onClick={(e) => emailCertified(e)}>확인</button>
+                <button type="button" onClick={idDuplicate}>
+                  중복확인
+                </button>
+              </div>
+            </div>
+
+            {/* Name Field */}
+            <div className="inputAll">
+              <label className="dpLabel" htmlFor="userName">
+                이름
+              </label>
+              <input
+                type="text"
+                id="userName"
+                name="userName"
+                className="form-input"
+                value={formData.userName}
+                onChange={handleInputChange}
+                placeholder="이름을 입력하세요"
+              />
+            </div>
+
+            {/* Nickname Field */}
+            <div className="inputAll">
+              <label className="dpLabel" htmlFor="userNickName">
+                닉네임
+              </label>
+              <input
+                type="text"
+                id="userNickName"
+                name="userNickName"
+                className="form-input"
+                value={formData.userNickName}
+                onChange={handleInputChange}
+                placeholder="닉네임을 입력하세요"
+              />
+            </div>
+
+            {/* Password Fields */}
+            <div className="inputAll">
+              <label className="dpLabel" htmlFor="password">
+                비밀번호
+              </label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                className="form-input"
+                value={formData.password}
+                onChange={handleInputChange}
+                placeholder="비밀번호를 입력하세요"
+              />
+            </div>
+
+            <div className="inputAll">
+              <label className="dpLabel" htmlFor="pwdConfirm">
+                비밀번호 확인
+              </label>
+              <input
+                type="password"
+                id="pwdConfirm"
+                name="pwdConfirm"
+                className="form-input"
+                value={pwdConfirm}
+                onChange={(e) => setPwdConfirm(e.target.value)}
+                placeholder="비밀번호를 다시 입력하세요"
+              />
+            </div>
+
+            {/* Email Verification Section */}
+            <div className="inputAll">
+              <label className="dpLabel" htmlFor="email">
+                이메일
+              </label>
+              <div className="inputAndBtn">
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  className="form-input"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  placeholder="이메일을 입력하세요"
+                  readOnly={isReadonly}
+                />
+                <button
+                  type="button"
+                  onClick={sendCertifyNumber}
+                  disabled={certifiedBtn}
+                >
+                  인증번호 전송
+                </button>
+              </div>
+              {timer > 0 && (
                 <div className="timer">
-                  남은 시간: {Math.floor(timer / 60)}분 {timer % 60}초
+                  {Math.floor(timer / 60)}:
+                  {(timer % 60).toString().padStart(2, "0")}
+                </div>
+              )}
+            </div>
+
+            {certifiedBtn && (
+              <div className="inputAll">
+                <label className="dpLabel" htmlFor="verifyCode">
+                  인증번호
+                </label>
+                <div className="inputAndBtn">
+                  <input
+                    type="text"
+                    id="verifyCode"
+                    name="verifyCode"
+                    className="form-input"
+                    value={verifyCode}
+                    onChange={(e) => setVerifyCode(e.target.value)}
+                    placeholder="인증번호를 입력하세요"
+                  />
+                  <button
+                    type="button"
+                    onClick={emailCertified}
+                    disabled={verifyCodeConfirm}
+                  >
+                    인증확인
+                  </button>
                 </div>
               </div>
-            ) : (
-              ""
             )}
+          </section>
+
+          {/* Submit Buttons */}
+          <div className="signUp_button">
+            <button type="button" onClick={() => navigate(-1)}>
+              취소
+            </button>
+            <button type="submit">가입하기</button>
           </div>
-        </div>
-        <div className="signUp_button">
-          {/* <button type="button" onClick={() => navigate("/")}>돌아가기</button> */}
-          <button type="submit">회원가입</button>
-        </div>
-      </form>
-      <Modal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        title={modalTitle}
-        content={modalMessage}
-        actions={modalTitle === "전송 중" ? [] : modalActions}
-      />
+        </form>
+      </div>
+
+      {/* Modal */}
+      {isModalOpen && (
+        <Modal
+          isOpen={isModalOpen}
+          title={modalTitle}
+          content={modalMessage}
+          actions={modalActions}
+          onClose={closeModal}
+        />
+      )}
     </div>
   );
 };
+
 export default SignUp;

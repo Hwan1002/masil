@@ -1,8 +1,6 @@
 import Header from "./component/Header";
 import { Route, Routes } from "react-router-dom";
 import { ProjectProvider } from "./context/MasilContext";
-import Modal from "./component/Modal";
-import useModal from "./context/useModal";
 import SignUp from "./screen/SignUp";
 import Main from "./screen/Main";
 import MyPage from "./screen/MyPage";

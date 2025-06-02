@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import Autocomplete from "react-google-autocomplete";
 import "../css/LocationPicker.css"; // CSS 파일 import
 import { Api, ProjectContext } from "../context/MasilContext";
-import axios from "axios";
+import { HiLocationMarker } from "react-icons/hi";
 
 const LocationPicker = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,7 +23,7 @@ const LocationPicker = () => {
   };
 
   const postPlace = async () => {
-    const response = await axios.post(`http://localhost:9090/location`, {
+    const response = await Api.post(`http://localhost:9090/location`, {
       lat: latLng.lat,
       lng: latLng.lng,
     });
@@ -38,13 +38,14 @@ const LocationPicker = () => {
   };
 
   return (
-    <div>
+    <>
       <button
         className="location-btn"
         onClick={() => setIsOpen(true)}
         type="button"
+        aria-label="위치 선택"
       >
-        지역 설정
+        <HiLocationMarker />
       </button>
 
       {isOpen && (
@@ -97,7 +98,7 @@ const LocationPicker = () => {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

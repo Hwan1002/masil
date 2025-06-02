@@ -5,10 +5,10 @@ import Modal from "../component/Modal";
 import useModal from "../context/useModal";
 import axios from "axios";
 import LoadingModal from "../component/LoadingModal";
-import "../css/MyPage.css";
 import { Api } from "../context/MasilContext";
 import userDefault from "../css/img/userDefault.svg";
 import LocationPicker from "../component/LocationPicker";
+import "../css/MyPage.css";
 
 const MyPage = () => {
   const [formData, setFormData] = useState({});
@@ -31,7 +31,6 @@ const MyPage = () => {
 
   useEffect(() => {
     const getUserInfo = async () => {
-      //accessToken이 없으면 요청하지않음.
       if (!accessToken) return;
 
       try {
@@ -147,32 +146,6 @@ const MyPage = () => {
       return;
     }
   };
-
-  // const putUserInfo = async () => {
-  //   const data = new FormData();
-
-  //   // 프로필 사진이 선택되었다면 FormData에 추가
-  //   if (imagePreview) {
-  //     data.append("profilePhoto", inputImgRef.current.files[0]);
-  //   }
-
-  //   // 다른 formData는 JSON 형태로 변환하여 'dto'에 담아 추가
-  //   data.append("dto", new Blob([JSON.stringify(formData)], { type: "application/json" }));
-
-  //   try {
-  //     const response = await Api.put(`/user/modify`, data,);
-
-  //     if (response.status === 200) {
-  //       openModal({
-  //         message: response.data.value,
-  //         actions: [{ label: "확인", onClick: () => navigate('/') }]
-  //       });
-  //     }
-  //   } catch (error) {
-  //     openModal({ message: "정보 수정에 실패했습니다. 다시 시도해주세요." });
-  //     console.error(error);
-  //   }
-  // };
 
   const putUserInfo = async () => {
     const data = new FormData();
@@ -290,179 +263,181 @@ const MyPage = () => {
   };
 
   return (
-    <div className="signup_form">
-      <h2>내 정보</h2>
-      <form>
-        <div className="form_input">
-          <div className="profilePhoto">
-            {imagePreview && formData.profilePhotoPath !== "default" ? (
-              <div className="photoImg">
-                <img
-                  src={
-                    imagePreview
-                      ? imagePreview
-                      : `http://localhost:9090${formData.profilePhotoPath}`
-                  }
-                  alt="프로필 사진"
-                />
+    <div className="myPage_container">
+      <div className="myPage_form">
+        <h2>내 정보</h2>
+        <form>
+          <div className="form_input">
+            <div className="profilePhoto">
+              {imagePreview && formData.profilePhotoPath !== "default" ? (
+                <div className="photoImg">
+                  <img
+                    src={
+                      imagePreview
+                        ? imagePreview
+                        : `http://localhost:9090${formData.profilePhotoPath}`
+                    }
+                    alt="프로필 사진"
+                  />
+                </div>
+              ) : (
+                <div className="photoImg">
+                  <img src={userDefault} alt="기본 프로필 사진" />{" "}
+                  {/* 기본 이미지로 userDefault 사용 */}
+                </div>
+              )}
+              <div className="flex gap-x-2">
+                <button
+                  type="button"
+                  className="profileChangeBtn"
+                  onClick={handleProfileClick}
+                >
+                  프로필 사진
+                </button>
+                <button
+                  type="button"
+                  className="profileChangeBtn"
+                  onClick={basicImage}
+                >
+                  기본이미지
+                </button>
               </div>
-            ) : (
-              <div className="photoImg">
-                <img src={userDefault} alt="기본 프로필 사진" />{" "}
-                {/* 기본 이미지로 userDefault 사용 */}
-              </div>
-            )}
 
-            <button
-              type="button"
-              className="profileChangeBtn"
-              onClick={handleProfileClick}
-            >
-              프로필 사진
-            </button>
-            <button
-              type="button"
-              className="profileChangeBtn"
-              onClick={basicImage}
-            >
-              기본이미지
-            </button>
-            <input
-              name="profilePhoto"
-              type="file"
-              accept="image/*"
-              ref={inputImgRef}
-              onChange={ImageUpload}
-              style={{ display: "none" }}
-            />
-          </div>
-
-          <div className="inputAll">
-            <div className="inputAndBtn">
               <input
-                type="text"
-                name="address"
-                className="form-input"
-                placeholder="주소"
-                value={formData.address || ""}
-                readOnly
+                name="profilePhoto"
+                type="file"
+                accept="image/*"
+                ref={inputImgRef}
+                onChange={ImageUpload}
+                style={{ display: "none" }}
               />
-              <div>
+            </div>
+
+            <div className="inputAll">
+              <div className="MyPage_inputAndBtn">
+                <input
+                  type="text"
+                  name="address"
+                  className="form-input"
+                  placeholder="주소"
+                  value={formData.address || ""}
+                  readOnly
+                />
                 <LocationPicker />
               </div>
-            </div>
-            <label for="id" className="dpLabel">
-              아이디
-            </label>
-            <input
-              type="text"
-              name="user_name"
-              id="id"
-              className="form-input"
-              value={formData.userId || ""}
-              readOnly
-            />
-            <label for="userNick" className="dpLabel">
-              닉네임
-            </label>
-            <input
-              type="text"
-              name="userNickName"
-              id="userNick"
-              className="form-input"
-              value={formData.userNickName || ""}
-              placeholder="닉네임을 입력하세요"
-              onChange={(e) => {
-                handleInputChange(e);
-              }}
-            />
+              <label for="id" className="dpLabel">
+                아이디
+              </label>
+              <input
+                type="text"
+                name="user_name"
+                id="id"
+                className="form-input"
+                value={formData.userId || ""}
+                readOnly
+              />
+              <label for="userNick" className="dpLabel">
+                닉네임
+              </label>
+              <input
+                type="text"
+                name="userNickName"
+                id="userNick"
+                className="form-input"
+                value={formData.userNickName || ""}
+                placeholder="닉네임을 입력하세요"
+                onChange={(e) => {
+                  handleInputChange(e);
+                }}
+              />
 
-            {!isVerified ? (
-              <>
-                <div className="myPageEmailContainer">
-                  <div className="myPageEmailInput">
-                    <label for="email" className="dpLabel">
-                      이메일
-                    </label>
-                    <input
-                      className="FindId_input"
-                      type="email"
-                      name="email"
-                      id="email"
-                      placeholder="이메일 입력"
-                      value={formData.email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      onKeyDown={handleKeyPress}
-                      readOnly
-                    />
-                    <button
-                      type="submit"
-                      className="myPageSendBtn"
-                      onClick={(e) => sendCertifyNumber(e)}
-                    >
-                      전송
-                    </button>
+              {!isVerified ? (
+                <>
+                  <div className="myPageEmailContainer">
+                    <div className="myPageEmailInput">
+                      <label for="email" className="dpLabel">
+                        이메일
+                      </label>
+                      <input
+                        className="FindId_input"
+                        type="email"
+                        name="email"
+                        id="email"
+                        placeholder="이메일 입력"
+                        value={formData.email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        onKeyDown={handleKeyPress}
+                        readOnly
+                      />
+                      <button
+                        type="submit"
+                        className="myPageSendBtn"
+                        onClick={(e) => sendCertifyNumber(e)}
+                      >
+                        전송
+                      </button>
+                    </div>
                   </div>
-                </div>
 
-                <div className="myPageEmailContainer">
-                  <div className="myPageEmailInput">
-                    <input
-                      className="FindId_input"
-                      type="text"
-                      name="verifyCode"
-                      placeholder="인증번호 입력"
-                      value={verifyCode}
-                      onChange={(e) => setVerifyCode(e.target.value)}
-                      onKeyDown={handleKeyPress}
-                    />
-                    <button
-                      type="submit"
-                      className="myPageSendBtn"
-                      onClick={(e) => emailCertified(e)}
-                    >
-                      인증
-                    </button>
+                  <div className="myPageEmailContainer">
+                    <div className="myPageEmailInput">
+                      <input
+                        className="FindId_input"
+                        type="text"
+                        name="verifyCode"
+                        placeholder="인증번호 입력"
+                        value={verifyCode}
+                        onChange={(e) => setVerifyCode(e.target.value)}
+                        onKeyDown={handleKeyPress}
+                      />
+                      <button
+                        type="submit"
+                        className="myPageVerifyBtn"
+                        onClick={(e) => emailCertified(e)}
+                      >
+                        인증
+                      </button>
+                    </div>
                   </div>
-                </div>
-              </>
-            ) : (
-              <div className="myPageEmailContainer">
-                <input
-                  type="password"
-                  name="password"
-                  value={password}
-                  placeholder="비밀번호"
-                  onChange={(e) => setPassWord(e.target.value)}
-                />
-                <div className="myPageEmailInput">
+                </>
+              ) : (
+                <div className="myPageEmailContainer">
                   <input
                     type="password"
-                    placeholder="비밀번호 확인"
-                    value={pwdConfirm}
-                    onChange={(e) => setPwdConfirm(e.target.value)}
+                    name="password"
+                    value={password}
+                    placeholder="비밀번호"
+                    onChange={(e) => setPassWord(e.target.value)}
                   />
-                  <button
-                    type="submit"
-                    className="myPageSendBtn"
-                    onClick={resetpassword}
-                  >
-                    변경
-                  </button>
+                  <div className="myPageEmailInput">
+                    <input
+                      type="password"
+                      placeholder="비밀번호 확인"
+                      value={pwdConfirm}
+                      onChange={(e) => setPwdConfirm(e.target.value)}
+                    />
+                    <button
+                      type="submit"
+                      className="myPageSendBtn"
+                      onClick={resetpassword}
+                    >
+                      변경
+                    </button>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
+            <div className="signUp_button">
+              <button type="button" onClick={() => navigate("/")}>
+                돌아가기
+              </button>
+              <button type="button" onClick={putUserInfo}>
+                수정하기
+              </button>
+            </div>
           </div>
-        </div>
-        <div className="signUp_button">
-          <button type="button" onClick={() => navigate("/")}>
-            돌아가기
-          </button>
-          <button type="button" onClick={putUserInfo}>
-            수정하기
-          </button>
-        </div>
-      </form>
+        </form>
+      </div>
       <Modal
         isOpen={isModalOpen}
         onClose={closeModal}

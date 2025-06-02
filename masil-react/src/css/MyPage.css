@@ -1,92 +1,142 @@
+.myPage_container {
+  @apply w-[100vw] h-[100vh] flex justify-center items-center;
+}
+
 .myPage_form {
-  text-align: center;
-  width: 40em;
-  height: 25em;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0 0px 2px #999, 0px 0px 10px #999;
+  @apply w-[40em] h-[50em] bg-white rounded-2xl shadow-xl p-8 mt-60;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.5s ease-out;
 }
 
-.myPage_form form {
-  width: 100%;
+.myPage_form h2 {
+  @apply mb-8 text-2xl font-bold text-center text-green-600;
 }
 
-.myPage_form .form_input {
-  margin: 1em 0;
+/* Common Button Styles */
+.btn {
+  @apply flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium transition-all duration-200 rounded-full;
 }
 
-.inputWrapper {
-  position: relative;
-  width: 100%;
+.btn-primary {
+  @apply text-white bg-green-500 shadow-sm hover:bg-green-600 hover:shadow-md;
 }
 
-.inputWrapper input {
-  width: 100%;
-  padding: 10px 40px 10px 10px; /* 오른쪽 여백을 추가하여 버튼 공간 확보 */
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
+.btn-outline {
+  @apply text-green-500 border-2 border-green-500 shadow-sm hover:bg-green-50 hover:shadow-md;
 }
 
-.myPage_Set_Password_Btn {
-  position: absolute;
-  right: 10px; /* 버튼을 오른쪽에 위치시킴 */
-  top: 50%; /* 버튼을 세로 중앙에 위치시킴 */
-  transform: translateY(-50%); /* 정확히 중앙에 맞추기 */
-  padding: 5px 15px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 4px;
-}
-
-.myPageSetPasswordBtn:hover {
-  background-color: #45a049;
-}
-
-/* 이메일입력칸과 찾기버튼 컨테이너 */
-.myPageEmailContainer {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  width: 100%;
-}
-
-.myPageEmailInput {
-  position: relative; /* 버튼의 위치를 입력 필드 내부로 조정 */
-  width: 100%; /* 입력 필드가 버튼과 함께 맞춰질 수 있도록 */
-}
-
-.myPageSendBtn {
-  position: absolute;
-  top: 60%;
-  right: 5px; /* 입력 필드 오른쪽에 버튼 위치 */
-  transform: translateY(-75%); /* 버튼을 수직 중앙 정렬 */
-  font-size: 0.9rem;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
+/* Profile Section */
 .profilePhoto {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  @apply flex items-center mb-8;
 }
 
 .photoImg {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  @apply w-32 h-32 mb-4 overflow-hidden border-4 border-green-100 rounded-full shadow-lg;
+  transition: transform 0.3s ease;
 }
 
-.profileChangeBtn {
-  margin-bottom: 5px;
+.photoImg:hover {
+  transform: scale(1.05);
+}
+
+.photoImg img {
+  @apply object-cover w-full h-full;
+}
+
+/* Form Inputs */
+.form_input {
+  @apply space-y-4;
+}
+
+.inputAll {
+  @apply space-y-4;
+}
+
+.MyPage_inputAndBtn {
+  @apply relative flex items-center gap-2;
+}
+
+.form-input {
+  @apply w-full px-4 py-3 transition-all duration-200 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent;
 }
 
 .dpLabel {
-  display: flex;
+  @apply block mb-1 text-sm font-medium text-gray-600;
+}
+
+/* Email Section */
+.myPageEmailContainer {
+  @apply mt-6 space-y-3;
+}
+
+.myPageEmailInput {
+  @apply relative;
+}
+
+.FindId_input {
+  @apply w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent;
+}
+
+.myPageSendBtn {
+  @apply absolute text-white bg-green-500 rounded-full right-2 top-1/2 w-[50px] transition-all duration-300;
+}
+
+.myPageSendBtn:hover {
+  @apply text-green-500 bg-white border border-green-500;
+}
+.myPageVerifyBtn {
+  @apply absolute text-white bg-green-500 rounded-full right-2 top-3 w-[50px] transition-all duration-300;
+}
+
+.myPageVerifyBtn:hover {
+  @apply text-green-500 bg-white border border-green-500;
+}
+/* Button Group */
+.signUp_button {
+  @apply flex justify-center pt-6 my-8 border-t border-gray-100 gap-x-4;
+}
+
+.signUp_button button {
+  @apply btn;
+  min-width: 120px;
+}
+
+.signUp_button button:first-child {
+  @apply btn-outline;
+}
+
+.signUp_button button:last-child {
+  @apply btn-primary;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .myPage_form {
+    @apply w-[90%] p-6;
+  }
+
+  .photoImg {
+    @apply w-24 h-24;
+  }
+
+  .btn {
+    @apply px-3 py-1.5 text-sm;
+  }
+
+  .signUp_button button {
+    min-width: 100px;
+  }
 }

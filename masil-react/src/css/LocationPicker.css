@@ -17,10 +17,13 @@ h3 {
   z-index: 1000;
 }
 .location-btn {
-  background-color: #a9ddb7;
+  @apply text-white bg-green-500 rounded-full h-[40px] w-[40px] flex items-center justify-center transition-all duration-300 border-2 border-transparent absolute right-2;
 }
 .location-btn:hover {
-  background-color: #00a32c;
+  @apply text-green-500 bg-white border-2 border-green-500;
+}
+.location-btn svg {
+  @apply w-5 h-5;
 }
 .div-selected {
   display: flex;
@@ -47,6 +50,7 @@ h3 {
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 15px;
+  height: 40px;
 }
 
 .location-selected {
@@ -57,16 +61,15 @@ h3 {
 }
 
 .location-confirm-btn {
-  padding: 0;
-  background: #a9ddb7;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  width: 150px;
+  @apply text-white bg-green-500 rounded-full h-[40px] px-4 transition-all duration-300;
   display: flex;
   justify-content: center;
+  align-items: center;
   cursor: pointer;
-  padding: 0.5rem 0;
+}
+
+.location-confirm-btn:hover {
+  @apply text-green-500 bg-white border-2 border-green-500;
 }
 
 .location-close-btn {
@@ -80,7 +83,7 @@ h3 {
   cursor: pointer;
 }
 
-.location-close-btn:hover{
+.location-close-btn:hover {
   color: red;
-  transform: scale(1.2)
+  transform: scale(1.2);
 }
