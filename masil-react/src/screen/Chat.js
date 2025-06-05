@@ -54,7 +54,7 @@ const Chat = () => {
   }
 
   return (
-    <div className="max-w-3xl min-h-screen p-4 mx-auto bg-gray-50">
+    <div className="max-w-3xl min-h-screen p-4 mx-auto mt-16 bg-gray-50">
       <div className="p-6 bg-white shadow-lg rounded-xl">
         <h2 className="flex items-center gap-2 mb-6 text-2xl font-bold text-gray-800">
           <i className="text-green-500 fas fa-comments"></i>
