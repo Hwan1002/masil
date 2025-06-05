@@ -234,17 +234,16 @@ const RentalItem = () => {
           </div>
         </div>
       </div>
-
       {/* 등록 버튼 */}
       {loginSuccess && (
         <button
+          className="fixed-button"
           onClick={() => {
             setEdit(false);
             navigate("/postRegist");
           }}
-          className="fixed-button"
         >
-          +
+          <span>+</span>
         </button>
       )}
 

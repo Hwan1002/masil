@@ -12,6 +12,7 @@ import RentalItem from "./screen/RentalItem";
 import MyRental from "./screen/MyRental";
 import SelectedRentalItem from "./screen/SelectedRentalItem";
 import MyWishPost from "./screen/MyWishPost";
+import Chat from "./screen/Chat";
 import "./css/reset.css";
 
 function App() {
@@ -35,6 +36,7 @@ function App() {
                   <Route path="/userfindpwd" element={<UserFindPwd />} />
                   <Route path="/postRegist" element={<PostRegist />} />
                   <Route path="/mywishpost" element={<MyWishPost />} />
+                  <Route path="/chat" element={<Chat />} />
                 </Routes>
               </div>
             }

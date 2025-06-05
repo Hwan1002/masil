@@ -113,7 +113,9 @@ p {
 .header_left {
   @apply flex-1;
 }
-
+.header_right {
+  @apply flex justify-end flex-1 gap-x-1;
+}
 .logo_btn {
   @apply w-auto p-0 text-2xl font-bold text-[#a9ddb7] transition-all duration-200 ease-in-out bg-transparent no-underline block hover:text-green-600;
 }
@@ -133,10 +135,6 @@ p {
 
 .nav_btn:hover::after {
   @apply left-0 w-full translate-x-0 opacity-100;
-}
-
-.header_right {
-  @apply flex justify-end flex-1 gap-4;
 }
 
 .auth_btn {

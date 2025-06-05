@@ -8,19 +8,106 @@ import Modal from "../component/Modal";
 import moment from "moment";
 import "../css/SelectedRentalItem.css";
 
+// 이미지 캐러셀 컴포넌트
+const ImageCarousel = ({
+  images,
+  currentIndex,
+  onPrev,
+  onNext,
+  onDotClick,
+}) => {
+  if (!images || images.length === 0) return null;
+
+  return (
+    <div className="selected-image-wrapper">
+      <img
+        src={`http://localhost:9090${images[currentIndex]}`}
+        className="selected-rental-image"
+        alt="이미지"
+      />
+      {images.length > 1 && (
+        <>
+          <button
+            className="carousel-arrow carousel-prev"
+            onClick={onPrev}
+            style={{ display: currentIndex > 0 ? "flex" : "none" }}
+          >
+            ❮
+          </button>
+          <button
+            className="carousel-arrow carousel-next"
+            onClick={onNext}
+            style={{
+              display: currentIndex < images.length - 1 ? "flex" : "none",
+            }}
+          >
+            ❯
+          </button>
+        </>
+      )}
+      <div className="carousel-indicators">
+        {images.map((_, index) => (
+          <span
+            key={index}
+            className={`carousel-dot ${index === currentIndex ? "active" : ""}`}
+            onClick={() => onDotClick(index)}
+          ></span>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// 사용자 정보 컴포넌트
+const UserInfo = ({ profilePhoto, nickname, address }) => (
+  <div className="user-info">
+    <div className="userInfo-img">
+      <img
+        src={`http://localhost:9090${profilePhoto}`}
+        alt="프로필"
+        className="selected-rental-profile-image"
+      />
+    </div>
+    <div className="userInfo-text">
+      <div>{nickname}</div>
+      <div>{address}</div>
+    </div>
+  </div>
+);
+
+// 게시물 정보 컴포넌트
+const PostInfo = ({ item, formatDate, curency }) => (
+  <div className="selected-post-info">
+    <div className="selected-info">
+      <div className="div-flex">
+        <label>등록일 : </label>
+        <p>{formatDate(item.updateDate)}</p>
+      </div>
+      <div className="div-flex">
+        <label>대여일 : </label>
+        <p>{formatDate(item.postStartDate)}</p>
+      </div>
+      <div className="div-flex">
+        <label>가격 : </label>
+        <p>{curency(item.postPrice)}원</p>
+      </div>
+      <div className="div-flex">
+        <label>거래희망장소 : </label>
+        {item.address}
+      </div>
+    </div>
+    <div className="selected-description">
+      <label>설명 : </label>
+      <p>{item.description}</p>
+    </div>
+  </div>
+);
+
 const SelectedRentalItem = () => {
   const { idx } = useParams();
-  const [items, setItems] = useState([]);
-  const [item, setItem] = useState([]);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const navigate = useNavigate();
   const { setEdit } = useEditStore();
   const { userId, setIdx } = useLoginStore();
-  const itemIdx = parseInt(idx);
-  const [isWished, setIsWished] = useState(false);
-  // const [wishCount, setWishCount] = useState(0);
-
-  const navigate = useNavigate();
-
   const {
     isModalOpen,
     modalTitle,
@@ -30,37 +117,27 @@ const SelectedRentalItem = () => {
     closeModal,
   } = useModal();
 
-  useEffect(() => {
-    const loadData = async () => {
-      const res = await fetchPostItem(idx);
-      if (res) {
-        setItem(res.data);
-        if (res.data.wished !== undefined) {
-          setIsWished(res.data.wished);
-        }
+  const [items, setItems] = useState([]);
+  const [item, setItem] = useState([]);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isWished, setIsWished] = useState(false);
+  const itemIdx = parseInt(idx);
+
+  // 데이터 로딩 함수
+  const loadData = async () => {
+    const res = await fetchPostItem(idx);
+    if (res) {
+      setItem(res.data);
+      if (res.data.wished !== undefined) {
+        setIsWished(res.data.wished);
       }
-    };
+    }
+  };
 
-    loadData();
-  }, [idx]);
-
-  // 전체게시글 idx값 찾기위한 전체게시글 조회
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await Api.get(`/post`);
-        if (response) setItems(response.data);
-      } catch (error) {
-        console.error("데이터 불러오기 실패:", error);
-      }
-    };
-    fetchData();
-  }, []);
-
+  // API 호출 함수들
   const fetchPostItem = async (idx) => {
     try {
-      const response = await Api.get(`/post/item/${idx}`);
-      return response;
+      return await Api.get(`/post/item/${idx}`);
     } catch (error) {
       console.error("데이터 요청 실패:", error);
       return null;
@@ -70,8 +147,6 @@ const SelectedRentalItem = () => {
   const deletePostItem = async (idx) => {
     try {
       const response = await Api.delete(`/post/${idx}`);
-
-      console.log(response.data.value);
       if (response) {
         openModal({
           message: "삭제가 완료되었습니다.",
@@ -91,71 +166,66 @@ const SelectedRentalItem = () => {
     }
   };
 
-  const formatDate = (date, format = "YYYY-MM-DD HH:mm:ss") => {
-    return moment(date).format(format);
-  };
-
+  // 유틸리티 함수들
+  const formatDate = (date) => moment(date).format("YYYY-MM-DD HH:mm:ss");
   const curency = (number) => {
     const num = Number(number);
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
-  const prevImage = () => {
-    console.log("item", item);
-    if (item.postPhotoPaths && currentImageIndex > 0) {
-      setCurrentImageIndex(currentImageIndex - 1);
-    }
+  // 이미지 캐러셀 핸들러
+  const handleImageNavigation = {
+    prev: () => {
+      if (item.postPhotoPaths && currentImageIndex > 0) {
+        setCurrentImageIndex(currentImageIndex - 1);
+      }
+    },
+    next: () => {
+      if (
+        item.postPhotoPaths &&
+        currentImageIndex < item.postPhotoPaths.length - 1
+      ) {
+        setCurrentImageIndex(currentImageIndex + 1);
+      }
+    },
+    goTo: (index) => setCurrentImageIndex(index),
   };
 
-  const nextImage = () => {
-    if (
-      item.postPhotoPaths &&
-      currentImageIndex < item.postPhotoPaths.length - 1
-    ) {
-      setCurrentImageIndex(currentImageIndex + 1);
-    }
+  // 네비게이션 핸들러
+  const handleNavigation = {
+    goBack: () => navigate("/rentalitem"),
+    edit: () => {
+      setIdx(idx);
+      setEdit(true);
+      navigate("/postRegist");
+    },
+    prev: () => {
+      const prevItems = items.filter((item) => item.postIdx < itemIdx);
+      if (prevItems.length === 0) {
+        openModal({
+          message: "첫 번째 게시글입니다.",
+          actions: [{ label: "확인", onClick: closeModal }],
+        });
+      } else {
+        const prevIdx = Math.max(...prevItems.map((item) => item.postIdx));
+        navigate(`/post/item/${prevIdx}`);
+      }
+    },
+    next: () => {
+      const nextItems = items.filter((item) => item.postIdx > itemIdx);
+      if (nextItems.length === 0) {
+        openModal({
+          message: "마지막 게시글입니다.",
+          actions: [{ label: "확인", onClick: closeModal }],
+        });
+      } else {
+        const nextIdx = Math.min(...nextItems.map((item) => item.postIdx));
+        navigate(`/post/item/${nextIdx}`);
+      }
+    },
   };
 
-  const goToImage = (index) => {
-    setCurrentImageIndex(index);
-  };
-
-  const handleGoBack = () => {
-    navigate("/rentalitem");
-  };
-
-  const handleEditBtn = () => {
-    setIdx(idx);
-    setEdit(true);
-    navigate("/postRegist");
-  };
-
-  const handlePrev = () => {
-    const prevItems = items.filter((item) => item.postIdx < itemIdx);
-    if (prevItems.length === 0) {
-      openModal({
-        message: "첫 번째 게시글입니다.",
-        actions: [{ label: "확인", onClick: closeModal }],
-      });
-    } else {
-      const prevIdx = Math.max(...prevItems.map((item) => item.postIdx));
-      navigate(`/post/item/${prevIdx}`);
-    }
-  };
-
-  const handleNext = () => {
-    const nextItems = items.filter((item) => item.postIdx > itemIdx);
-    if (nextItems.length === 0) {
-      openModal({
-        message: "마지막 게시글입니다.",
-        actions: [{ label: "확인", onClick: closeModal }],
-      });
-    } else {
-      const nextIdx = Math.min(...nextItems.map((item) => item.postIdx));
-      navigate(`/post/item/${nextIdx}`);
-    }
-  };
-
+  // 위시리스트 핸들러
   const handleWishClick = async () => {
     try {
       let response;
@@ -164,27 +234,22 @@ const SelectedRentalItem = () => {
         wished: !isWished,
         wishCount: null,
       };
-      //찜이 되어있는 상태면 삭제 요청
-      if (isWished === true) {
+
+      if (isWished) {
         response = await Api.delete(`/wish/${itemIdx}`);
-        console.log("위시 삭제:", response);
       } else {
-        //찜이 안되어있는 상태면 추가 요청
         try {
           response = await Api.post("/wish", wishDto);
-          console.log("위시 추가:", response);
         } catch (error) {
           if (error.response?.status === 409) {
-            //이미 찜한 게시물인 경우일때 모달 띄우기
             openModal({
               message: "이미 찜한 게시물입니다.",
               actions: [{ label: "확인", onClick: closeModal }],
             });
-            //찜 상태를 true로 설정해서 서버에 던지기
             setIsWished(true);
             return;
           }
-          throw error; //그외 에러들은 기존 에러 처리로 전달
+          throw error;
         }
       }
 
@@ -208,6 +273,23 @@ const SelectedRentalItem = () => {
     }
   };
 
+  // 초기 데이터 로딩
+  useEffect(() => {
+    loadData();
+  }, [idx]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await Api.get(`/post`);
+        if (response) setItems(response.data);
+      } catch (error) {
+        console.error("데이터 불러오기 실패:", error);
+      }
+    };
+    fetchData();
+  }, []);
+
   return (
     <div className="selected-container">
       <div className="selected-content">
@@ -222,108 +304,38 @@ const SelectedRentalItem = () => {
               ></i>
             </button>
           </div>
-          <div className="user-info">
-            <div className="userInfo-img">
-              <img
-                src={`http://localhost:9090${item.userProfilePhotoPath}`}
-                alt={item.postIdx}
-                className="selected-rental-profile-image"
-              />
-            </div>
-            <div className="userInfo-text">
-              <div>{item.userNickName}</div>
-              <div>{item.userAddress}</div>
-            </div>
-          </div>
+          <UserInfo
+            profilePhoto={item.userProfilePhotoPath}
+            nickname={item.userNickName}
+            address={item.userAddress}
+          />
           <div className="selected-imagePost">
             <div className="selected-image-container">
-              <div className="selected-image-wrapper">
-                {item.postPhotoPaths && item.postPhotoPaths.length > 0 && (
-                  <>
-                    <img
-                      src={`http://localhost:9090${item.postPhotoPaths[currentImageIndex]}`}
-                      className="selected-rental-image"
-                      alt="이미지"
-                    />
-                    {item.postPhotoPaths.length > 1 && (
-                      <>
-                        <button
-                          className="carousel-arrow carousel-prev"
-                          onClick={prevImage}
-                          style={{
-                            display: currentImageIndex > 0 ? "flex" : "none",
-                          }}
-                        >
-                          ❮
-                        </button>
-                        <button
-                          className="carousel-arrow carousel-next"
-                          onClick={nextImage}
-                          style={{
-                            display:
-                              currentImageIndex < item.postPhotoPaths.length - 1
-                                ? "flex"
-                                : "none",
-                          }}
-                        >
-                          ❯
-                        </button>
-                      </>
-                    )}
-                  </>
-                )}
-                <div className="carousel-indicators">
-                  {item.postPhotoPaths &&
-                    item.postPhotoPaths.map((_, index) => (
-                      <span
-                        key={index}
-                        className={`carousel-dot ${
-                          index === currentImageIndex ? "active" : ""
-                        }`}
-                        onClick={() => goToImage(index)}
-                      ></span>
-                    ))}
-                </div>
-              </div>
+              <ImageCarousel
+                images={item.postPhotoPaths}
+                currentIndex={currentImageIndex}
+                onPrev={handleImageNavigation.prev}
+                onNext={handleImageNavigation.next}
+                onDotClick={handleImageNavigation.goTo}
+              />
             </div>
-            <div className="selected-post-info">
-              <div className="selected-info">
-                <div className="div-flex">
-                  <label>등록일 : </label>
-                  <p>{formatDate(item.updateDate)}</p>
-                </div>
-                <div className="div-flex">
-                  <label>대여일 : </label>
-                  <p>{formatDate(item.postStartDate)}</p>
-                </div>
-                <div className="div-flex">
-                  <label>가격 : </label>
-                  <p>{curency(item.postPrice)}원</p>
-                </div>
-                <div className="div-flex">
-                  <label>거래희망장소 : </label>
-                  {item.address}
-                </div>
-              </div>
-              <div className="selected-description">
-                <label>설명 : </label>
-                <p>{item.description}</p>
-              </div>
-            </div>
+            <PostInfo item={item} formatDate={formatDate} curency={curency} />
           </div>
           <div className="selected-buttons">
             <div>
-              <button className="back-btn" onClick={handleGoBack}>
+              <button className="back-btn" onClick={handleNavigation.goBack}>
                 뒤로가기
               </button>
             </div>
             <div className="edit-button">
-              {userId === item.userId ? (
+              {userId === item.userId && (
                 <>
-                  <button className="update-btn" onClick={handleEditBtn}>
+                  <button
+                    className="update-btn"
+                    onClick={handleNavigation.edit}
+                  >
                     수정
                   </button>
-
                   <button
                     className="delete-btn"
                     onClick={() =>
@@ -339,17 +351,15 @@ const SelectedRentalItem = () => {
                     삭제
                   </button>
                 </>
-              ) : (
-                ""
               )}
             </div>
           </div>
           <div className="selected-buttons">
-            <button className="arrow-left" onClick={handlePrev}>
+            <button className="arrow-left" onClick={handleNavigation.prev}>
               이전
             </button>
-            <button className="arrow-right" onClick={handleNext}>
-              다음{" "}
+            <button className="arrow-right" onClick={handleNavigation.next}>
+              다음
             </button>
           </div>
         </div>

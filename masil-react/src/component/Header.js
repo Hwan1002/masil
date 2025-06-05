@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Api, ProjectContext } from "../context/MasilContext";
 import useModal from "../context/useModal";
 import Modal from "./Modal";
@@ -7,7 +7,6 @@ import Modal from "./Modal";
 const Header = () => {
   const { loginSuccess, setLoginSuccess, setAccessToken } =
     useContext(ProjectContext);
-  const navigate = useNavigate();
 
   const {
     isModalOpen,
@@ -84,19 +83,19 @@ const Header = () => {
                     })
                   }
                 >
-                  LOGOUT
+                  로그아웃
                 </button>
                 <Link to="/mypage" className="auth_btn">
-                  MYPAGE
+                  마이페이지
                 </Link>
               </>
             ) : (
               <>
                 <Link to="/signup" className="auth_btn">
-                  SIGNUP
+                  회원가입
                 </Link>
                 <Link to="/login" className="auth_btn">
-                  LOGIN
+                  로그인
                 </Link>
               </>
             )}

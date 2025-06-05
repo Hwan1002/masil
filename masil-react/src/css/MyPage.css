@@ -1,9 +1,9 @@
 .myPage_container {
-  @apply w-[100vw] h-[100vh] flex justify-center items-center;
+  @apply w-[100vw] h-[100vh] flex justify-center items-center mt-40;
 }
 
 .myPage_form {
-  @apply w-[40em] h-[50em] bg-white rounded-2xl shadow-xl p-8 mt-60;
+  @apply w-[40em] h-auto bg-white rounded-2xl shadow-xl  p-8;
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
     0 8px 10px -6px rgba(0, 0, 0, 0.1);
   animation: fadeIn 0.5s ease-out;
@@ -93,20 +93,20 @@
   @apply text-green-500 bg-white border border-green-500;
 }
 /* Button Group */
-.signUp_button {
-  @apply flex justify-center pt-6 my-8 border-t border-gray-100 gap-x-4;
+.myPage_button {
+  @apply flex justify-center pt-8 border-t border-gray-100 gap-x-4;
 }
 
-.signUp_button button {
+.myPage_button button {
   @apply btn;
   min-width: 120px;
 }
 
-.signUp_button button:first-child {
+.myPage_button button:first-child {
   @apply btn-outline;
 }
 
-.signUp_button button:last-child {
+.myPage_button button:last-child {
   @apply btn-primary;
 }
 

@@ -135,8 +135,8 @@ body {
 /* 화면 우측 하단에 고정된 버튼 스타일 */
 .fixed-button {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  bottom: 8rem;
+  right: 10rem;
   background-color: #a9ddb7;
   color: white;
   font-size: 24px;
@@ -149,6 +149,7 @@ body {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   border: none;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .fixed-button:hover {

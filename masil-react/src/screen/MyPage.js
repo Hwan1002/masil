@@ -323,7 +323,9 @@ const MyPage = () => {
                   value={formData.address || ""}
                   readOnly
                 />
-                <LocationPicker />
+                <div className="locationPicker">
+                  <LocationPicker />
+                </div>
               </div>
               <label for="id" className="dpLabel">
                 아이디
@@ -427,7 +429,7 @@ const MyPage = () => {
                 </div>
               )}
             </div>
-            <div className="signUp_button">
+            <div className="myPage_button">
               <button type="button" onClick={() => navigate("/")}>
                 돌아가기
               </button>
