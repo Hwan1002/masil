@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Api } from "../context/MasilContext";
-import defaultProfile from "../css/img/profile/default_profile.png";
+import defaultProfile from "../css/img/userDefault.svg";
 
 const Chat = () => {
   const [chatRooms, setChatRooms] = useState([]);
@@ -14,6 +14,7 @@ const Chat = () => {
 
   const fetchChatRooms = async () => {
     try {
+      //채팅 목록 조회 api 연동할거
       const response = await Api.get("/chat/rooms");
       setChatRooms(response.data);
     } catch (error) {
