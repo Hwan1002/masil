@@ -19,12 +19,16 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import project.masil.entity.UserEntity;
 
 @Entity
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(name = "Chat_Message")
 @EntityListeners(AuditingEntityListener.class)
 public class ChatMessageEntity {
