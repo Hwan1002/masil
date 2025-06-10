@@ -14,6 +14,7 @@ import SelectedRentalItem from "./screen/SelectedRentalItem";
 import MyWishPost from "./screen/MyWishPost";
 import Chat from "./screen/Chat";
 import "./css/reset.css";
+import ChatRoom from "./screen/ChatRoom";
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
                   <Route path="/postRegist" element={<PostRegist />} />
                   <Route path="/mywishpost" element={<MyWishPost />} />
                   <Route path="/chat" element={<Chat />} />
+                  <Route path="/chatroom" element={<ChatRoom />} />
                 </Routes>
               </div>
             }

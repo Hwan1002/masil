@@ -8,6 +8,7 @@ import Modal from "../component/Modal";
 import moment from "moment";
 import "../css/SelectedRentalItem.css";
 
+
 // 이미지 캐러셀 컴포넌트
 const ImageCarousel = ({
   images,
@@ -357,6 +358,9 @@ const SelectedRentalItem = () => {
           <div className="selected-buttons">
             <button className="arrow-left" onClick={handleNavigation.prev}>
               이전
+            </button>
+            <button className="" onClick={() => navigate("/chatroom")}>
+              채팅
             </button>
             <button className="arrow-right" onClick={handleNavigation.next}>
               다음
