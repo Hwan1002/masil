@@ -54,56 +54,58 @@ const Chat = () => {
   }
 
   return (
-    <div className="max-w-3xl min-h-screen p-4 mx-auto mt-16 bg-gray-50">
-      <div className="p-6 bg-white shadow-lg rounded-xl">
-        <h2 className="flex items-center gap-2 mb-6 text-2xl font-bold text-gray-800">
-          <i className="text-green-500 fas fa-comments"></i>
-          채팅
-        </h2>
+    <div className="w-full min-h-screen p-4 mx-auto mt-16 bg-gray-50">
+      <div className="flex justify-center">
+        <div className="p-6 bg-white shadow-lg rounded-xl">
+          <h2 className="flex items-center gap-2 mb-6 text-2xl font-bold text-gray-800">
+            <i className="text-green-500 fas fa-comments"></i>
+            채팅
+          </h2>
 
-        {chatRooms.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 text-gray-500">
-            <i className="mb-4 text-5xl fas fa-comments opacity-30"></i>
-            <p className="text-lg">대화 가능한 채팅방이 없습니다.</p>
-          </div>
-        ) : (
-          <div className="space-y-2">
-            {chatRooms.map((room) => (
-              <div
-                key={room.roomId}
-                onClick={() => navigate(`/chat/${room.roomId}`)}
-                className="flex items-center p-4 transition-colors border border-gray-100 rounded-lg cursor-pointer hover:bg-gray-50"
-              >
-                <div className="relative">
-                  <img
-                    src={room.userProfile || defaultProfile}
-                    alt={`${room.nickname}의 프로필`}
-                    className="object-cover w-12 h-12 rounded-full"
-                  />
-                  {room.isOnline && (
-                    <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
-                  )}
-                </div>
-
-                <div className="flex-1 ml-4">
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium text-gray-900">
-                      {room.nickname}
-                    </span>
-                    <span className="text-sm text-gray-500">
-                      {formatDate(room.lastMessageTime)}
-                    </span>
+          {chatRooms.length === 1 ? (
+            <div className="flex flex-col items-center justify-center py-16 text-gray-500">
+              <i className="mb-4 text-5xl fas fa-comments opacity-30"></i>
+              <p className="text-lg">대화 가능한 채팅방이 없습니다.</p>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {chatRooms.map((room) => (
+                <div
+                  key={room.roomId}
+                  onClick={() => navigate(`/chat/${room.roomId}`)}
+                  className="flex items-center p-4 transition-colors border border-gray-100 rounded-lg cursor-pointer hover:bg-gray-50"
+                >
+                  <div className="relative">
+                    <img
+                      src={room.userProfile || defaultProfile}
+                      alt={`${room.nickname}의 프로필`}
+                      className="object-cover w-12 h-12 rounded-full"
+                    />
+                    {room.isOnline && (
+                      <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+                    )}
                   </div>
-                  {room.lastMessage && (
-                    <p className="mt-1 text-sm text-gray-500 line-clamp-1">
-                      {room.lastMessage}
-                    </p>
-                  )}
+
+                  <div className="flex-1 ml-4">
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium text-gray-900">
+                        {room.nickname}
+                      </span>
+                      <span className="text-sm text-gray-500">
+                        {formatDate(room.lastMessageTime)}
+                      </span>
+                    </div>
+                    {room.lastMessage && (
+                      <p className="mt-1 text-sm text-gray-500 line-clamp-1">
+                        {room.lastMessage}
+                      </p>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
