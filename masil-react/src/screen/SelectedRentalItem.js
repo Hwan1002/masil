@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import useModal from "../context/useModal";
-import { Api } from "../context/MasilContext";
+import { Api, ProjectContext } from "../context/MasilContext";
 import useEditStore from "../shared/useEditStore";
 import useLoginStore from "../shared/useLoginStore";
 import Modal from "../component/Modal";
 import moment from "moment";
 import "../css/SelectedRentalItem.css";
+
+
 
 
 // 이미지 캐러셀 컴포넌트
@@ -105,6 +107,10 @@ const PostInfo = ({ item, formatDate, curency }) => (
 );
 
 const SelectedRentalItem = () => {
+
+  // 컨텍스트API 
+  const { accessToken, setAccessToken } = useContext(ProjectContext);
+
   const { idx } = useParams();
   const navigate = useNavigate();
   const { setEdit } = useEditStore();
@@ -166,6 +172,38 @@ const SelectedRentalItem = () => {
       console.error("게시글 삭제 실패:", error);
     }
   };
+
+  // 채팅버튼 함수
+  const handleChatClick = async () => {
+    try {
+      const response = await Api.get('/chat/chatRoom', {
+        params: { receiver: item.userId }
+      });
+
+      const { room, messages } = response.data;
+      // 2. 받은 roomId로 웹소켓 연결
+      const ws = new WebSocket(`ws://localhost:9090/chat?roomId=${room.roomId}`,[accessToken]);
+      ws.onopen = () => {
+        console.log('웹소켓 연결 성공');
+        // 웹소켓 연결 후 채팅방 화면으로 이동
+        navigate('/chatroom', { state: { room, messages, ws } });
+      };
+
+      ws.onerror = (error) => {
+        console.error('웹소켓 연결 실패:', error);
+      };
+
+      ws.onclose = () => {
+        console.log('웹소켓 연결 종료');
+      };
+
+    } catch (error) {
+      console.error('채팅방 조회/생성 실패:', error);
+      // 실패 시 빈 채팅방으로 이동
+      navigate('/chatroom', { state: { room: null, messages: [], ws: null } });
+    }
+  };
+
 
   // 유틸리티 함수들
   const formatDate = (date) => moment(date).format("YYYY-MM-DD HH:mm:ss");
@@ -290,7 +328,6 @@ const SelectedRentalItem = () => {
     };
     fetchData();
   }, []);
-
   return (
     <div className="selected-container">
       <div className="selected-content">
@@ -299,9 +336,8 @@ const SelectedRentalItem = () => {
             {item.postTitle}
             <button onClick={handleWishClick} className="wish-btn">
               <i
-                className={`wish-icon fa-heart ${
-                  isWished ? "fas is-wished" : "far"
-                }`}
+                className={`wish-icon fa-heart ${isWished ? "fas is-wished" : "far"
+                  }`}
               ></i>
             </button>
           </div>
@@ -359,7 +395,7 @@ const SelectedRentalItem = () => {
             <button className="arrow-left" onClick={handleNavigation.prev}>
               이전
             </button>
-            <button className="" onClick={() => navigate("/chatroom")}>
+            <button className="" onClick={handleChatClick}>
               채팅
             </button>
             <button className="arrow-right" onClick={handleNavigation.next}>

@@ -18,6 +18,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import project.masil.dto.chat.ChatMessageDTO;
+import project.masil.dto.chat.ChatRoomDTO;
 import project.masil.entity.chatting.ChatMessageEntity;
 import project.masil.entity.chatting.ChatRoomEntity;
 import project.masil.service.chatting.ChatService;
@@ -52,7 +53,7 @@ public class ChatHandler extends AbstractWebSocketHandler  {
         dto.setSenderId(senderId);
         
         // 2. 채팅방 조회 / 생성  
-        ChatRoomEntity chatRoom = chatService.findOrCreateChatRoom(dto.getSenderId(), dto.getReceiverId());
+        ChatRoomDTO chatRoom = chatService.findOrCreateChatRoom(dto.getSenderId(), dto.getReceiverId());
 
 
         // 3. 채팅방에 세션 추가 (첫 메시지 기준으로 채팅방 연결)

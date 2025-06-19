@@ -40,8 +40,10 @@ public class WebSocketHandshakeHandler extends DefaultHandshakeHandler {
 		
 		// SecurityContextHodler 에 인증객체가 없는경우 , 요청 헤더에서 JWT 추출
 		String token = extractToken(request);
+		log.info("Extracted token: {}", token); // 로그 추가
 		// JWT 가 없거나 유효하지않으면 null 반환 (연결 거부 )
 		if (token == null || !jwtTokenProivder.validateToken(token)) {
+		     log.warn("Token is invalid or missing");
 			return null; // 인증실패시 연결 거부 
 		}
 		
@@ -64,12 +66,10 @@ public class WebSocketHandshakeHandler extends DefaultHandshakeHandler {
 	
 	// reqeust Header 에서 JWT 추출. 
     private String extractToken(ServerHttpRequest request) {
-        List<String> headers = request.getHeaders().get("Authorization");
+        List<String> headers = request.getHeaders().get("Sec-WebSocket-Protocol");
         if (headers != null && !headers.isEmpty()) {
             String header = headers.get(0);
-            if (header.startsWith("Bearer ")) {
-                return header.substring(7);
-            }
+                return header.split(",")[0];
         }
         return null;
     }

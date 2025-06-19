@@ -186,4 +186,54 @@ WebSocket 연결 요청		클라이언트		/chat 엔드포인트, accessToken 포
 양방향 통신			ChatHandler, ChatService	메시지 실시간 송수신, 세션의 Principal로 사용자 식별
 
 
+
+react 클라이언트와 채팅API 연동 .
+ 
+1: 해당 게시물의 채팅하기 버튼.  ( 해당 게시물이 내가 작성한게시물일때는 채팅하기 대신 수정하는기능이나 채팅하기 버튼이 보이지않아야한다 .)
+ 채팅하기버튼을 눌렀을때는 navigate(chatRoom) 해당 사용자와의 채팅방으로 이동과 동시에 ws:localhost:9090/chat 에 요청을 해야한다 . 
+최초로는 http 로 시작하지만 , Upgarde: websocket 헤더를 포함하여 webSocket 프로토콜로 전환(업그레이드) 하는 방식이다 .
+브라우저의 webSokcet API 가 자동으로 이 모든과정을 처리해준다 . 즉 개발자가 직접헤더를 추가하거나 업그레이드 과정을 구현할 필요없이 
+, 단순히 new Websocket()만 호출하면된다 .  
+하지만 webSocketAPI 를 사용하게되는경우  헤더에 토큰을 직접적으로 추가할수없다 , 
+서브 프로토콜 , 쿠키 , 첫메세지 중 하나로 토큰을 전달해야한다 . 
+
+우리는 서브프로토콜에 프로토콜이름을 명시하는 용도가아닌 accessToken 변수를 담아서 sec-WebSocket-Protocol 헤더 값에 토큰을 직접 넣어서 보내는 방법을 사용한다 .
+webSocket에 대해 무지했기떄문에 accessToken을 어떻게 넘겨야되는지 몰랐기때문에 일반적이진않지만 임시방편으로 서브프로토콜을 사용하여 accessToken을 명시해서 보내도록한다 .
+서버에서는 항상 sec-WebSocket-Protocol 명시된 값을 token으로 받을수있게끔 작성한다 .
+
+클라이언트 : 채팅버튼클릭이벤트(토큰,userId 전달) -> HTTP GET 요청으로 채팅방이 있는경우 채팅방정보와 채팅방 내용 얻기 ->  웹소켓 연결 함수호출 -> 연결 성공 시 채팅방 이동 
+
+
+
+
+채팅하기 버튼을 눌렀을때 -> navigate(http://localhost:3000/chatRoom) 으로 이동이되면서 
+webSokcet연결요청 및 내accessToken과 채팅하기버튼이 있던 게시물에있는 userId 를 매개변수로 http get요청을하여 http::localhost:3000/chatRoom 스크린에 get요청을통해 방이있다면 이전의 대화내용을 넣고
+없다면 아무것도없는 빈채팅방을 렌더링한다
+
+클라이언트는 채팅하기 버튼에 두가지함수가 필요하다 .
+1 : 웹소켓을 연결하는 함수 
+2 : http get 요청으로 채팅방과 채팅내용을 얻는 함수 .
+
+진짜 최종정리 
+
+채팅하기 버튼을 클릭함 - >  http://localhost9090/chat 엔드포인트에 http get 요청을통해서 채팅방이 없으면 채팅방을 만드는로직을 
+채팅방이 있으면 chatRoomDTO와 그채팅방의 chattingMessageDTO를 반환하고  // 여기까지 구현완료 .
+chatRoomDTO.roomId를통해서 ws 요청을보낸다 . 
+get 요청을통해 무조건 roomId 를 받을수있다 . roomId를 통한 ws 연결 
+
+
+연결후에 textmessage 보내보기 
+
+**차후에 chatRoomEntity에 ChatMessage가 일정시간동안 추가되지않는다면 , chatRoom을 삭제하는 로직을 구현한다 .** (스케쥴러 사용 ) 
+ // 0616 새벽까지 할일 .
+
+
+
+
+
+
+
+
+
+
  
