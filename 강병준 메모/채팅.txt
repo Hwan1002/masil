@@ -200,6 +200,8 @@ react 클라이언트와 채팅API 연동 .
 우리는 서브프로토콜에 프로토콜이름을 명시하는 용도가아닌 accessToken 변수를 담아서 sec-WebSocket-Protocol 헤더 값에 토큰을 직접 넣어서 보내는 방법을 사용한다 .
 webSocket에 대해 무지했기떄문에 accessToken을 어떻게 넘겨야되는지 몰랐기때문에 일반적이진않지만 임시방편으로 서브프로토콜을 사용하여 accessToken을 명시해서 보내도록한다 .
 서버에서는 항상 sec-WebSocket-Protocol 명시된 값을 token으로 받을수있게끔 작성한다 .
+하나의  서브 프로토콜(accessToken) 을 보내게된다면 핸드셰이크 응답에서 동일한 헤더 (값) 을 다시 보내야하기때문에 accessToken 이 노출될 수 있다 .
+이렇기때문에 두개의 프로콜을 사용하여 chat-v1 이라는 규칙을 따라 통신하겠다는 약속을 클라이언트가 보내고 서버가 chat-v1을 응답하며 두번째 프로토콜에서는 accessToken의 값을 추출하여 사용한다 . 
 
 클라이언트 : 채팅버튼클릭이벤트(토큰,userId 전달) -> HTTP GET 요청으로 채팅방이 있는경우 채팅방정보와 채팅방 내용 얻기 ->  웹소켓 연결 함수호출 -> 연결 성공 시 채팅방 이동 
 
@@ -217,18 +219,40 @@ webSokcet연결요청 및 내accessToken과 채팅하기버튼이 있던 게시�
 진짜 최종정리 
 
 채팅하기 버튼을 클릭함 - >  http://localhost9090/chat 엔드포인트에 http get 요청을통해서 채팅방이 없으면 채팅방을 만드는로직을 
-채팅방이 있으면 chatRoomDTO와 그채팅방의 chattingMessageDTO를 반환하고  // 여기까지 구현완료 .
+채팅방이 있으면 chatRoomDTO와 그채팅방의 chattingMessageDTO를 반환하고  
 chatRoomDTO.roomId를통해서 ws 요청을보낸다 . 
 get 요청을통해 무조건 roomId 를 받을수있다 . roomId를 통한 ws 연결 
 
-
+ws 연결이 성공적으로 이루어졌다 , 
 연결후에 textmessage 보내보기 
 
 **차후에 chatRoomEntity에 ChatMessage가 일정시간동안 추가되지않는다면 , chatRoom을 삭제하는 로직을 구현한다 .** (스케쥴러 사용 ) 
  // 0616 새벽까지 할일 .
 
 
+채팅하기 버튼 클릭
 
+HTTP GET 요청 (/chatting/chatRoom?receiver=상대방ID)
+
+채팅방이 없으면 새로 생성
+
+채팅방이 있으면 chatRoomDTO와 List<ChattingMessageDTO> 반환
+
+반환된 roomId로 WebSocket 연결 (ws://localhost:9090/chat?roomId=...)
+
+WebSocket 연결 성공
+
+채팅 메시지 주고받기 
+
+채팅방 나가기 버튼 클릭 시 WebSocket 연결 종료
+
+채팅방 페이지 이동 시 메시지 목록 조회 및 표시
+
+
+0624 채팅방 컴포넌트 , 채팅방 컴포넌트속 채팅방이름 상대닉네임 지정 성공 .
+채팅하기 함수 hook 폴더에 분리 , 상세페이지속 채팅하기에서 사용  및 나열되어있는 채팅목록에서 채팅방 클릭시 사용(예정)
+
+채팅주고받는부분은 아직 구현안되있음 .
 
 
 

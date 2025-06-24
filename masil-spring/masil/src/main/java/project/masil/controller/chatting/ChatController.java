@@ -18,7 +18,7 @@ import project.masil.entity.chatting.ChatRoomEntity;
 import project.masil.service.chatting.ChatService;
 
 @RestController
-@RequestMapping("chat")
+@RequestMapping("chatting")
 public class ChatController {
 
 	

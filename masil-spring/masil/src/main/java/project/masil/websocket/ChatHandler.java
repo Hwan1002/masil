@@ -1,6 +1,5 @@
 package project.masil.websocket;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -10,22 +9,25 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
+import org.springframework.web.socket.SubProtocolCapable;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.AbstractWebSocketHandler;
-import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import project.masil.dto.chat.ChatMessageDTO;
 import project.masil.dto.chat.ChatRoomDTO;
 import project.masil.entity.chatting.ChatMessageEntity;
-import project.masil.entity.chatting.ChatRoomEntity;
 import project.masil.service.chatting.ChatService;
 
 @Component
-public class ChatHandler extends AbstractWebSocketHandler  {
-
+public class ChatHandler extends AbstractWebSocketHandler  implements SubProtocolCapable {
+    
+	@Override
+    public List<String> getSubProtocols() {
+        return List.of("chat-v1"); // 지원하는 서브프로토콜 반환
+    }
 	
 	@Autowired
 	private ChatService chatService ;

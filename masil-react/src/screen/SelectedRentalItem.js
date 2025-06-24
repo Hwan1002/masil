@@ -7,6 +7,7 @@ import useLoginStore from "../shared/useLoginStore";
 import Modal from "../component/Modal";
 import moment from "moment";
 import "../css/SelectedRentalItem.css";
+import { useChatRoom } from "../hook/useChatRoom";
 
 
 
@@ -109,7 +110,7 @@ const PostInfo = ({ item, formatDate, curency }) => (
 const SelectedRentalItem = () => {
 
   // 컨텍스트API 
-  const { accessToken, setAccessToken } = useContext(ProjectContext);
+  const { accessToken} = useContext(ProjectContext);
 
   const { idx } = useParams();
   const navigate = useNavigate();
@@ -174,35 +175,7 @@ const SelectedRentalItem = () => {
   };
 
   // 채팅버튼 함수
-  const handleChatClick = async () => {
-    try {
-      const response = await Api.get('/chat/chatRoom', {
-        params: { receiver: item.userId }
-      });
-
-      const { room, messages } = response.data;
-      // 2. 받은 roomId로 웹소켓 연결
-      const ws = new WebSocket(`ws://localhost:9090/chat?roomId=${room.roomId}`,[accessToken]);
-      ws.onopen = () => {
-        console.log('웹소켓 연결 성공');
-        // 웹소켓 연결 후 채팅방 화면으로 이동
-        navigate('/chatroom', { state: { room, messages, ws } });
-      };
-
-      ws.onerror = (error) => {
-        console.error('웹소켓 연결 실패:', error);
-      };
-
-      ws.onclose = () => {
-        console.log('웹소켓 연결 종료');
-      };
-
-    } catch (error) {
-      console.error('채팅방 조회/생성 실패:', error);
-      // 실패 시 빈 채팅방으로 이동
-      navigate('/chatroom', { state: { room: null, messages: [], ws: null } });
-    }
-  };
+  const {handleChatClick}  =useChatRoom() ;
 
 
   // 유틸리티 함수들
@@ -395,8 +368,8 @@ const SelectedRentalItem = () => {
             <button className="arrow-left" onClick={handleNavigation.prev}>
               이전
             </button>
-            <button className="" onClick={handleChatClick}>
-              채팅
+            <button className="" onClick={() => handleChatClick(item.userId,accessToken)}>
+              채팅하기
             </button>
             <button className="arrow-right" onClick={handleNavigation.next}>
               다음

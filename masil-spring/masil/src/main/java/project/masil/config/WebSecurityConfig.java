@@ -38,6 +38,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 		.cors().configurationSource(corsConfigurationSource()) // CORS 설정 추가
 		.and()
 		.authorizeHttpRequests(authz -> authz.requestMatchers(
+				"/chat",
 				"/location",
 				"/post",
 				"/post/item/**",

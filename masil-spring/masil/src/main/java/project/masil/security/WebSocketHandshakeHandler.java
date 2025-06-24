@@ -23,37 +23,30 @@ public class WebSocketHandshakeHandler extends DefaultHandshakeHandler {
 
 	@Autowired
 	private JwtTokenProvider jwtTokenProivder;
+	
 
+	
+	
 	@Override
 	protected Principal determineUser(ServerHttpRequest request, WebSocketHandler wsHandler,
 			Map<String, Object> attributes) {
 		
 		 log.info("핸드셰이크 핸들러 진입: {}", request.getURI());
-        // SecurityContextHolder에서 인증 객체 추출 (기존 HTTP 필터 인증)
-        Authentication securityContextAuth = SecurityContextHolder.getContext().getAuthentication();
-
-        // SecurityContextHolder에 인증 객체가 있는 경우
-        if (securityContextAuth != null && securityContextAuth.isAuthenticated()) {
-            return securityContextAuth::getName; // Principal(인증사용자객체) 반환
-        }
 		
-		
-		// SecurityContextHodler 에 인증객체가 없는경우 , 요청 헤더에서 JWT 추출
 		String token = extractToken(request);
 		log.info("Extracted token: {}", token); // 로그 추가
 		// JWT 가 없거나 유효하지않으면 null 반환 (연결 거부 )
 		if (token == null || !jwtTokenProivder.validateToken(token)) {
 		     log.warn("Token is invalid or missing");
+		     log.error("토큰 검증 실패: {}", token);
 			return null; // 인증실패시 연결 거부 
 		}
 		
 		
 		String userId = jwtTokenProivder.getUserIdFromToken(token);
-		// 권한부여
-		List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
 
 		// 인증객체 생성
-		Authentication authentication = new UsernamePasswordAuthenticationToken(userId, null, authorities);
+		Authentication authentication = new UsernamePasswordAuthenticationToken(userId, null, List.of(new SimpleGrantedAuthority("ROLE_USER")));
 
 		// securityContextHolder 에 인증객체 저장 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -68,9 +61,16 @@ public class WebSocketHandshakeHandler extends DefaultHandshakeHandler {
     private String extractToken(ServerHttpRequest request) {
         List<String> headers = request.getHeaders().get("Sec-WebSocket-Protocol");
         if (headers != null && !headers.isEmpty()) {
-            String header = headers.get(0);
-                return header.split(",")[0];
+            String headerValue = headers.get(0);
+            System.out.println("Sec-WebSocket-Protocol: " + headerValue); // 로그 추가
+            String[] protocols = headerValue.split(",");
+      
+            // 두 번째 값이 존재하면 반환 (JWT)
+            if (protocols.length >= 2) {
+                return protocols[1].trim(); // 공백 제거
+            }
         }
+        log.warn("Invalid Sec-WebSocket-Protocol format");
         return null;
     }
 	

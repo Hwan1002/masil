@@ -79,6 +79,8 @@ public class ChatService {
 				.createdAt(chatRoom.getCreatedAt())
 				.lenderId(chatRoom.getLender().getUserId())
 				.borrowerId(chatRoom.getBorrower().getUserId())
+				.lenderNickname(chatRoom.getLender().getUserNickName())
+				.borrowerNickname(chatRoom.getBorrower().getUserNickName()) 
 				.build();
 	}
 	
