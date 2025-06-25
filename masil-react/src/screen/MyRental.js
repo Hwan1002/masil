@@ -30,7 +30,7 @@ const RentalItem = () => {
     fetchData();
   }, []);
 
-  const filteredItems = items.filter((item) => {
+  const filteredItems = items?.filter((item) => {
     const matchesSold = showSoldOnly ? item.isSold : true;
     const matchesAddress = (item.address || "")
       .toLowerCase()

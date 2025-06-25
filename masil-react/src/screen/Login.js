@@ -172,10 +172,10 @@ const Login = () => {
   return (
     <div className="login">
       <form className="login_container" onSubmit={(e) => loginSubmit(e)}>
-        <h2>로그인</h2>
+        <h2 className="login_header">로그인</h2>
         {/* 일반 로그인 */}
-        <div>
-          <div>아이디</div>
+        <div className="id_container">
+          <div className="id_title">아이디</div>
           <input
             className="login_input"
             type="text"
@@ -184,11 +184,11 @@ const Login = () => {
             onChange={(e) => loginHandler(e)}
           />
         </div>
-        <div className="password_container">
-          <div>비밀번호</div>
+        <div className="id_container">
+          <div className="id_title">비밀번호</div>
           <div className="password_input-icon">
             <input
-              className="password_input"
+              className="login_input"
               type={showPassword ? "text" : "password"}
               name="password"
               placeholder="비밀번호 입력"
@@ -204,14 +204,14 @@ const Login = () => {
         </div>
 
         {/* 로그인 버튼 */}
-        <div>
+        <div className="btn_container">
           <button className="login_button" type="submit">
             로그인
           </button>
         </div>
 
         {/* 추가 링크 */}
-        <div className="links ">
+        <div className="links">
           <a href="/signup" className="link-item">
             회원가입
           </a>
