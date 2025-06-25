@@ -17,12 +17,13 @@ public class WebSocketConfig implements WebSocketConfigurer {
 	
 	@Autowired
 	private ChatHandler chatHandler ;
-	
+	@Autowired
+	private WebSocketHandshakeHandler webSocketHandshakeHandler;
 	@Override
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
 	    log.info("WebSocket Handler 등록: /chat");
 		registry.addHandler(chatHandler, "/chat")
-				.setHandshakeHandler(new WebSocketHandshakeHandler())
+				.setHandshakeHandler(webSocketHandshakeHandler)
 				.setAllowedOrigins("http://localhost:3000"); // CORS 허용 Origin , 웹소켓 엔드포인트.
 	}
 }

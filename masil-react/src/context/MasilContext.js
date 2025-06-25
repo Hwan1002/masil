@@ -36,6 +36,18 @@ export const ProjectProvider = ({ children }) => {
   // 렌더링없는 추적
   const tokenValueRef = useRef(accessToken);
 
+  // 채팅방
+  const [room, setRoom] = useState(null);
+  // 채팅메세지 
+  const [messages, setMessages] = useState([]);
+
+  // 채팅방과 메세지
+  const updateRoomAndMessages = (newRoom, newMessages) => {
+    setRoom(newRoom);
+    setMessages(newMessages);
+  };
+
+
   useEffect(() => {
     tokenValueRef.current = accessToken;
   }, [accessToken]);
@@ -165,6 +177,11 @@ export const ProjectProvider = ({ children }) => {
     setIsLoading,
     location,
     setLocation,
+    room,
+    setRoom,
+    messages,
+    setMessages,
+    updateRoomAndMessages,
   };
 
   if (isTokenLoading) {
