@@ -10,8 +10,11 @@ export default function ChatRoom() {
 
 
   // 로컬스토리지에서 로그인 정보 파싱
+  // const loginInfo = window.localStorage.getItem("login-storage");
   const loginInfo = JSON.parse(localStorage.getItem("login-storage"));
-  // userId 추출 
+  console.log("스토리지 값", loginInfo);
+
+  // userId 추출
   const myUserId = loginInfo?.state?.userId;
 
 
@@ -54,7 +57,7 @@ export default function ChatRoom() {
   const getPartnerNickname = (room) => {
     if (!room) return "채팅방";
     if (myUserId === room.lenderId) return room.borrowerNickname;
-    if (myUserId === room.borrowerId) return room.lenderNickname;                                                 
+    if (myUserId === room.borrowerId) return room.lenderNickname;
     return "채팅방";
   };
 

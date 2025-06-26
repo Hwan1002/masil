@@ -40,11 +40,11 @@
   }
 }
 
-.container {
+/* .container {
   flex: 1;
-  padding-top: 80px; /* Header 높이만큼 여백 */
+  padding-top: 80px; 
   width: 100%;
   max-width: 1920px;
   margin: 0 auto;
   box-sizing: border-box;
-}
+} */
