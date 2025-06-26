@@ -3,28 +3,53 @@
 }
 
 /* 로그인 섹션 컨테이너 */
-
 .login_container {
+  min-width: 300px;
+  max-width: 600px;
   display: flex;
+  flex: auto;
+  margin: 5em 20px 0 20px;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  max-width: 30em;
-  height: auto;
-  padding: 50px;
   gap: 1rem;
+  padding: 10px;
   border-radius: 8px;
   border: 1px solid #a9ddb7;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  margin: 0 auto;
+}
+
+.id_container{
+  display: flex;
+  flex-direction: column;
+  flex: auto;
+}
+
+/* 로그인 제목 */
+.login_header{
+  display: flex;
+  flex: 1;
+  padding: 8px;
+  justify-content: center;
+}
+
+/* 아이디 제목*/
+.id_title{
+  display: flex;
+  flex: 1;
+  margin: 0 15px;
+}
+
+.btn_container{
+  display: flex;
+  flex: 1;
+  margin: 0 15px;
 }
 
 /* 로그인 인풋 필드 */
 .login_input {
-  width: 25em;
+  display: flex;
+  flex: 1;
   padding: 10px;
-  margin-top: 5px;
+  margin: 5px 15px 0 15px;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
@@ -34,16 +59,6 @@
   box-shadow: 0 0 8px rgb(65, 252, 48);
 }
 
-/* 비밀번호 인풋 호버시 테두리 */
-.password_input:hover {
-  box-shadow: 0 0 8px rgb(65, 252, 48);
-}
-
-/* 비밀번호 섹션 컨테이너 */
-.password_container {
-  margin-top: 16px;
-  position: relative;
-}
 
 /* 아이콘 포함된 입력 필드 */
 .password_input-icon {
@@ -52,24 +67,15 @@
   align-items: center;
 }
 
-/* 비밀번호 입력 필드 */
-.password_input {
-  margin-top: 5px;
-  width: 25em;
-  padding-right: 40px; /* 아이콘 영역 확보 */
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
 /* 비밀번호 아이콘 */
 .password_icon {
   position: absolute;
-  right: 7px;
-  cursor: pointer;
-  font-size: 20px;
+  right: 2rem; /* 기본 모바일 */
+  top: 55%;
+  transform: translateY(-50%);
+  font-size: clamp(16px, 2.5vw, 20px); /* 반응형 폰트 크기 */
   color: #666;
-  top: 0.9rem;
+  cursor: pointer;
 }
 
 /* 비밀번호 아이콘 호버 */
@@ -80,22 +86,23 @@
 /* SNS 로그인 섹션 */
 .sns_container {
   display: flex;
-  justify-content: space-between;
-  width: 20em;
+}
+
+.sns_button{
+  display: flex;
+  justify-content: center;
+  margin-bottom: 8px;
 }
 
 /* SNS 개별 아이템 */
 .sns_item {
-  flex: 1;
-  text-align: center;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex: 1;
 }
 
 /* SNS 이미지 스타일 */
 .sns_image {
-  width: 35%;
+  width: 30%;
   height: auto;
   cursor: pointer;
   border-radius: 99px;
@@ -110,9 +117,9 @@
 /* 로그인 버튼 */
 .login_button {
   display: flex;
+  flex: 1;
   justify-content: center;
   align-items: center;
-  width: 25em;
   padding: 1rem;
   background-color: #a9ddb7;
   color: white;
@@ -129,10 +136,9 @@
 /* 회원가입 및 아이디,비밀번호 찾기 컨테이너 */
 .links {
   display: flex;
+  flex: 1;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
-  max-width: 21em;
 }
 
 /* 회원가입 및 아이디, 비밀번호 찾기 */
@@ -142,6 +148,7 @@
   cursor: pointer;
   text-decoration: none;
   transition: color 0.3s ease;
+  margin: 0 15px;
 }
 
 /* 링크아이템 호버 */
@@ -153,6 +160,7 @@
 /* 소셜계정 로그인 제목 */
 .social-login-title {
   display: flex;
+  flex: 1;
   align-items: center;
   justify-content: center;
   margin-top: 20px;
@@ -160,7 +168,6 @@
   font-weight: bold;
   color: #555;
   width: 100%;
-  max-width: 22em;
 }
 
 /* 소셜계정로그인 앞뒤 선 */
