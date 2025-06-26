@@ -1,15 +1,54 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ProjectContext } from "../context/MasilContext";
-
+import "../css/ChatRoom.css"
 export default function ChatRoom() {
   const navigate = useNavigate();
-  const { room, messages } = useContext(ProjectContext);
+  const { room, messages, setMessages ,accessToken } = useContext(ProjectContext);
+  const [input, setInput] = useState("");
+  const wsRef = useRef(null) ;
+
 
   // 로컬스토리지에서 로그인 정보 파싱
   const loginInfo = JSON.parse(localStorage.getItem("login-storage"));
   // userId 추출 
   const myUserId = loginInfo?.state?.userId;
+
+
+  // WebSocket 연결 및 메시지 수신 처리
+  useEffect(() => {
+    // room이 없으면 연결하지 않음
+    if (!room?.roomId) return;
+
+    // accessToken은 실제로는 로그인 정보에서 가져오세요
+    const accessToken = loginInfo?.state?.accessToken || "user_token_here";
+
+    // WebSocket 연결 생성
+    wsRef.current = new WebSocket(
+      `ws://localhost:9090/chat?roomId=${room.roomId}`,
+      ["chat-v1", accessToken]
+    );
+
+    // 메시지 수신 핸들러
+    wsRef.current.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      setMessages(prev => [...prev, message]);
+    };
+
+    wsRef.current.onerror = (error) => {
+      console.error("WebSocket 오류:", error);
+    };
+
+    wsRef.current.onclose = () => {
+      console.log("WebSocket 연결 종료");
+    };
+
+    // 컴포넌트 언마운트 시 연결 종료
+    return () => {
+      if (wsRef.current) wsRef.current.close();
+    };
+  }, [room?.roomId]); // roomId가 바뀔 때마다 재연결
+
 
   // 상대방 닉네임을 반환하는 함수
   const getPartnerNickname = (room) => {
@@ -19,46 +58,50 @@ export default function ChatRoom() {
     return "채팅방";
   };
 
+  // 메시지 전송 함수
+  const handleSend = () => {
+    if (!input.trim() || !wsRef.current) return;
+    const message = {
+      content: input,
+      senderId: myUserId,
+      roomId: room?.roomId,
+    };
+    wsRef.current.send(JSON.stringify(message));
+    setInput("");
+  };
 
-
-
-
-  return (
-    <div className="max-w-2xl mx-auto mt-20 pt-5 border rounded-lg shadow-md overflow-hidden">
-      {/* 채팅 헤더 */}
-      <div className="flex items-center justify-between bg-green-500 text-white px-4 py-3 text-lg font-semibold">
+   return (
+    <div className="chat-room-container">
+      <div className="chat-header">
         <span>{getPartnerNickname(room)}</span>
-        <button
-          onClick={() => navigate(-1)}
-          className="text-sm px-2 py-1 bg-white text-green-500 rounded hover:bg-green-100"
-        >
-          ← 뒤로가기
-        </button>
+        <button onClick={() => navigate(-1)}>← 뒤로가기</button>
       </div>
 
-      {/* 채팅 메시지 영역 */}
-      <div className="h-80 overflow-y-auto p-4 space-y-3 bg-gray-50">
-        {messages.map((msg) => (
+      <div className="chat-messages">
+        {messages.map((msg, idx) => (
           <div
-            key={msg.id}
-            className={`max-w-xs p-2 rounded shadow ${msg.senderId === myUserId
-              ? "self-end bg-green-500 text-white ml-auto"
-              : "self-start bg-white border"
-              }`}
+            key={idx}
+            className={`message ${
+              msg.senderId === myUserId ? "outgoing" : "incoming"
+            }`}
           >
             {msg.content}
           </div>
         ))}
       </div>
 
-      {/* 입력창 */}
-      <div className="flex border-t">
+      <div className="chat-input-container">
         <input
           type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyPress={(e) => e.key === "Enter" && handleSend()}
           placeholder="메시지를 입력하세요"
-          className="flex-1 px-4 py-2 outline-none"
+          className="chat-input"
         />
-        <button className="px-4 bg-green-500 text-white">전송</button>
+        <button onClick={handleSend} className="chat-send-button">
+          전송
+        </button>
       </div>
     </div>
   );
