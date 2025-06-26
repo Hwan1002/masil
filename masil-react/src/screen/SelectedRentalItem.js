@@ -9,9 +9,6 @@ import moment from "moment";
 import "../css/SelectedRentalItem.css";
 import { useChatRoom } from "../hook/useChatRoom";
 
-
-
-
 // 이미지 캐러셀 컴포넌트
 const ImageCarousel = ({
   images,
@@ -108,9 +105,8 @@ const PostInfo = ({ item, formatDate, curency }) => (
 );
 
 const SelectedRentalItem = () => {
-
-  // 컨텍스트API 
-  const { accessToken} = useContext(ProjectContext);
+  // 컨텍스트API
+  const { accessToken } = useContext(ProjectContext);
 
   const { idx } = useParams();
   const navigate = useNavigate();
@@ -175,8 +171,7 @@ const SelectedRentalItem = () => {
   };
 
   // 채팅버튼 함수
-  const {handleChatClick}  =useChatRoom() ;
-
+  const { handleChatClick } = useChatRoom();
 
   // 유틸리티 함수들
   const formatDate = (date) => moment(date).format("YYYY-MM-DD HH:mm:ss");
@@ -309,8 +304,9 @@ const SelectedRentalItem = () => {
             {item.postTitle}
             <button onClick={handleWishClick} className="wish-btn">
               <i
-                className={`wish-icon fa-heart ${isWished ? "fas is-wished" : "far"
-                  }`}
+                className={`wish-icon fa-heart ${
+                  isWished ? "fas is-wished" : "far"
+                }`}
               ></i>
             </button>
           </div>
@@ -368,8 +364,12 @@ const SelectedRentalItem = () => {
             <button className="arrow-left" onClick={handleNavigation.prev}>
               이전
             </button>
-            <button className="" onClick={() => handleChatClick(item.userId,accessToken)}>
+            <button
+              className="px-2 py-1 text-white bg-green-500 rounded-md border border-green-500 transition-colors hover:bg-white hover:text-green-500 group"
+              onClick={() => handleChatClick(item.userId, accessToken)}
+            >
               채팅하기
+              <i className="ml-1 text-white fas fa-comment-dots group-hover:text-green-500"></i>
             </button>
             <button className="arrow-right" onClick={handleNavigation.next}>
               다음

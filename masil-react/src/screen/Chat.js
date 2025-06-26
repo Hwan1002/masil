@@ -47,24 +47,24 @@ const Chat = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="w-12 h-12 border-t-2 border-b-2 border-green-500 rounded-full animate-spin"></div>
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="w-12 h-12 rounded-full border-t-2 border-b-2 border-green-500 animate-spin"></div>
       </div>
     );
   }
 
   return (
-    <div className="w-full min-h-screen p-4 mx-auto mt-16 bg-gray-50">
-      <div className="flex justify-center">
-        <div className="p-6 bg-white shadow-lg rounded-xl">
-          <h2 className="flex items-center gap-2 mb-6 text-2xl font-bold text-gray-800">
+    <div className="p-4 mx-auto bg-gray-50 w-[100vw] h-[100vh]">
+      <div className="flex justify-center items-center">
+        <div className="w-[500px] h-auto p-4 mt-72 bg-white rounded-xl shadow-lg">
+          <h2 className="flex gap-2 items-center mb-6 text-2xl font-bold text-gray-800">
             <i className="text-green-500 fas fa-comments"></i>
             채팅
           </h2>
 
           {chatRooms.length === 1 ? (
-            <div className="flex flex-col items-center justify-center py-16 text-gray-500">
-              <i className="mb-4 text-5xl fas fa-comments opacity-30"></i>
+            <div className="flex flex-col justify-center items-center py-16 text-gray-500">
+              <i className="mb-4 text-5xl opacity-30 fas fa-comments"></i>
               <p className="text-lg">대화 가능한 채팅방이 없습니다.</p>
             </div>
           ) : (
@@ -73,7 +73,7 @@ const Chat = () => {
                 <div
                   key={room.roomId}
                   onClick={() => navigate(`/chat/${room.roomId}`)}
-                  className="flex items-center p-4 transition-colors border border-gray-100 rounded-lg cursor-pointer hover:bg-gray-50"
+                  className="flex items-center p-4 rounded-lg border border-gray-100 transition-colors cursor-pointer hover:bg-gray-50"
                 >
                   <div className="relative">
                     <img
@@ -82,12 +82,12 @@ const Chat = () => {
                       className="object-cover w-12 h-12 rounded-full"
                     />
                     {room.isOnline && (
-                      <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+                      <div className="absolute right-0 bottom-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
                     )}
                   </div>
 
                   <div className="flex-1 ml-4">
-                    <div className="flex items-center justify-between">
+                    <div className="flex justify-between items-center">
                       <span className="font-medium text-gray-900">
                         {room.nickname}
                       </span>
