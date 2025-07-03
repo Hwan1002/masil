@@ -1,43 +1,43 @@
-import { useContext } from "react";
+import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { Api, ProjectContext } from "../context/MasilContext";
+import { useChatContext } from "../context/ChatContext";
+import { useProjectContext } from "../context/MasilContext";
 
 export function useChatRoom() {
-  const { updateRoomAndMessages } = useContext(ProjectContext);
+  const { connectWebSocket, sendMessage, wsRef, disconnectWebSocket } =
+    useChatContext();
+  const { accessToken } = useProjectContext();
   const navigate = useNavigate();
 
-  const handleChatClick = async (receiverId, accessToken) => {
-    try {
-      const response = await Api.get("/chatting/chatRoom", {
-        params: { receiver: receiverId },
-      });
-      const { room, messages } = response.data;
-      updateRoomAndMessages(room, messages);
+  const handleChatClick = useCallback(
+    async (receiverId) => {
+      try {
+        console.log("handleChatClick 호출됨 - receiverId:", receiverId);
+        console.log("connectWebSocket 함수:", connectWebSocket);
 
-      const ws = new WebSocket(
-        `ws://localhost:9090/chat?roomId=${room.roomId}`,
-        ["chat-v1", accessToken]
-      );
-
-      ws.onopen = () => {
-        console.log("웹소켓 연결 성공");
+        await connectWebSocket(receiverId, accessToken);
+        console.log("채팅방 연결 성공, 페이지 이동");
         navigate("/chatroom");
-      };
+      } catch (error) {
+        console.error("채팅방 입장 실패:", error);
+        console.error("에러 타입:", error.constructor.name);
+        console.error("에러 메시지:", error.message);
 
-      ws.onerror = (error) => {
-        console.error("웹소켓 연결 실패:", error);
-      };
+        if (error.response) {
+          console.error("응답 데이터:", error.response.data);
+          console.error("응답 상태:", error.response.status);
+        }
 
-      ws.onclose = () => {
-        console.log("웹소켓 연결 종료");
-      };
+        alert("채팅방을 불러오는데 실패했습니다.");
+      }
+    },
+    [connectWebSocket, accessToken, navigate]
+  );
 
-      return ws;
-    } catch (error) {
-      console.error("채팅방 조회/생성 실패:", error);
-      navigate("/chatroom", { state: { room: null, messages: [], ws: null } });
-      return null;
-    }
+  return {
+    handleChatClick,
+    sendMessage,
+    wsRef,
+    disconnectWebSocket,
   };
-  return { handleChatClick };
 }

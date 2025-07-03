@@ -37,12 +37,14 @@ public class ChatService {
 
 	// 채팅방이 없는경우 채팅방 생성
 	private ChatRoomEntity createChatRoom(String borrowerId, String lenderId) {
+		// 사용자 존재 여부 확인
 		UserEntity borrower = userRepository.findByUserId(borrowerId)
 				.orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다: " + borrowerId));
 		UserEntity lender = userRepository.findByUserId(lenderId)
 				.orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다: " + lenderId));
 
-		ChatRoomEntity newRoom = ChatRoomEntity.builder().lender(lender) // 빌려주는 사람 or 수신자 (게시글 작성자)
+		ChatRoomEntity newRoom = ChatRoomEntity.builder()
+				.lender(lender) // 빌려주는 사람 or 수신자 (게시글 작성자)
 				.borrower(borrower) // 빌리는 사람 or 발신자 (현재 사용자)
 				.build();
 
@@ -104,5 +106,13 @@ public class ChatService {
 	
 	
 	
+
+	// 사용자의 채팅방 목록 조회
+	public List<ChatRoomDTO> findChatRoomsByUserId(String userId) {
+		List<ChatRoomEntity> rooms = chatRoomRepository.findByLenderUserIdOrBorrowerUserId(userId);
+		return rooms.stream()
+				.map(this::chatRoomEntityToDTO)
+				.collect(Collectors.toList());
+	}
 
 }

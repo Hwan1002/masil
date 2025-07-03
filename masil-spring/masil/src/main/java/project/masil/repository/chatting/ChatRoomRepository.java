@@ -1,5 +1,6 @@
 package project.masil.repository.chatting;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,5 +22,9 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoomEntity, Long> 
 	
 	// roomId 를 통한 ChatRoomEntity 조회
 	Optional<ChatRoomEntity> findByRoomId(Long roomId) ;
+	
+	// 사용자가 참여한 채팅방 목록 조회
+	@Query("SELECT c FROM ChatRoomEntity c WHERE c.lender.userId = :userId OR c.borrower.userId = :userId")
+	List<ChatRoomEntity> findByLenderUserIdOrBorrowerUserId(@Param("userId") String userId);
 	
 }
