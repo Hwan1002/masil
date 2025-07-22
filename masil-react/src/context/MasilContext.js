@@ -1,18 +1,27 @@
-import React, { createContext, useEffect, useRef, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import userDefault from "../css/img/userDefault.svg";
 import axios from "axios";
 import LoadingSpinner from "../component/LoadingSpinner";
 
 export const ProjectContext = createContext();
 
+// useProjectContext 훅 추가
+export const useProjectContext = () => {
+  const context = useContext(ProjectContext);
+  if (!context) {
+    throw new Error("useProjectContext must be used within a ProjectProvider");
+  }
+  return context;
+};
+
 // Axios 인스턴스 생성
 export const Api = axios.create({
-  baseURL: "http://localhost:9090",
-  withCredentials: true, //쿠키포함
-});
-
-// 새로고침 axios 인스턴스
-const refreshInstance = axios.create({
   baseURL: "http://localhost:9090",
   withCredentials: true, //쿠키포함
 });
@@ -36,18 +45,6 @@ export const ProjectProvider = ({ children }) => {
   // 렌더링없는 추적
   const tokenValueRef = useRef(accessToken);
 
-  // 채팅방
-  const [room, setRoom] = useState(null);
-  // 채팅메세지 
-  const [messages, setMessages] = useState([]);
-
-  // 채팅방과 메세지
-  const updateRoomAndMessages = (newRoom, newMessages) => {
-    setRoom(newRoom);
-    setMessages(newMessages);
-  };
-
-
   useEffect(() => {
     tokenValueRef.current = accessToken;
   }, [accessToken]);
@@ -55,7 +52,7 @@ export const ProjectProvider = ({ children }) => {
   // refreshToken(httpOnlyCookie) 를통한 accessToken 갱신요청
   const refreshToken = async () => {
     try {
-      const { data } = await refreshInstance.post("/auth/refresh-token", {});
+      const { data } = await Api.post("/auth/refresh-token", {});
       const newAccessToken = data.accessToken;
 
       Api.defaults.headers.common["Authorization"] = `Bearer ${newAccessToken}`;
@@ -168,20 +165,12 @@ export const ProjectProvider = ({ children }) => {
     setLoginSuccess,
     accessToken,
     setAccessToken,
-
-    // tokenTimer, setTokenTimer,
-    // timeText, setTimeText,
     imagePreview,
     setImagePreview,
     isLoading,
     setIsLoading,
     location,
     setLocation,
-    room,
-    setRoom,
-    messages,
-    setMessages,
-    updateRoomAndMessages,
   };
 
   if (isTokenLoading) {
