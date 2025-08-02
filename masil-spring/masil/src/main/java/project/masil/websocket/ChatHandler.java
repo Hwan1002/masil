@@ -70,7 +70,7 @@ public class ChatHandler extends AbstractWebSocketHandler  implements SubProtoco
         ChatMessageEntity chatMessage = chatService.saveMessage(chatRoom, dto) ;
         
         
-     // 5. 해당 채팅방에 연결된 모든 세션에 메시지 브로드캐스트 (본인 제외)
+        // 5. 해당 채팅방에 연결된 모든 세션에 메시지 브로드캐스트 (본인 제외)
         for (WebSocketSession s : sessions) {
             if (s.isOpen() && !s.equals(session)) {
                 s.sendMessage(new TextMessage(objectMapper.writeValueAsString(chatMessage)));

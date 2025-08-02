@@ -62,17 +62,28 @@ public class ChatService {
 	public ChatMessageEntity saveMessage(ChatRoomDTO chatRoomDTO, ChatMessageDTO dto) {
 		UserEntity sender = userRepository.findByUserId(dto.getSenderId())
 				.orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다: " + dto.getSenderId()));
+		UserEntity receiver = userRepository.findByUserId(dto.getReceiverId())
+				.orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다: " + dto.getReceiverId()));
 		ChatRoomEntity chatRoom = chatRoomRepository.findByRoomId(chatRoomDTO.getRoomId())
 				.orElseThrow(() -> new IllegalArgumentException("해당 채팅방을 찾을 수 없습니다 ." + chatRoomDTO.getRoomId()));
 		
 		// 1. DTO를 엔티티로 변환
-		ChatMessageEntity message = ChatMessageEntity.builder().chatRoom(chatRoom).sender(sender) // 또는 session에서 꺼낸 senderId																									
+		ChatMessageEntity message = ChatMessageEntity.builder().chatRoom(chatRoom).sender(sender).receiver(receiver) // 또는 session에서 꺼낸 senderId																									
 				.content(dto.getContent()).build();
 
 		// 2. DB에 저장
 		return chatMessageRepository.save(message);
 
 	}
+	
+	// 사용자의 채팅방 목록 조회
+	public List<ChatRoomDTO> findChatRoomsByUserId(String userId) {
+		List<ChatRoomEntity> rooms = chatRoomRepository.findByLenderUserIdOrBorrowerUserId(userId);
+		return rooms.stream()
+				.map(this::chatRoomEntityToDTO)
+				.collect(Collectors.toList());
+	}
+	
 	
 
 	//chatRoomEntity-> chatRoomDTO
@@ -107,12 +118,6 @@ public class ChatService {
 	
 	
 
-	// 사용자의 채팅방 목록 조회
-	public List<ChatRoomDTO> findChatRoomsByUserId(String userId) {
-		List<ChatRoomEntity> rooms = chatRoomRepository.findByLenderUserIdOrBorrowerUserId(userId);
-		return rooms.stream()
-				.map(this::chatRoomEntityToDTO)
-				.collect(Collectors.toList());
-	}
+
 
 }

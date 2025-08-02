@@ -45,6 +45,10 @@ public class ChatMessageEntity {
     @JoinColumn(name = "sender_id")
     private UserEntity sender; // 메시지 보낸 사람
     
+    @ManyToOne
+    @JoinColumn(name = "receiver_id")
+    private UserEntity receiver; // 메시지 받는 사람
+    
     @Column(nullable = false)
     private String content; // 메시지 내용
 
