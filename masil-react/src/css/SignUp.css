@@ -1,9 +1,11 @@
 .signup_form {
-  @apply w-full min-h-screen pt-[80px] pb-10 flex justify-center items-center bg-gradient-to-br from-green-50 to-white;
+  @apply max-w-screen-xl  pt-[80px] pb-10 flex justify-center items-center bg-gradient-to-br from-green-50 to-white;
+  width: 100vw;
+  min-width: 300px;
 }
 
 .signup_form_container {
-  @apply w-[70rem] mt-20 max-w-xl p-8 mx-4 bg-white shadow-xl rounded-2xl;
+  @apply flex flex-1 flex-col mt-20 max-w-xl p-8 mx-4 bg-white shadow-xl rounded-2xl;
   animation: formFadeIn 0.5s ease-out;
 }
 
@@ -12,7 +14,7 @@
 }
 
 .signup_form form {
-  @apply w-full space-y-6;
+  @apply flex flex-col space-y-6;
 }
 
 .form_input {
@@ -55,7 +57,8 @@
 }
 
 .form-input {
-  @apply w-full px-4 py-3 text-sm text-gray-700 transition-all duration-300 border border-gray-200 rounded-lg;
+  /* @apply w-full px-4 py-3 text-sm text-gray-700 transition-all duration-300 border border-gray-200 rounded-lg; */
+   @apply flex px-4 py-3 text-sm text-gray-700 transition-all duration-300 border border-gray-200 rounded-lg;
 }
 
 .form-input:focus {
@@ -117,7 +120,7 @@
   }
 
   .signup_form_container {
-    @apply p-6;
+    @apply p-6 flex flex-col;
   }
 
   .photoImg {
