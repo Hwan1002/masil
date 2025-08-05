@@ -1,5 +1,5 @@
 .signup_form {
-  @apply max-w-screen-xl  pt-[80px] pb-10 flex justify-center items-center bg-gradient-to-br from-green-50 to-white;
+  @apply pt-[80px] pb-10 flex justify-center items-center bg-gradient-to-br from-green-50 to-white;
   width: 100vw;
   min-width: 300px;
 }
