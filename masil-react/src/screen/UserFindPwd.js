@@ -144,126 +144,128 @@ const UserFindPwd = () => {
 
     return (
         <form className='FindId_container' onSubmit={handleSubmit}>
-            <h2>비밀번호 찾기</h2>
+            <div className='findId_second_container'>
+                <h2>비밀번호 찾기</h2>
 
-            {/* 인증되지 않은 경우 이메일과 인증번호 입력 필드 보여주기 */}
-            {!isVerified ? (
-                <>
-                    <div className='FindId_left'>이메일</div>
-                    <div className="FindId_inputContainer">
-                        <div className="FindId_inputWrapper">
-                            <input
-                                className='FindId_input'
-                                type='email'
-                                name='email'
-                                placeholder='이메일 입력'
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                onKeyDown={handleKeyPress}
-                            />
+                {/* 인증되지 않은 경우 이메일과 인증번호 입력 필드 보여주기 */}
+                {!isVerified ? (
+                    <>
+                        <div className='FindId_left'>이메일</div>
+                        <div className="FindId_inputContainer">
+                            <div className="FindId_inputWrapper">
+                                <input
+                                    className='FindId_input'
+                                    type='email'
+                                    name='email'
+                                    placeholder='이메일 입력'
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    onKeyDown={handleKeyPress}
+                                />
+                                <button
+                                    type="submit"
+                                    className='FindId_sendBtn'
+                                    onClick={(e) => sendCertifyNumber(e)}
+                                >
+                                    전송
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className='FindId_left'>인증번호</div>
+                        <div className="FindId_inputContainer">
+                            <div className="FindId_inputWrapper">
+                                <input
+                                    className='FindId_input'
+                                    type='text'
+                                    name='verifyCode'
+                                    placeholder='인증번호 입력'
+                                    value={verifyCode}
+                                    onChange={(e) => setVerifyCode(e.target.value)}
+                                    onKeyDown={handleKeyPress}
+                                />
+                                <button
+                                    type="submit"
+                                    className='FindId_sendBtn'
+                                    onClick={(e) => emailCertified(e)}
+                                >
+                                    인증
+                                </button>
+                            </div>
+                        </div>
+                        {/* 돌아가기 버튼 및 비밀번호 찾기 버튼 */}
+                        <div className='FindId_flexrow'>
                             <button
-                                type="submit"
-                                className='FindId_sendBtn'
-                                onClick={(e) => sendCertifyNumber(e)}
+                                type="button"
+                                onClick={() => navigate('/userfindid')}
+                                className='FindId_button'
                             >
-                                전송
+                                돌아가기
+                            </button>
+                            <button type="button" className='FindId_button' onClick={() => navigate('/login')}>
+                                로그인
                             </button>
                         </div>
-                    </div>
+                    </>
 
-                    <div className='FindId_left'>인증번호</div>
-                    <div className="FindId_inputContainer">
-                        <div className="FindId_inputWrapper">
-                            <input
-                                className='FindId_input'
-                                type='text'
-                                name='verifyCode'
-                                placeholder='인증번호 입력'
-                                value={verifyCode}
-                                onChange={(e) => setVerifyCode(e.target.value)}
-                                onKeyDown={handleKeyPress}
-                            />
+                ) : (
+                    // 인증 완료 후 비밀번호 입력 칸 표시
+                    <>
+                        <div className='FindId_left'>새 비밀번호</div>
+                        <div className="FindId_inputContainer">
+                            <div className="FindId_inputWrapper">
+                                <input
+                                    className='FindId_input'
+                                    type='password'
+                                    placeholder='새 비밀번호 입력'
+                                    value={password}
+                                    onChange={(e) => setPassWord(e.target.value)}
+                                />
+                            </div>
+                        </div>
+
+                        <div className='FindId_left'>비밀번호 확인</div>
+                        <div className="FindId_inputContainer">
+                            <div className="FindId_inputWrapper">
+                                <input
+                                    className='FindId_input'
+                                    type='password'
+                                    placeholder='비밀번호 확인 입력'
+                                    value={pwdConfirm}
+                                    onChange={(e) => setPwdConfirm(e.target.value)}
+                                />
+                            </div>
+                        </div>
+                        {/* 돌아가기 버튼 및 비밀번호 찾기 버튼 */}
+                        <div className='FindId_flexrow'>
                             <button
-                                type="submit"
-                                className='FindId_sendBtn'
-                                onClick={(e) => emailCertified(e)}
+                                type="button"
+                                onClick={() => navigate('/userfindid')}
+                                className='FindId_button'
                             >
-                                인증
+                                아이디 찾기
                             </button>
+                            <button
+                                    type="submit"
+                                    className='FindId_sendBtn'
+                                    onClick={(e) => resetpassword()}
+                                >
+                                    인증
+                                </button>
                         </div>
-                    </div>
-                    {/* 돌아가기 버튼 및 비밀번호 찾기 버튼 */}
-                    <div className='FindId_flexrow'>
-                        <button
-                            type="button"
-                            onClick={() => navigate('/userfindid')}
-                            className='FindId_button'
-                        >
-                            돌아가기
-                        </button>
-                        <button type="button" className='FindId_button' onClick={() => navigate('/login')}>
-                            로그인
-                        </button>
-                    </div>
-                </>
-
-            ) : (
-                // 인증 완료 후 비밀번호 입력 칸 표시
-                <>
-                    <div className='FindId_left'>새 비밀번호</div>
-                    <div className="FindId_inputContainer">
-                        <div className="FindId_inputWrapper">
-                            <input
-                                className='FindId_input'
-                                type='password'
-                                placeholder='새 비밀번호 입력'
-                                value={password}
-                                onChange={(e) => setPassWord(e.target.value)}
-                            />
-                        </div>
-                    </div>
-
-                    <div className='FindId_left'>비밀번호 확인</div>
-                    <div className="FindId_inputContainer">
-                        <div className="FindId_inputWrapper">
-                            <input
-                                className='FindId_input'
-                                type='password'
-                                placeholder='비밀번호 확인 입력'
-                                value={pwdConfirm}
-                                onChange={(e) => setPwdConfirm(e.target.value)}
-                            />
-                        </div>
-                    </div>
-                    {/* 돌아가기 버튼 및 비밀번호 찾기 버튼 */}
-                    <div className='FindId_flexrow'>
-                        <button
-                            type="button"
-                            onClick={() => navigate('/userfindid')}
-                            className='FindId_button'
-                        >
-                            아이디 찾기
-                        </button>
-                        <button
-                                type="submit"
-                                className='FindId_sendBtn'
-                                onClick={(e) => resetpassword()}
-                            >
-                                인증
-                            </button>
-                    </div>
-                </>
-            )}
+                    </>
+                )}
 
 
 
-            <Modal
-                isOpen={isModalOpen}
-                onClose={closeModal}
-                title={modalTitle}
-                content={modalMessage}
-                actions={modalActions}
-            />
+                <Modal
+                    isOpen={isModalOpen}
+                    onClose={closeModal}
+                    title={modalTitle}
+                    content={modalMessage}
+                    actions={modalActions}
+                />
+            </div>
         </form>
 
     );
