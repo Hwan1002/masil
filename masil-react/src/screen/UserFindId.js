@@ -66,49 +66,51 @@ const UserFindId = () => {
 
   return (
     <form className="FindId_container" onSubmit={handleSubmit}>
-      <h2>아이디 찾기</h2>
+      <div className="findId_second_container">
+        <h2>아이디 찾기</h2>
 
-      <div className="FindId_left">이메일</div>
-      <div className="FindId_inputContainer">
-        <div className="FindId_inputWrapper">
-          <input
-            className="FindId_input"
-            type="email"
-            placeholder="이메일 입력"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            onKeyDown={handleKeyPress}
-          />
-          <button type="submit" className="FindId_sendBtn" disabled={isLoading}>
-            {isLoading ? "전송 중..." : "찾기"}
+        <div className="FindId_left">이메일</div>
+        <div className="FindId_inputContainer">
+          <div className="FindId_inputWrapper">
+            <input
+              className="FindId_input"
+              type="email"
+              placeholder="이메일 입력"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              onKeyDown={handleKeyPress}
+            />
+            <button type="submit" className="FindId_sendBtn" disabled={isLoading}>
+              {isLoading ? "전송 중..." : "찾기"}
+            </button>
+          </div>
+        </div>
+
+        <div className="FindId_flexrow">
+          <button
+            type="button"
+            onClick={() => navigate("/login")}
+            className="FindId_button"
+          >
+            돌아가기
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate("/userfindpwd")}
+            className="FindId_button"
+          >
+            비밀번호 찾기
           </button>
         </div>
-      </div>
 
-      <div className="FindId_flexrow">
-        <button
-          type="button"
-          onClick={() => navigate("/login")}
-          className="FindId_button"
-        >
-          돌아가기
-        </button>
-        <button
-          type="button"
-          onClick={() => navigate("/userfindpwd")}
-          className="FindId_button"
-        >
-          비밀번호 찾기
-        </button>
-      </div>
-
-      <Modal
-        isOpen={isModalOpen}
-        onClose={handleModalClose}
-        title={modalTitle}
-        content={modalMessage}
-        actions={modalActions}
-      />
+        <Modal
+          isOpen={isModalOpen}
+          onClose={handleModalClose}
+          title={modalTitle}
+          content={modalMessage}
+          actions={modalActions}
+        />
+        </div>
     </form>
   );
 };
