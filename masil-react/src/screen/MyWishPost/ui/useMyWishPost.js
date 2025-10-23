@@ -19,16 +19,18 @@ export const useMyWishPost = () => {
 
   const [items, setItems] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [addressKeyword, setAddressKeyword] = useState("");
+  const [addressKeyword] = useState("");
 
   const itemsPerPage = 15;
 
-  const filteredItems = items.filter((item) => {
-    const matchesAddress = (item.address || "")
-      .toLowerCase()
-      .includes(addressKeyword);
-    return matchesAddress;
-  });
+  const filteredItems = Array.isArray(items)
+    ? items.filter((item) => {
+        const matchesAddress = (item.address || "")
+          .toLowerCase()
+          .includes(addressKeyword);
+        return matchesAddress;
+      })
+    : [];
 
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -41,9 +43,15 @@ export const useMyWishPost = () => {
     const fetchData = async () => {
       try {
         const response = await Api.get("/wish");
-        if (response) setItems(response.data);
+        if (response && response.data) {
+          // response.data가 배열인지 확인
+          setItems(Array.isArray(response.data) ? response.data : []);
+        } else {
+          setItems([]);
+        }
       } catch (error) {
         console.error("데이터 불러오기 실패:", error);
+        setItems([]);
       }
     };
     fetchData();
