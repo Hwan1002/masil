@@ -1,13 +1,7 @@
 import { VALIDATION_MESSAGES } from "../constants";
 
-/**
- * 폼 데이터 유효성 검사
- * @param {Object} formData - 검사할 폼 데이터
- * @param {boolean} duplicateBtn - 중복 체크 완료 여부
- * @param {string} pwdConfirm - 비밀번호 확인
- * @param {boolean} verifyCodeConfirm - 이메일 인증 완료 여부
- * @returns {Object} 유효성 검사 결과 { isValid, message }
- */
+// 폼 데이터 유효성 검사
+
 export const validateSignUpForm = (
   formData,
   duplicateBtn,
@@ -72,4 +66,3 @@ export const createSignUpFormData = (formData, location, profilePhoto) => {
 
   return data;
 };
-

@@ -8,7 +8,7 @@ import { useChatRoom } from "hook/useChatRoom";
 import { useImageCarousel } from "./hooks/useImageCarousel";
 import { usePostNavigation } from "./hooks/usePostNavigation";
 import { useWishlist } from "./hooks/useWishlist";
-import { formatDate, formatCurrency } from "./utils/formatters";
+import { formatDateTime, formatCurrency } from "utils/utils.ts";
 
 export const useSelectedRentalItem = () => {
   const {
@@ -136,7 +136,7 @@ export const useSelectedRentalItem = () => {
     handleChatClick,
 
     // 유틸리티
-    formatDate,
+    formatDate: formatDateTime,
     formatCurrency,
   };
 };

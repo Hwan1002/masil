@@ -74,4 +74,3 @@ export const useEmailVerification = () => {
     setIsReadOnly,
   };
 };
-
