@@ -1,13 +1,7 @@
 import { useState } from "react";
 import { Api } from "context/MasilContext";
 
-/**
- * 위시리스트 로직을 관리하는 커스텀 훅
- * @param {number} postIdx - 게시물 인덱스
- * @param {Function} openModal - 모달 오픈 함수
- * @param {Function} closeModal - 모달 닫기 함수
- * @returns {Object} 위시 상태와 핸들러
- */
+//위시리스트 로직을 관리하는 커스텀 훅
 export const useWishlist = (postIdx, openModal, closeModal) => {
   const [isWished, setIsWished] = useState(false);
 
@@ -64,4 +58,3 @@ export const useWishlist = (postIdx, openModal, closeModal) => {
     handleWishClick,
   };
 };
-

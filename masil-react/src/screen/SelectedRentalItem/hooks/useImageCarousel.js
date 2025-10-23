@@ -5,6 +5,7 @@ import { useState } from "react";
  * @param {Array} images - 이미지 배열
  * @returns {Object} 현재 인덱스와 네비게이션 핸들러
  */
+
 export const useImageCarousel = (images) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -28,4 +29,3 @@ export const useImageCarousel = (images) => {
     handleImageNavigation,
   };
 };
-
