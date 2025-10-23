@@ -76,12 +76,28 @@ public class ChatService {
 
 	}
 	
-	// 사용자의 채팅방 목록 조회
+	// 사용자의 채팅방 목록 조회 (읽지 않은 메시지 수 포함)
 	public List<ChatRoomDTO> findChatRoomsByUserId(String userId) {
 		List<ChatRoomEntity> rooms = chatRoomRepository.findByLenderUserIdOrBorrowerUserId(userId);
 		return rooms.stream()
-				.map(this::chatRoomEntityToDTO)
+				.map(room -> chatRoomEntityToDTOWithUnreadCount(room, userId))
 				.collect(Collectors.toList());
+	}
+	
+	// 사용자의 전체 읽지 않은 메시지 수 조회
+	public Long getTotalUnreadMessageCount(String userId) {
+		return chatMessageRepository.countUnreadMessagesByUserId(userId);
+	}
+	
+	// 특정 채팅방의 읽지 않은 메시지 수 조회
+	public Long getUnreadMessageCountByRoomId(Long roomId, String userId) {
+		return chatMessageRepository.countUnreadMessagesByRoomIdAndUserId(roomId, userId);
+	}
+	
+	// 특정 채팅방의 메시지들을 읽음 처리
+	@Transactional
+	public void markMessagesAsRead(Long roomId, String userId) {
+		chatMessageRepository.markMessagesAsRead(roomId, userId);
 	}
 	
 	
@@ -97,15 +113,32 @@ public class ChatService {
 				.build();
 	}
 	
+	//chatRoomEntity-> chatRoomDTO (읽지 않은 메시지 수 포함)
+	public ChatRoomDTO chatRoomEntityToDTOWithUnreadCount(ChatRoomEntity chatRoom, String userId) {
+		Long unreadCount = chatMessageRepository.countUnreadMessagesByRoomIdAndUserId(chatRoom.getRoomId(), userId);
+		return	ChatRoomDTO.builder().roomId(chatRoom.getRoomId())
+				.createdAt(chatRoom.getCreatedAt())
+				.lenderId(chatRoom.getLender().getUserId())
+				.borrowerId(chatRoom.getBorrower().getUserId())
+				.lenderNickname(chatRoom.getLender().getUserNickName())
+				.borrowerNickname(chatRoom.getBorrower().getUserNickName())
+				.unreadCount(unreadCount.intValue())
+				.build();
+	}
+	
 	
 	
 	//chatMessageEntity -> chatMessageDTO 메세지는 항상 방을기준으로 조회되기때문에 List로만 반환하고 리스트->리스트로 반환하는 convert메서드로 작성했음 
 	public List<ChatMessageDTO> messageEntityToDTO(List<ChatMessageEntity> messages) {
-		return messages.stream().map(m -> ChatMessageDTO.builder()
+		return messages.stream()
+				.filter(m -> m.getSender() != null && m.getReceiver() != null) // null 체크 추가
+				.map(m -> ChatMessageDTO.builder()
 				.messageId(m.getMessageId())
 				.senderId(m.getSender().getUserId())
+				.receiverId(m.getReceiver().getUserId())
 				.content(m.getContent())
 				.sentAt(m.getSentAt())
+				.isRead(m.getIsRead())
 				.build()).collect(Collectors.toList());
 	}
 	

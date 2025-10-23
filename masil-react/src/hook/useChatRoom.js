@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { useChatContext } from "../context/ChatContext";
-import { useProjectContext } from "../context/MasilContext";
+import { useChatContext } from "context/ChatContext";
+import { useProjectContext } from "context/MasilContext";
 
 export function useChatRoom() {
   const { connectWebSocket, sendMessage, wsRef, disconnectWebSocket } =

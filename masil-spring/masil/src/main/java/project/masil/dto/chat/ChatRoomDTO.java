@@ -19,6 +19,7 @@ public class ChatRoomDTO {
     private LocalDateTime createdAt;    // 채팅방 생성 시각
     private String lenderNickname ; 	// 빌려주는 사람 닉네임 
     private String borrowerNickname ; 	// 빌리는 사람 닉네임 
+    private Integer unreadCount;        //0926 읽지 않은 메시지 수
     // 필요하다면 추가 필드 (예: 게시글 제목, 참여자 닉네임 등)
 	
 }

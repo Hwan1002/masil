@@ -77,6 +77,25 @@ public class ChatHandler extends AbstractWebSocketHandler  implements SubProtoco
             }
         }
         
+        // 6. 수신자에게 읽지 않은 메시지 수 업데이트 알림
+        try {
+            Long unreadCount = chatService.getUnreadMessageCountByRoomId(chatRoom.getRoomId(), dto.getReceiverId());
+            String unreadNotification = objectMapper.writeValueAsString(Map.of(
+                "type", "unread_count_update",
+                "roomId", chatRoom.getRoomId(),
+                "unreadCount", unreadCount
+            ));
+            
+            // 수신자 세션에 읽지 않은 메시지 수 알림 전송
+            for (WebSocketSession s : sessions) {
+                if (s.isOpen() && s.getPrincipal().getName().equals(dto.getReceiverId())) {
+                    s.sendMessage(new TextMessage(unreadNotification));
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("읽지 않은 메시지 수 알림 전송 실패: " + e.getMessage());
+        }
+        
     }
 
     @Override

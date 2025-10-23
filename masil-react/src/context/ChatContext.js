@@ -93,8 +93,6 @@ export const ChatProvider = ({ children }) => {
           wsRef.current = ws;
         };
 
-       
-
         ws.onerror = (error) => {
           console.error("웹소켓 연결 실패:", error);
         };
@@ -167,41 +165,35 @@ export const ChatProvider = ({ children }) => {
     [getCurrentUserId]
   );
 
-
   const receiveMessage = useCallback(
-     wsRef.onmessage = (event) => {
-          try {
-            const message = JSON.parse(event.data);
-            console.log("받은 메시지:", message);
+    (wsRef.onmessage = (event) => {
+      try {
+        const message = JSON.parse(event.data);
+        console.log("받은 메시지:", message);
 
-            setMessages((prevMessages) => {
-              // 동일한 내용의 임시 메시지를 실제 메시지로 교체
-              const filteredMessages = prevMessages.filter(
-                (msg) =>
-                  msg.content !== message.content ||
-                  msg.messageId === message.messageId
-              );
+        setMessages((prevMessages) => {
+          // 동일한 내용의 임시 메시지를 실제 메시지로 교체
+          const filteredMessages = prevMessages.filter(
+            (msg) =>
+              msg.content !== message.content ||
+              msg.messageId === message.messageId
+          );
 
-              return [
-                ...filteredMessages,
-                {
-                  messageId: message.messageId,
-                  senderId: message.sender.userId,
-                  content: message.content,
-                  sentAt: message.sentAt,
-                },
-              ];
-            });
-          } catch (error) {
-            console.error("메시지 파싱 오류:", error);
-          }
-        }
-      )
-
-
-
-
-
+          return [
+            ...filteredMessages,
+            {
+              messageId: message.messageId,
+              senderId: message.sender.userId,
+              content: message.content,
+              sentAt: message.sentAt,
+            },
+          ];
+        });
+      } catch (error) {
+        console.error("메시지 파싱 오류:", error);
+      }
+    })
+  );
 
   const value = {
     room,
@@ -213,6 +205,7 @@ export const ChatProvider = ({ children }) => {
     connectWebSocket,
     sendMessage,
     disconnectWebSocket,
+    receiveMessage,
   };
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;

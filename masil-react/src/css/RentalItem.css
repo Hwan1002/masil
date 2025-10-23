@@ -47,7 +47,7 @@ body {
 /* 아이템 목록 그리드 */
 .rental-container {
   display: grid;
-  grid-template-columns: repeat(5, 300px); /* 고정 너비로 설정 */
+  grid-template-columns: repeat(4, 220px);
   flex-direction: row;
   gap: 1rem;
   justify-content: center;
@@ -177,7 +177,7 @@ body {
 
 /* 체크박스 스타일 */
 .custom-checkbox {
-  @apply relative w-4 h-4 transition-all duration-300 ease-in-out border border-gray-300 rounded appearance-none cursor-pointer;
+  @apply relative w-4 h-4 rounded border border-gray-300 transition-all duration-300 ease-in-out appearance-none cursor-pointer;
 }
 
 .custom-checkbox:checked {
@@ -194,7 +194,7 @@ body {
 
 /* 체크박스 컨테이너 스타일 */
 .checkbox-container {
-  @apply flex items-center transition-opacity duration-200 gap-x-2 hover:opacity-90;
+  @apply flex gap-x-2 items-center transition-opacity duration-200 hover:opacity-90;
 }
 
 .checkbox-container label {
@@ -207,31 +207,19 @@ body {
 }
 
 /* 반응형 조정 */
-@media (max-width: 1900px) {
-  .rental-container {
-    grid-template-columns: repeat(4, 220px);
-  }
-}
-
-@media (max-width: 1580px) {
+@media (max-width: 1200px) {
   .rental-container {
     grid-template-columns: repeat(3, 220px);
   }
 }
 
-@media (max-width: 1280px) {
+@media (max-width: 900px) {
   .rental-container {
     grid-template-columns: repeat(2, 220px);
   }
 }
 
-@media (max-width: 1000px) {
-  .rental-container {
-    grid-template-columns: repeat(2, 220px);
-  }
-}
-
-@media (max-width: 880px) {
+@media (max-width: 600px) {
   .rental-container {
     grid-template-columns: repeat(1, 220px);
   }

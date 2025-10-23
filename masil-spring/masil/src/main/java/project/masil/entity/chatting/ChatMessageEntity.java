@@ -54,5 +54,9 @@ public class ChatMessageEntity {
 
     @CreatedDate
     private LocalDateTime sentAt; // 메시지 전송 시각
+    //0926 메세지 읽음 상태 추가
+    @Column(nullable = false)
+    @Builder.Default
+    private Boolean isRead = false; 
 
 }
