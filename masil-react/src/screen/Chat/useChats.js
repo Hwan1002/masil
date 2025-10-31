@@ -13,6 +13,7 @@ export const useChats = () => {
 
   useEffect(() => {
     fetchChatRooms();
+    //   getTotalUnreadMsgCountByRoom();
   }, []);
 
   const fetchChatRooms = async () => {
@@ -43,11 +44,6 @@ export const useChats = () => {
     const response = await Api.get(`/chatting/unread-count/${roomId}`);
     console.log("채팅방별 읽지 않은 메시지 수 응답:", response.data);
   };
-
-  // useEffect(() => {
-  //   fetchChatRooms();
-  //   getTotalUnreadMsgCountByRoom();
-  // }, [chatRooms]);
 
   // 테스트용 채팅방 생성
   const createTestChatRoom = async () => {
