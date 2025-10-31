@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useChats } from "../useChats.js";
-import { formatDate } from "utils/utils.ts";
+import { formatDateTime } from "utils/utils.ts";
 import defaultProfile from "css/img/userDefault.svg";
+import "css/Chat.css";
 
 const Chat = () => {
   const navigate = useNavigate();
@@ -14,7 +15,27 @@ const Chat = () => {
     createTestChatRoom,
     handleRoomClick,
     getPartnerNickname,
+    getPartnerProfilePhoto,
   } = useChats();
+
+  // 모든 채팅방의 읽지 않은 메시지 수 합계 계산 및 Header에 전달
+  useEffect(() => {
+    if (!loading && Array.isArray(roomsToDisplay)) {
+      const totalUnreadCount = roomsToDisplay.reduce((sum, room) => {
+        const unreadCount = room.unreadCount || 0;
+        return sum + unreadCount;
+      }, 0);
+
+      console.log("총 읽지 않은 메시지 수:", totalUnreadCount);
+      
+      // Header에 총합 전달
+      window.dispatchEvent(
+        new CustomEvent("totalUnreadCountUpdate", {
+          detail: { totalUnreadCount },
+        })
+      );
+    }
+  }, [roomsToDisplay, loading]);
 
   if (loading) {
     return (
@@ -25,22 +46,46 @@ const Chat = () => {
   }
 
   return (
-    <div>
-      <div className="flex justify-center items-center mt-40">
-        <div className="w-[500px] h-auto p-4 bg-white rounded-xl shadow-lg">
-          <h2 className="flex gap-2 items-center mb-6 text-2xl font-bold text-gray-800">
-            <i className="text-green-500 fas fa-comments"></i>
-            채팅
-          </h2>
-
-          <div className="overflow-y-auto p-2 mb-4 text-xs bg-gray-100 rounded">
+    <div className="mt-44">
+      <div className="chat-container">
+        <h2 className="flex gap-2 items-center mb-6 text-2xl font-bold text-gray-800">
+          <i className="text-green-500 fas fa-comments"></i>
+          마실 채팅
+        </h2>
+        <div className="flex flex-col justify-center items-center">
+          <div className="overflow-y-auto p-2 mb-4 text-xs bg-gray-100 rounded w-[40vw] h-[30vh]">
             <h2> 디버깅 정보 </h2>
             <p>chatRooms 타입: {typeof chatRooms}</p>
             <p>
               chatRooms 길이:{" "}
               {Array.isArray(chatRooms) ? chatRooms.length : "N/A"}
             </p>
-            <p>chatRooms 내용: {JSON.stringify(chatRooms)}</p>
+            <p>chatRooms 내용: {JSON.stringify(chatRooms, null, 2)}</p>
+            {roomsToDisplay.length > 0 && (
+              <div className="mt-4">
+                <h3 className="mb-2 font-bold">
+                  각 채팅방 프로필 이미지 정보:
+                </h3>
+                {roomsToDisplay.map((room) => (
+                  <div key={room.roomId} className="p-2 mb-2 bg-white rounded">
+                    <p>Room ID: {room.roomId}</p>
+                    <p>
+                      lenderProfilePhotoPath:{" "}
+                      {room.lenderProfilePhotoPath || "없음"}
+                    </p>
+                    <p>
+                      borrowerProfilePhotoPath:{" "}
+                      {room.borrowerProfilePhotoPath || "없음"}
+                    </p>
+                    <p>lenderId: {room.lenderId}</p>
+                    <p>borrowerId: {room.borrowerId}</p>
+                    <p>
+                      가져온 프로필: {getPartnerProfilePhoto(room) || "없음"}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {roomsToDisplay.length === 0 ? (
@@ -64,35 +109,62 @@ const Chat = () => {
             </div>
           ) : (
             <div className="space-y-2">
-              {roomsToDisplay.map((room) => (
-                <div
-                  key={room.roomId}
-                  onClick={() => handleRoomClick(room)}
-                  className="flex items-center p-4 rounded-lg border border-gray-100 transition-colors cursor-pointer hover:bg-gray-50"
-                >
-                  <div className="relative">
-                    <img
-                      src={defaultProfile}
-                      alt={`${getPartnerNickname(room)}의 프로필`}
-                      className="object-cover w-12 h-12 rounded-full"
-                    />
-                  </div>
+              {roomsToDisplay.map((room) => {
+                const profilePhoto = getPartnerProfilePhoto(room);
+                const imageSrc = profilePhoto
+                  ? `http://localhost:9090${profilePhoto}`
+                  : defaultProfile;
 
-                  <div className="flex-1 ml-4">
-                    <div className="flex justify-between items-center">
-                      <span className="font-medium text-gray-900">
-                        {getPartnerNickname(room)}
-                      </span>
-                      <span className="text-sm text-gray-500">
-                        {formatDate(room.createdAt)}
+                console.log("Chat 컴포넌트 - room:", room);
+                console.log("Chat 컴포넌트 - profilePhoto:", profilePhoto);
+                console.log("Chat 컴포넌트 - imageSrc:", imageSrc);
+
+                return (
+                  <div
+                    key={room.roomId}
+                    onClick={() => handleRoomClick(room)}
+                    className="chatRoom"
+                  >
+                    <div className="relative">
+                      <img
+                        src={imageSrc}
+                        alt={`${getPartnerNickname(room)}의 프로필`}
+                        className="chatRoomProfilePhoto"
+                        onError={(e) => {
+                          console.error("이미지 로딩 실패:", imageSrc);
+                          e.target.src = defaultProfile;
+                        }}
+                      />
+                    </div>
+                    <div className="flex-1 ml-4">
+                      <div className="flex justify-between items-center">
+                        <div className="flex gap-2 items-center">
+                          <span className="font-medium text-gray-900">
+                            {getPartnerNickname(room)}
+                          </span>
+                          {room.unreadCount > 0 && (
+                            <span className="flex justify-center items-center min-w-[20px] h-5 px-1.5 text-xs text-white bg-red-500 rounded-full">
+                              {room.unreadCount > 99 ? "99+" : room.unreadCount}
+                            </span>
+                          )}
+                        </div>
+                        <span className="text-sm text-gray-500">
+                          {formatDateTime(
+                            room.createdAt,
+                            "YYYY-MM-DD HH:mm:ss"
+                          )}
+                        </span>
+                      </div>
+                      <p className="mt-1 text-sm text-gray-500">
+                        채팅방 ID: {room.roomId}
+                      </p>
+                      <span className="flex justify-end items-end">
+                        <button className="chatRoomLeaveButton">나가기</button>
                       </span>
                     </div>
-                    <p className="mt-1 text-sm text-gray-500">
-                      채팅방 ID: {room.roomId}
-                    </p>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

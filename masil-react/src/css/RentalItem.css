@@ -8,10 +8,8 @@ body {
 
 .page-container {
   display: flex;
-  padding: 7% 10%;
+  margin-top: 12%;
   box-sizing: border-box;
-  height: 100vh;
-  width: 100vw;
   min-height: 0;
   justify-content: flex-start;
 }
@@ -22,6 +20,7 @@ body {
   padding: 16px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  min-height: 50vh;
 }
 
 .filter-text {
@@ -154,6 +153,22 @@ body {
 
 .fixed-button:hover {
   background-color: #00a32c;
+}
+
+.fixed-button span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  transform-origin: center center;
+  transition: transform 0.3s ease;
+  font-size: 35px;
+}
+
+.fixed-button:hover span {
+  transform: rotate(50deg);
+  transform-origin: center center;
 }
 
 .pagination {

@@ -109,7 +109,9 @@ public class ChatService {
 				.lenderId(chatRoom.getLender().getUserId())
 				.borrowerId(chatRoom.getBorrower().getUserId())
 				.lenderNickname(chatRoom.getLender().getUserNickName())
-				.borrowerNickname(chatRoom.getBorrower().getUserNickName()) 
+				.borrowerNickname(chatRoom.getBorrower().getUserNickName())
+				.lenderProfilePhotoPath(chatRoom.getLender().getProfilePhotoPath())
+				.borrowerProfilePhotoPath(chatRoom.getBorrower().getProfilePhotoPath())
 				.build();
 	}
 	
@@ -122,6 +124,8 @@ public class ChatService {
 				.borrowerId(chatRoom.getBorrower().getUserId())
 				.lenderNickname(chatRoom.getLender().getUserNickName())
 				.borrowerNickname(chatRoom.getBorrower().getUserNickName())
+				.lenderProfilePhotoPath(chatRoom.getLender().getProfilePhotoPath())
+				.borrowerProfilePhotoPath(chatRoom.getBorrower().getProfilePhotoPath())
 				.unreadCount(unreadCount.intValue())
 				.build();
 	}
@@ -140,6 +144,21 @@ public class ChatService {
 				.sentAt(m.getSentAt())
 				.isRead(m.getIsRead())
 				.build()).collect(Collectors.toList());
+	}
+	
+	// 단일 ChatMessageEntity를 ChatMessageDTO로 변환 (WebSocket 브로드캐스트용)
+	public ChatMessageDTO messageEntityToDTO(ChatMessageEntity message) {
+		if (message.getSender() == null || message.getReceiver() == null) {
+			throw new IllegalArgumentException("메시지의 sender 또는 receiver가 null입니다.");
+		}
+		return ChatMessageDTO.builder()
+				.messageId(message.getMessageId())
+				.senderId(message.getSender().getUserId())
+				.receiverId(message.getReceiver().getUserId())
+				.content(message.getContent())
+				.sentAt(message.getSentAt())
+				.isRead(message.getIsRead())
+				.build();
 	}
 	
 	

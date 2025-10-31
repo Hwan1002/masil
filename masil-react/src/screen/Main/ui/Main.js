@@ -15,10 +15,12 @@ const Main = () => {
                 </h2>
                 <FaLeaf className="text-[#00C68E] text-2xl animate-bounce" />
               </div>
-              <p className="text-gray-600">이웃과 함께 나누는 따뜻한 마실</p>
+              <p className="font-bold text-gray-600">
+                이웃과 함께 나누는 따뜻한 마실
+              </p>
             </div>
 
-            <div className="flex gap-x-3 items-center p-2 bg-white rounded-full shadow-lg">
+            <div className="flex gap-x-3 items-center p-2 bg-white rounded-full border border-gray-100 shadow-lg">
               <input
                 className="searchInput"
                 type="text"

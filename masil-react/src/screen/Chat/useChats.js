@@ -7,7 +7,7 @@ export const useChats = () => {
   const [loading, setLoading] = useState(true);
 
   const { handleChatClick } = useChatRoom();
-
+  console.log("chatRooms", chatRooms);
   // chatRooms가 배열인지 확인
   const roomsToDisplay = Array.isArray(chatRooms) ? chatRooms : [];
 
@@ -38,6 +38,17 @@ export const useChats = () => {
     }
   };
 
+  //채팅방별 안읽은 메시지수 가져오기
+  const getTotalUnreadMsgCountByRoom = async (roomId) => {
+    const response = await Api.get(`/chatting/unread-count/${roomId}`);
+    console.log("채팅방별 읽지 않은 메시지 수 응답:", response.data);
+  };
+
+  // useEffect(() => {
+  //   fetchChatRooms();
+  //   getTotalUnreadMsgCountByRoom();
+  // }, [chatRooms]);
+
   // 테스트용 채팅방 생성
   const createTestChatRoom = async () => {
     try {
@@ -65,6 +76,31 @@ export const useChats = () => {
       return room.lenderNickname;
     }
     return "알 수 없음";
+  };
+
+  const getPartnerProfilePhoto = (room) => {
+    const loginInfo = JSON.parse(localStorage.getItem("login-storage"));
+    const myUserId = loginInfo?.state?.userId;
+
+    let profilePhotoPath;
+    if (myUserId === room.lenderId) {
+      profilePhotoPath = room.borrowerProfilePhotoPath;
+    } else if (myUserId === room.borrowerId) {
+      profilePhotoPath = room.lenderProfilePhotoPath;
+    } else {
+      console.log(
+        "getPartnerProfilePhoto: 현재 사용자가 채팅방에 참여하지 않음"
+      );
+      return null;
+    }
+
+    // 프로필 사진이 없거나 "default"인 경우 null 반환
+    if (!profilePhotoPath || profilePhotoPath === "default") {
+      console.log("getPartnerProfilePhoto: 프로필 사진 없음 또는 default");
+      return null;
+    }
+
+    return profilePhotoPath;
   };
 
   const handleRoomClick = async (room) => {
@@ -101,6 +137,7 @@ export const useChats = () => {
     fetchChatRooms,
     createTestChatRoom,
     getPartnerNickname,
+    getPartnerProfilePhoto,
     handleRoomClick,
   };
 };

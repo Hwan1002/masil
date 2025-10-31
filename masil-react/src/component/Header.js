@@ -1,4 +1,9 @@
-import React, { useContext, useLayoutEffect, useState } from "react";
+import React, {
+  useContext,
+  useLayoutEffect,
+  useState,
+  useCallback,
+} from "react";
 import { Link } from "react-router-dom";
 import { Api, ProjectContext } from "../context/MasilContext";
 import useModal from "../context/useModal";
@@ -19,39 +24,88 @@ const Header = () => {
 
   const [totalUrMessageCn, setTotalUrMessageCn] = useState(0);
 
-  const [isRead, setIsRead] = useState(false);
+  // getTotalUnreadMessageCount 함수를 useCallback으로 감싸기
+  const getTotalUnreadMessageCount = useCallback(async () => {
+    if (!accessToken) {
+      console.log("토큰이 없어서 함수 종료");
+      return;
+    }
+    try {
+      const response = await fetch(
+        "http://localhost:9090/chatting/unread-count",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      if (!response.ok) {
+        console.error("응답 오류:", response.status, response.statusText);
+        return;
+      } else {
+        const result = await response.json();
+        console.log("읽지 않은 메시지 수:", result);
+        setTotalUrMessageCn(result || 0);
+      }
+    } catch (error) {
+      console.error("읽지 않은 메시지 수 조회 실패:", error);
+    }
+  }, [accessToken]);
 
   useLayoutEffect(() => {
-    const getTotalUnreadMessageCount = async () => {
-      if (!accessToken) {
-        console.log("토큰이 없어서 함수 종료");
-        return;
+    getTotalUnreadMessageCount();
+
+    // 주기적으로 업데이트 (30초마다)
+    const interval = setInterval(() => {
+      if (accessToken && loginSuccess) {
+        getTotalUnreadMessageCount();
       }
-      try {
-        const response = await fetch(
-          "http://localhost:9090/chatting/unread-count",
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
-        if (!response.ok) {
-          console.error("응답 오류:", response.status, response.statusText);
-          return;
-        } else {
-          setIsRead(false);
-          const result = await response.json();
-          setTotalUrMessageCn(result);
+    }, 30000);
+
+    return () => clearInterval(interval);
+  }, [accessToken, loginSuccess, getTotalUnreadMessageCount]);
+
+  // 전역 이벤트 리스너로 실시간 업데이트 처리
+  useLayoutEffect(() => {
+    // WebSocket에서 오는 개별 채팅방의 읽지 않은 메시지 수 업데이트
+    const handleUnreadCountUpdate = (event) => {
+      const unreadCount = event.detail?.unreadCount;
+      if (typeof unreadCount === "number") {
+        console.log("읽지 않은 메시지 수 실시간 업데이트:", unreadCount);
+        // 개별 채팅방 업데이트는 전체 조회로 처리
+        if (accessToken && loginSuccess) {
+          getTotalUnreadMessageCount();
         }
-      } catch (error) {
-        console.error("읽지 않은 메시지 수 조회 실패:", error);
       }
     };
 
-    getTotalUnreadMessageCount();
-  }, [accessToken]);
+    // Chat.js에서 계산된 총 읽지 않은 메시지 수 업데이트
+    const handleTotalUnreadCountUpdate = (event) => {
+      const totalUnreadCount = event.detail?.totalUnreadCount;
+      if (typeof totalUnreadCount === "number") {
+        console.log(
+          "Chat.js에서 계산된 총 읽지 않은 메시지 수:",
+          totalUnreadCount
+        );
+        setTotalUrMessageCn(totalUnreadCount);
+      }
+    };
+
+    window.addEventListener("unreadCountUpdate", handleUnreadCountUpdate);
+    window.addEventListener(
+      "totalUnreadCountUpdate",
+      handleTotalUnreadCountUpdate
+    );
+
+    return () => {
+      window.removeEventListener("unreadCountUpdate", handleUnreadCountUpdate);
+      window.removeEventListener(
+        "totalUnreadCountUpdate",
+        handleTotalUnreadCountUpdate
+      );
+    };
+  }, [accessToken, loginSuccess, getTotalUnreadMessageCount]);
 
   const logoutClicked = async () => {
     try {
@@ -101,9 +155,9 @@ const Header = () => {
               <div className="flex justify-center items-center w-[80px]">
                 채팅
                 <i className="ml-1 fas fa-comment-dots text-[#a9ddb7]"></i>
-                {totalUrMessageCn > 0 && isRead && (
-                  <span className="flex justify-center items-center ml-1 w-4 h-4 text-xs text-white bg-red-500 rounded-full animate-shake">
-                    {totalUrMessageCn}
+                {totalUrMessageCn > 0 && (
+                  <span className="flex justify-center items-center ml-1 min-w-[20px] h-5 px-1 text-xs text-white bg-red-500 rounded-full animate-shake">
+                    {totalUrMessageCn > 99 ? "99+" : totalUrMessageCn}
                   </span>
                 )}
               </div>
