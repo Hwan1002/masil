@@ -10,7 +10,7 @@ import UserFindId from './screen/UserFindId';
 import UserFindPwd from './screen/UserFindPwd';
 import PostRegist from './screen/PostRegist';
 import RentalItem from "./screen/RentalItem";
-//duaqud ektl dnjfdydlfdlsp dkdm wlrudhk dlrjf 20susdms ejgodi
+//duaqud ektl dnjfdydlfdlsp dkdm wlrudhk dlrjf 20susdms ejgo
 function App() {
   return (
     <ProjectProvider>
