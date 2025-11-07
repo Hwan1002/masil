@@ -1,0 +1,21 @@
+.chat-container {
+  @apply w-[50vw] h-auto p-4 bg-white rounded-xl shadow-lg;
+}
+
+.chatRoom {
+  @apply flex items-center p-4 rounded-lg border border-gray-100 transition-colors cursor-pointer hover:bg-gray-50 w-[40vw];
+}
+.chatRoom:hover {
+  @apply bg-green-100;
+}
+
+.chatRoomProfilePhoto {
+  @apply object-cover w-16 h-16 rounded-full;
+}
+
+.chatRoomLeaveButton {
+  @apply px-3 py-2 text-xs text-white bg-red-500 rounded transition-colors;
+}
+.chatRoomLeaveButton:hover {
+  @apply bg-red-600;
+}

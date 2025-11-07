@@ -1,10 +1,5 @@
 package project.masil.entity;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
-import org.springframework.data.annotation.CreatedDate;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,7 +20,6 @@ import lombok.NoArgsConstructor;
 @Table(name = "user_wishes")
 public class UserWishEntity {
 
-	
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

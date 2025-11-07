@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import project.masil.dto.PostDTO;
 import project.masil.entity.PostEntity;
 import project.masil.entity.UserEntity;
 import project.masil.entity.UserWishEntity;
