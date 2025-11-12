@@ -10,7 +10,7 @@ import UserFindId from './screen/UserFindId';
 import UserFindPwd from './screen/UserFindPwd';
 import PostRegist from './screen/PostRegist';
 import RentalItem from "./screen/RentalItem";
-//tndydlftlwkr dkwn wlfngkrh Ekqnsgkst ndyldlftlw
+//tndydlftlwkr dkwn wlfngkrh Ekqnsgkst ndyldlft
 function App() {
   return (
     <ProjectProvider>
