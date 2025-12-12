@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import project.masil.service.AuthService;
-import project.masil.service.JwtTokenProvider;
 
 @RestController
 @RequestMapping("/auth")

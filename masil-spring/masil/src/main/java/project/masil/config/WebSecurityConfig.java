@@ -34,9 +34,8 @@ public class WebSecurityConfig implements WebMvcConfigurer {
     
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http.csrf().disable()
-		.cors().configurationSource(corsConfigurationSource()) // CORS 설정 추가
-		.and()
+		http.csrf(csrf -> csrf.disable())
+		.cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS 설정 추가
 		.authorizeHttpRequests(authz -> authz.requestMatchers(
 				"/chat",
 				"/location",

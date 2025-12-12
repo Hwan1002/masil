@@ -50,6 +50,7 @@ public class PostEntity {
 	@ElementCollection
 	@CollectionTable(name = "post_photos", joinColumns = @JoinColumn(name = "postIdx"))
 	@Column(name = "photoPath")
+	@Builder.Default
 	private List<String> postPhotoPaths = new ArrayList<>(); // 게시글사진경로
 
 	private LocalDateTime postStartDate; // 제품 빌리는 시작 날짜,시간
@@ -76,6 +77,7 @@ public class PostEntity {
 
 	
 	@OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+	@Builder.Default
 	private List<UserWishEntity> wishedBy = new ArrayList<>();
 	
 	

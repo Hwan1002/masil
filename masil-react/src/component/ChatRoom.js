@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useChatContext } from "../context/ChatContext";
+import { formatMessageTime } from "../utils/utils.ts";
 
 export default function ChatRoom() {
   const [inputMessage, setInputMessage] = useState("");
@@ -14,8 +15,14 @@ export default function ChatRoom() {
   const loginInfo = JSON.parse(localStorage.getItem("login-storage"));
   const myUserId = loginInfo?.state?.userId;
 
+  // 메시지가 추가될 때 자동으로 스크롤 (새 메시지 감지)
   useEffect(() => {
-    scrollToBottom();
+    // 짧은 지연을 두어 DOM 업데이트 후 스크롤
+    const timeoutId = setTimeout(() => {
+      scrollToBottom();
+    }, 100);
+
+    return () => clearTimeout(timeoutId);
   }, [messages]);
 
   // 컴포넌트 언마운트 시 WebSocket 연결 해제 (걍 채팅방에서 나가면 연결 해제라는 뜻)
@@ -54,12 +61,25 @@ export default function ChatRoom() {
     }
     // WebSocket 연결 상태 확인
     if (!wsRef.current) {
-      alert("채팅 연결이 설정되지 않았습니다. 다시 시도해주세요.");
+      console.error("WebSocket 연결이 없습니다. 현재 상태:", wsRef.current);
+      alert("채팅 연결이 설정되지 않았습니다. 페이지를 새로고침해주세요.");
       return;
     }
 
-    if (wsRef.current.readyState !== WebSocket.OPEN) {
-      alert("채팅 연결이 끊어졌습니다. 다시 연결해주세요.");
+    const readyState = wsRef.current.readyState;
+    console.log("WebSocket 상태 확인:", {
+      readyState: readyState,
+      CONNECTING: WebSocket.CONNECTING,
+      OPEN: WebSocket.OPEN,
+      CLOSING: WebSocket.CLOSING,
+      CLOSED: WebSocket.CLOSED,
+    });
+
+    if (readyState !== WebSocket.OPEN) {
+      console.error("WebSocket이 열려있지 않습니다. 상태:", readyState);
+      alert(
+        `채팅 연결이 끊어졌습니다. (상태: ${readyState}) 페이지를 새로고침해주세요.`
+      );
       return;
     }
 
@@ -81,16 +101,12 @@ export default function ChatRoom() {
 
   // 최근에 온 메시지 확인할때 스크롤 맨 아래로
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  // 메시지 시간 한국시간으로 나오게
-  const formatMessageTime = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleTimeString("ko-KR", {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+      });
+    }
   };
 
   if (!room) {
@@ -135,15 +151,18 @@ export default function ChatRoom() {
               아직 메시지가 없습니다.
             </div>
           ) : (
-            messages.map((msg) => (
+            messages.map((msg, index) => (
               <div
-                key={msg.messageId || Math.random()}
+                key={msg.messageId || `msg-${index}`}
                 className={`flex ${
                   msg.senderId === myUserId ? "justify-end" : "justify-start"
-                }`}
+                } animate-fade-in`}
+                style={{
+                  animation: "fadeIn 0.3s ease-in",
+                }}
               >
                 <div
-                  className={`max-w-xs p-3 rounded-lg shadow ${
+                  className={`max-w-xs p-3 rounded-lg shadow transition-all duration-300 ${
                     msg.senderId === myUserId
                       ? "bg-green-500 text-white"
                       : "bg-white border"
