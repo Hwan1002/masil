@@ -1,26 +1,19 @@
 /* 로그인 섹션 컨테이너 */
 .FindId_container {
-    width: 100vw;
-    min-width: 300px;
-    max-width: 600px;
-    height: 100dvh;
-    overflow-y: hidden;
     display: flex;
-    justify-content: center; /* 가로 중앙 */
-    align-items: center;     /* 세로 중앙 */
-    padding: 16px;
-}
-
-.findId_second_container{
-    display: flex;
-    flex: 1;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 30em;
     padding: 50px;
+    gap: 1rem;
     border-radius: 8px;
     border: 1px solid #a9ddb7;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    overflow-y: hidden;
+    margin: 5em 20px 0 20px;
 }
+
 /* 입력 필드와 버튼을 감싸는 컨테이너 */
 .FindId_inputWrapper {
     position: relative; 
@@ -30,7 +23,7 @@
 /* 이메일 div 왼쪽정렬 */
 .FindId_left{
     display: flex;
-    flex: 1;
+    width: 100%;
     justify-content: flex-start;
 }
 
@@ -39,13 +32,12 @@
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
-    margin-bottom: 20px;
+    width: 100%;
 }
 
 /* 입력 필드 스타일 */
 .FindId_input {
-    display: flex;
-    flex: 1;
+    width: 100%;
     padding: 10px 50px 10px 10px; 
     font-size: 1rem;
     border: 1px solid #ccc;
@@ -80,8 +72,8 @@
 /* 돌아가기, 비밀번호 찾기 컨테이너 버튼 */
 .FindId_flexrow {
     display: flex;
-    flex: 1;
     flex-direction: row;
+    width: 100%;
     justify-content: space-between;
     gap: 3rem;
 }
@@ -97,7 +89,6 @@
     height: 2.5em;
     width: 100%;
     cursor: pointer;
-    border-radius: 8px;
 }
 
 /* 버튼 마우스올렸을시 색상변경*/

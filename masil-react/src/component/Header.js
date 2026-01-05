@@ -8,11 +8,12 @@ import { Link } from "react-router-dom";
 import { Api, ProjectContext } from "../context/MasilContext";
 import useModal from "../context/useModal";
 import Modal from "./Modal";
+import { useNavigate } from "react-router-dom"
 
 const Header = () => {
   const { loginSuccess, setLoginSuccess, accessToken, setAccessToken } =
     useContext(ProjectContext);
-
+    const navigate = useNavigate();
   const {
     isModalOpen,
     modalTitle,
@@ -131,6 +132,66 @@ const Header = () => {
     }
   };
 
+  const handleRentalClick = (e, item) => {
+    e.preventDefault();
+    if (loginSuccess) {
+      navigate(`/myrental`);
+    } else {
+      openModal({
+        message: "로그인이 필요한 서비스입니다.",
+        actions: [
+          {
+            label: "확인",
+            onClick: () => {
+              closeModal();
+              // navigate("/login");
+            },
+          },
+        ],
+      });
+    }
+  };
+
+  const handleWishPostClick = (e, item) => {
+    e.preventDefault();
+    if (loginSuccess) {
+      navigate(`/mywishpost`);
+    } else {
+      openModal({
+        message: "로그인이 필요한 서비스입니다.",
+        actions: [
+          {
+            label: "확인",
+            onClick: () => {
+              closeModal();
+              // navigate("/login");
+            },
+          },
+        ],
+      });
+    }
+  };
+
+  const handleChatClick = (e, item) => {
+    e.preventDefault();
+    if (loginSuccess) {
+      navigate(`/chat`);
+    } else {
+      openModal({
+        message: "로그인이 필요한 서비스입니다.",
+        actions: [
+          {
+            label: "확인",
+            onClick: () => {
+              closeModal();
+              // navigate("/login");
+            },
+          },
+        ],
+      });
+    }
+  };
+
   console.log("메시지 토탈 수", totalUrMessageCn);
   return (
     <>
@@ -145,13 +206,13 @@ const Header = () => {
             <Link to="/rentalitem" className="nav_btn">
               렌탈물품
             </Link>
-            <Link to="/myrental" className="nav_btn">
+            <Link to="/myrental" className="nav_btn" onClick={(e) => handleRentalClick(e, "/myrental")}>
               나의 게시글
             </Link>
-            <Link to="/mywishpost" className="nav_btn">
+            <Link to="/mywishpost" className="nav_btn" onClick={(e) => handleWishPostClick(e, "/mywishpost")}>
               찜<i className="ml-1 text-red-500 fas fa-heart"></i>
             </Link>
-            <Link to="/chat" className="nav_btn">
+            <Link to="/chat" className="nav_btn" onClick={(e) => handleChatClick(e, "/chat")}>
               <div className="flex justify-center items-center w-[80px]">
                 채팅
                 <i className="ml-1 fas fa-comment-dots text-[#a9ddb7]"></i>

@@ -25,7 +25,7 @@ const MyWishPost = () => {
         </h2>
       </div>
       <div className="gap-8 rental-container">
-        {currentItems.map((item) => (
+        {currentItems?.map((item) => (
           <a
             href={`/post/item/${item.postIdx}`}
             className="rental-item"
