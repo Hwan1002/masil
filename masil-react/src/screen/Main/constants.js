@@ -4,6 +4,7 @@ import {
   FaHome,
   FaTools,
   FaUtensils,
+  FaDumbbell 
 } from "react-icons/fa";
 
 export const category = [
@@ -26,5 +27,9 @@ export const category = [
   {
     name: "잡동사니",
     icon: <FaBoxOpen className="text-xl" />,
+  },
+  {
+    name: "운동기구",
+    icon: <FaDumbbell  className="text-xl" />,
   },
 ];
