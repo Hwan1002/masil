@@ -70,10 +70,10 @@ const Main = () => {
                 우리 동네 인기 대여 물품
               </h3>
               <div className="grid grid-cols-2 gap-4">
-                <div className="p-4 bg-white rounded-lg shadow-sm">
+                <div className="p-2 bg-white rounded-lg shadow-sm">
                   <p className="text-green-500">🏆 캠핑용품</p>
                 </div>
-                <div className="p-4 bg-white rounded-lg shadow-sm">
+                <div className="p-2 bg-white rounded-lg shadow-sm">
                   <p className="text-green-500">💪 운동기구</p>
                 </div>
               </div>
