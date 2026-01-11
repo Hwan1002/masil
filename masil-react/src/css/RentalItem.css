@@ -41,7 +41,6 @@ body {
   box-sizing: border-box;
   width: 100%;
   overflow-x: hidden;
-  margin-top: 104px;
   margin-bottom: 50px;
 }
 
@@ -208,6 +207,10 @@ body {
     position: fixed;
     bottom: 0;
     right: 0;
+  }
+
+  .content-section{
+    margin-top: 104px;
   }
 }
 
