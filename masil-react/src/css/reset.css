@@ -106,11 +106,11 @@ p {
 
 /* 헤더 스타일 */
 .header {
-  @apply fixed top-0 right-0 left-0 z-50 bg-green-400;
+  @apply fixed top-0 right-0 left-0 z-50 bg-green-400 px-2;
 }
 
 .header_container {
-  @apply w-[70rem] h-[72px] my-4 mx-auto flex items-center justify-between px-6 bg-white rounded-[20px] shadow-[0_0_15px_3px_#a9ddb7];
+  @apply w-[100%] max-w-[70rem] h-[72px] my-4 mx-auto flex items-center justify-between px-6 bg-white rounded-[20px] shadow-[0_0_15px_3px_#a9ddb7];
 }
 
 .header_left {
@@ -234,4 +234,68 @@ p {
 
 .focus-ring {
   @apply focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50;
+}
+
+
+
+/* 모바일 메뉴 래퍼 */
+.mobile_menu {
+  @apply relative flex flex-1 w-full justify-end;
+}
+
+/* 햄버거 버튼 */
+.hamburger_btn {
+  @apply text-[22px] bg-none border-0 cursor-pointer;
+}
+
+/* 슬라이드 드로어 */
+.mobile_drawer {
+  @apply fixed left-0 bg-white flex flex-col p-4 z-[999];
+  @apply w-[100%] h-[100%];
+  @apply shadow-[4px_0_15px_rgba(0,0,0,0.15)];
+
+  top: 104px;
+
+  /* 핵심 */
+  transform: translateX(-100%);
+  transition: transform 0.25s ease-in-out;
+}
+
+.mobile_drawer.close {
+  transform: translateX(-100%);
+  pointer-events: none;
+}
+
+.mobile_drawer.open {
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+/* 링크 & 버튼 공통 */
+.mobile_drawer a,
+.mobile_drawer button {
+  @apply px-2 py-3 text-[16px] text-left cursor-pointer text-gray-800;
+  @apply bg-transparent border-0;
+}
+
+/* hover 효과 */
+.mobile_drawer a:hover,
+.mobile_drawer button:hover {
+  @apply bg-gray-100 rounded-lg;
+}
+
+/* 구분선 */
+.mobile_drawer hr {
+  @apply my-3;
+}
+
+
+/* 좌 → 우 슬라이드 애니메이션 */
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
