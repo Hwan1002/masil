@@ -38,8 +38,14 @@ const RentalItem = () => {
           </div>
         </div>
       </aside>
+
       {/* 콘텐츠 섹션 */}
       <div className="content-section">
+         <div>
+          <h2 className="flex justify-center items-center gap-2 mb-6 text-xl font-bold" >
+            나의 게시글<i className="text-red-500 fas fa-bookmark text-xl"></i>
+          </h2>
+        </div>
         <div className="rental-container">
           {currentItems.map((item) => (
             <a

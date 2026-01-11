@@ -18,10 +18,10 @@ const MyWishPost = () => {
   } = useMyWishPost();
 
   return (
-    <div className="flex flex-col gap-y-5 p-10">
+    <div className="flex flex-col gap-y-5 p-10" style={{ marginTop: '104px' }}>
       <div>
-        <h2 className="flex gap-2 mb-6 text-xl font-bold">
-          나의 찜 목록<i className="text-red-500 fas fa-heart"></i>
+        <h2 className="flex justify-center items-center gap-2 mb-6 text-xl font-bold" >
+          나의 찜 목록<i className="text-red-500 fas fa-heart text-xl"></i>
         </h2>
       </div>
       <div className="gap-8 rental-container">

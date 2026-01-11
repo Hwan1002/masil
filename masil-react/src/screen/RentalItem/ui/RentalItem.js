@@ -74,6 +74,9 @@ const RentalItem = () => {
 
       {/* 콘텐츠 섹션 */}
       <div className="content-section">
+        <h2 className="flex justify-center items-center gap-2 mb-6 text-xl font-bold" >
+          렌탈 물품<i className="text-red-500 fas fa-box text-xl"></i>
+        </h2>
         <div className="rental-container">
           {currentItems.map((item) => (
             <a
