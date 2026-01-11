@@ -51,7 +51,7 @@ const MyWishPost = () => {
           </a>
         ))}
       </div>
-      <div className="pagination-wrapper">
+      <div className="pagination-wrapper" style={{ display: window.innerWidth <= 600 ? 'none' : 'block' }}>
         <div className="pagination">
           <button
             onClick={() => goToPage(currentPage - 1)}

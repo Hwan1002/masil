@@ -69,7 +69,7 @@ const RentalItem = () => {
         </div>
 
         {/* 페이지네이션 */}
-        <div className="pagination-wrapper">
+        <div className="pagination-wrapper" style={{ display: window.innerWidth <= 600 ? 'none' : 'block' }}>
           <div className="pagination">
             <button
               onClick={() => goToPage(currentPage - 1)}
