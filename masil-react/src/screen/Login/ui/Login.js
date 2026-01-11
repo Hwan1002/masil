@@ -72,12 +72,13 @@ const Login = () => {
         <div className="social-login-title">소셜 계정으로 간편 로그인</div>
         <div className="sns_container">
           <div className="sns_item">
-            <button onClick={() => socialLogin("kakao")} className="sns_button">
+            <button type="button" onClick={() => socialLogin("kakao")} className="sns_button">
               <img src={kakao} alt="카카오 로그인" className="sns_image" />
             </button>
           </div>
           <div className="sns_item">
             <button
+              type="button"
               onClick={() => socialLogin("google")}
               className="sns_button"
             >
@@ -85,7 +86,7 @@ const Login = () => {
             </button>
           </div>
           <div className="sns_item">
-            <button onClick={() => socialLogin("naver")} className="sns_button">
+            <button type="button" onClick={() => socialLogin("naver")} className="sns_button">
               <img src={naver} alt="네이버 로그인" className="sns_image" />
             </button>
           </div>
