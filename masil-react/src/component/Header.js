@@ -3,6 +3,7 @@ import React, {
   useLayoutEffect,
   useState,
   useCallback,
+  useEffect
 } from "react";
 import { Link } from "react-router-dom";
 import { Api, ProjectContext } from "../context/MasilContext";
@@ -24,6 +25,8 @@ const Header = () => {
   } = useModal();
 
   const [totalUrMessageCn, setTotalUrMessageCn] = useState(0);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 600);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   // getTotalUnreadMessageCount 함수를 useCallback으로 감싸기
   const getTotalUnreadMessageCount = useCallback(async () => {
@@ -54,6 +57,35 @@ const Header = () => {
     }
   }, [accessToken]);
 
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
+
+  useLayoutEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 600px)");
+
+    const handleChange = (e) => {
+      setIsMobile(e.matches);
+    };
+
+    // 초기값 보정
+    setIsMobile(mediaQuery.matches);
+
+    mediaQuery.addEventListener("change", handleChange);
+
+    return () => {
+      mediaQuery.removeEventListener("change", handleChange);
+    };
+  },[]);
+
   useLayoutEffect(() => {
     getTotalUnreadMessageCount();
 
@@ -80,6 +112,9 @@ const Header = () => {
         }
       }
     };
+
+
+
 
     // Chat.js에서 계산된 총 읽지 않은 메시지 수 업데이트
     const handleTotalUnreadCountUpdate = (event) => {
@@ -134,6 +169,7 @@ const Header = () => {
 
   const handleRentalClick = (e, item) => {
     e.preventDefault();
+    setMobileOpen(false);
     if (loginSuccess) {
       navigate(`/myrental`);
     } else {
@@ -154,6 +190,7 @@ const Header = () => {
 
   const handleWishPostClick = (e, item) => {
     e.preventDefault();
+    setMobileOpen(false);
     if (loginSuccess) {
       navigate(`/mywishpost`);
     } else {
@@ -174,6 +211,7 @@ const Header = () => {
 
   const handleChatClick = (e, item) => {
     e.preventDefault();
+    setMobileOpen(false);
     if (loginSuccess) {
       navigate(`/chat`);
     } else {
@@ -197,71 +235,144 @@ const Header = () => {
     <>
       <header className="header">
         <div className="header_container">
-          <div className="header_left">
-            <a href="/" className="logo_btn">
-              Masil
-            </a>
-          </div>
-          <nav className="header_center">
-            <Link to="/rentalitem" className="nav_btn">
-              렌탈물품
-            </Link>
-            <Link to="/myrental" className="nav_btn" onClick={(e) => handleRentalClick(e, "/myrental")}>
-              나의 게시글
-            </Link>
-            <Link to="/mywishpost" className="nav_btn" onClick={(e) => handleWishPostClick(e, "/mywishpost")}>
-              찜<i className="ml-1 text-red-500 fas fa-heart"></i>
-            </Link>
-            <Link to="/chat" className="nav_btn" onClick={(e) => handleChatClick(e, "/chat")}>
-              <div className="flex justify-center items-center w-[80px]">
-                채팅
-                <i className="ml-1 fas fa-comment-dots text-[#a9ddb7]"></i>
-                {totalUrMessageCn > 0 && (
-                  <span className="flex justify-center items-center ml-1 min-w-[20px] h-5 px-1 text-xs text-white bg-red-500 rounded-full animate-shake">
-                    {totalUrMessageCn > 99 ? "99+" : totalUrMessageCn}
-                  </span>
-                )}
-              </div>
-            </Link>
-          </nav>
-          <div className="header_right">
-            {loginSuccess ? (
-              <>
-                <button
-                  className="auth_btn"
-                  onClick={() =>
-                    openModal({
-                      message: "로그아웃 하시겠습니까?",
-                      actions: [
-                        {
-                          label: "확인",
-                          onClick: () => {
-                            logoutClicked();
+       
+            <div className="header_left">
+              <a href="/" className="logo_btn">
+                Masil
+              </a>
+            </div>
+      
+          {isMobile && (
+            <div className="mobile_menu">
+              <button
+                className="hamburger_btn"
+                onClick={() => setMobileOpen((prev) => !prev)}
+              >
+                <i className="fas fa-bars"></i>
+              </button>
+
+                <div className={`mobile_drawer ${mobileOpen ? "open" : "close"}`}>
+                  <Link to="/rentalitem" onClick={() => setMobileOpen(false)}>
+                    렌탈물품
+                  </Link>
+
+                  <Link to="/myrental" onClick={handleRentalClick}>
+                    나의 게시글
+                  </Link>
+
+                  <Link to="/mywishpost" onClick={handleWishPostClick}>
+                    찜
+                  </Link>
+
+                  <Link to="/chat" onClick={handleChatClick}>
+                    채팅 {totalUrMessageCn > 0 && `(${totalUrMessageCn})`}
+                  </Link>
+
+                  <hr />
+
+                  {loginSuccess ? (
+                    <>
+                      <button
+                        className="auth_btn"
+                        onClick={() => {
+                          setMobileOpen(false);
+
+                          openModal({
+                            message: "로그아웃 하시겠습니까?",
+                            actions: [
+                              {
+                                label: "확인",
+                                onClick: () => {
+                                  logoutClicked();
+                                  closeModal();
+                                },
+                              },
+                              {
+                                label: "취소",
+                                onClick: closeModal,
+                              },
+                            ],
+                          });
+                        }}
+                      >
+                        로그아웃
+                      </button>
+                      <Link to="/mypage" onClick={() => setMobileOpen(false)}>마이페이지</Link>
+                    </>
+                  ) : (
+                    <>
+                      <Link to="/login" onClick={() => setMobileOpen(false)}>로그인</Link>
+                      <Link to="/signup" onClick={() => setMobileOpen(false)}>회원가입</Link>
+                    </>
+                  )}
+                </div>
+            </div>
+          )}
+          {!isMobile && (
+            <nav className="header_center">
+              <Link to="/rentalitem" className="nav_btn">
+                렌탈물품
+              </Link>
+              <Link to="/myrental" className="nav_btn" onClick={(e) => handleRentalClick(e, "/myrental")}>
+                나의 게시글
+              </Link>
+              <Link to="/mywishpost" className="nav_btn" onClick={(e) => handleWishPostClick(e, "/mywishpost")}>
+                찜<i className="ml-1 text-red-500 fas fa-heart"></i>
+              </Link>
+              <Link to="/chat" className="nav_btn" onClick={(e) => handleChatClick(e, "/chat")}>
+                <div className="flex justify-center items-center w-[80px]">
+                  채팅
+                  <i className="ml-1 fas fa-comment-dots text-[#a9ddb7]"></i>
+                  {totalUrMessageCn > 0 && (
+                    <span className="flex justify-center items-center ml-1 min-w-[20px] h-5 px-1 text-xs text-white bg-red-500 rounded-full animate-shake">
+                      {totalUrMessageCn > 99 ? "99+" : totalUrMessageCn}
+                    </span>
+                  )}
+                </div>
+              </Link>
+            </nav>
+          )}
+          {!isMobile && (
+            <div className="header_right">
+              {loginSuccess ? (
+                <>
+                  <button
+                    className="auth_btn"
+                    onClick={() =>
+                      openModal({
+                        message: "로그아웃 하시겠습니까?",
+                        actions: [
+                          {
+                            label: "확인",
+                            onClick: () => {
+                              logoutClicked();
+                            },
                           },
-                        },
-                        { label: "취소", onClick: closeModal },
-                      ],
-                    })
-                  }
-                >
-                  로그아웃
-                </button>
-                <Link to="/mypage" className="auth_btn">
-                  마이페이지
-                </Link>
-              </>
-            ) : (
-              <>
-                <Link to="/signup" className="auth_btn">
-                  회원가입
-                </Link>
-                <Link to="/login" className="auth_btn">
-                  로그인
-                </Link>
-              </>
-            )}
+                          { label: "취소", onClick: closeModal },
+                        ],
+                      })
+                    }
+                  >
+                    로그아웃
+                  </button>
+
+                  <Link to="/mypage" className="auth_btn">
+                    마이페이지
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link to="/signup" className="auth_btn">
+                    회원가입
+                  </Link>
+                  <Link to="/login" className="auth_btn">
+                    로그인
+                  </Link>
+                </>
+              )}
+            </div>
+          )}
           </div>
-        </div>
       </header>
       <Modal
         isOpen={isModalOpen}
