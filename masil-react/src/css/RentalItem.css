@@ -41,6 +41,8 @@ body {
   box-sizing: border-box;
   width: 100%;
   overflow-x: hidden;
+  margin-top: 104px;
+  margin-bottom: 50px;
 }
 
 /* 아이템 목록 그리드 */
@@ -131,45 +133,7 @@ body {
   position: relative;
 }
 
-/* 화면 우측 하단에 고정된 버튼 스타일 */
-.fixed-button {
-  position: fixed;
-  bottom: 8rem;
-  right: 10rem;
-  background-color: #a9ddb7;
-  color: white;
-  font-size: 24px;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
 
-.fixed-button:hover {
-  background-color: #00a32c;
-}
-
-.fixed-button span {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  transform-origin: center center;
-  transition: transform 0.3s ease;
-  font-size: 35px;
-}
-
-.fixed-button:hover span {
-  transform: rotate(50deg);
-  transform-origin: center center;
-}
 
 .pagination {
   position: fixed; /* 화면에 고정 */
@@ -183,6 +147,7 @@ body {
   justify-content: center;
   width: 100%;
   z-index: 0; /* 다른 요소 위에 보이도록 */
+  background-color: #fff;
 }
 
 /* 검색 입력 필드 스타일 */
@@ -237,6 +202,12 @@ body {
 @media (max-width: 600px) {
   .rental-container {
     grid-template-columns: repeat(1, 220px);
+  }
+
+  .pagination{
+    position: fixed;
+    bottom: 0;
+    right: 0;
   }
 }
 
