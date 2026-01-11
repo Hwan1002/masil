@@ -17,10 +17,11 @@
     .categoryBtn {
         @apply w-[130px] flex items-center justify-center p-4 text-green-500 bg-white border-2 border-green-500 border-dashed rounded-lg gap-x-2 hover:transform transition-all duration-300 hover:-translate-y-1 hover:shadow-md;
     }
-
+    
+ 
     @media (max-width: 600px) {
         .mainContents {
-            @apply relative min-h-[100dvh] flex items-center justify-center flex-1;
+            @apply relative min-h-[100dvh] flex items-center justify-center;
             margin-top: 104px;
         }
 
@@ -28,4 +29,5 @@
             @apply w-full;
 
         }
+
     }
