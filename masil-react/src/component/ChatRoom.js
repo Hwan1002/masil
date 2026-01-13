@@ -126,11 +126,11 @@ export default function ChatRoom() {
   }
 
   return (
-    <div className="flex flex-col justify-center items-center mt-40">
+    <div className="flex flex-col justify-center items-center" style={{ height: '100vh' }}>
       <div className="flex justify-center items-center mt-20">
-        <h2>{getPartnerNickname(room)}님과 대화를 해보자</h2>
+        <h2>{getPartnerNickname(room)}님과 대화</h2>
       </div>
-      <div className="overflow-hidden mx-auto mt-10 max-w-2xl rounded-lg border shadow-md w-[40vw]">
+      <div className="overflow-hidden  mt-5 max-w-2xl rounded-lg border shadow-md w-[100%]">
         {/* 채팅 헤더 */}
         <div className="flex justify-between items-center px-4 py-3 text-lg font-semibold text-white bg-green-500">
           <div className="flex gap-2 items-center">
