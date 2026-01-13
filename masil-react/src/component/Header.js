@@ -70,7 +70,7 @@ const Header = () => {
   }, [mobileOpen]);
 
   useLayoutEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 600px)");
+    const mediaQuery = window.matchMedia("(max-width: 750px)");
 
     const handleChange = (e) => {
       setIsMobile(e.matches);
