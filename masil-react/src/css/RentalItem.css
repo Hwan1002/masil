@@ -15,6 +15,7 @@ body {
 }
 
 .filter-section {
+  margin-top: 104px;
   display: flex;
   width: 20em;
   padding: 16px;
