@@ -20,7 +20,6 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import project.masil.entity.UserEntity;
 
@@ -50,6 +49,7 @@ public class ChatRoomEntity {
     
 
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL)
+    @Builder.Default
     private List<ChatMessageEntity> messages = new ArrayList<>();
     
 }

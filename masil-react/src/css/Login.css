@@ -97,12 +97,13 @@
 /* SNS 개별 아이템 */
 .sns_item {
   display: flex;
+  justify-content: center;
   flex: 1;
 }
 
 /* SNS 이미지 스타일 */
 .sns_image {
-  width: 30%;
+  width: 50px;
   height: auto;
   cursor: pointer;
   border-radius: 99px;

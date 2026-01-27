@@ -17,5 +17,6 @@ public class ChatMessageDTO {
     private String receiverId; // 수신자 
     private String content; // 메세지 내용
     private LocalDateTime sentAt; // 메세지 전송 시각
+    private Boolean isRead; //0926 메시지 읽음 상태
 
 }

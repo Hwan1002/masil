@@ -52,7 +52,7 @@ public class OAuthAttributes {
     @SuppressWarnings("unchecked")
     private static OAuthAttributes ofKakao(Map<String, Object> attributes) {
         Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
-        Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
+        // Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
         if(kakaoAccount.get("email") == null) {
             throw new IllegalArgumentException("Kakao 이메일 제공 동의가 필요합니다.");
         }

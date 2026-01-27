@@ -54,9 +54,11 @@ public class UserEntity {
 	private Double lng ; // 경도 
 	
 	@OneToMany(mappedBy = "user" , cascade = CascadeType.ALL)
+	@Builder.Default
 	private List<PostEntity> posts = new ArrayList<>(); // 게시글
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	@Builder.Default
 	private List<UserWishEntity> wishes = new ArrayList<>(); // 찜한 게시글 목록
 
 	

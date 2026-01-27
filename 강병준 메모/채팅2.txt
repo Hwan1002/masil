@@ -1,0 +1,23 @@
+채팅방에서 새로고침시 채팅방을 찾을수없습니다 뜸 
+채팅방에서 채팅메세지를 주고받을시 실시간렌더링이 되지않음 .
+
+메세지를 보낼때는 낙관적업데이트를통해 서버에 전송여부와 관계없이 즉시 messages배열에 추가해주므로 
+바로 채팅창에 메세지가 보내진다 . 
+서버에 성공적으로 메세지가 전송되지않았을때에도 전송된것처럼 보일수있다는 문제가 우려된다 
+
+   public ChatMessageDTO convertToDTO(ChatMessageEntity entity) {
+    	return ChatMessageDTO.builder()
+    		      .messageId(entity.getMessageId())
+    	          .senderId(entity.getSenderId())
+    	          .receiverId(entity.getReceiverId())
+    	          .content(entity.getContent())
+    	          .sentAt(entity.getSentAt())
+    	          .build();
+    }
+    
+
+오는메세지를 어떻게보고있는지 파악해야하고 (즉시 반환되는게 없기떄문에 이건 하고나서 봐야할듯)
+챗룸에 귀속되어있는 메세지들을 어떻게 렌더링하고있는지 파악해야한다 .
+챗룸에 귀속되어있는 메세지들을 반환할때 messageDTO에는 sender(메세지를 보낸사람)의 id만 보내고있다 
+그렇기에 아마 zustand에 등록되어있는 내아이디와 비교 후 같으면 오른쪽 다르면 왼쪽에 메세지를 나열하는것같다 
+                                              

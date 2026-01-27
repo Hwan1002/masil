@@ -40,7 +40,8 @@ public class KakaoGeocodingService {
 			if (response.getStatusCode() == HttpStatus.OK) {
 				Map<String, Object> body = response.getBody();
 				if (body != null && body.containsKey("documents")) {
-					List<Map<String, Object>> documents = (List) body.get("documents");
+					@SuppressWarnings("unchecked")
+					List<Map<String, Object>> documents = (List<Map<String, Object>>) body.get("documents");
 					if (!documents.isEmpty()) {
 						return (String) documents.get(0).get("code");
 					}
