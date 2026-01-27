@@ -54,13 +54,21 @@ export const ProjectProvider = ({ children }) => {
     try {
       const { data } = await Api.post("/auth/refresh-token", {});
       const newAccessToken = data.accessToken;
-
-      Api.defaults.headers.common["Authorization"] = `Bearer ${newAccessToken}`;
-      setAccessToken(newAccessToken);
-      setLoginSuccess(true);
-      return newAccessToken;
+      if (data) {
+        Api.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${newAccessToken}`;
+        setAccessToken(newAccessToken);
+        setLoginSuccess(true);
+        return newAccessToken;
+      }
     } catch (error) {
-      console.log("Token refresh failed:", error);
+      if (error.response?.status !== 400 && error.response?.status !== 401) {
+        console.log("토큰 재발급 실패 (refreshToken): ", error);
+      }
+      if (error.response?.status === 400) {
+        console.log("아직 로그인 전");
+      }
       setAccessToken(null);
       setLoginSuccess(false);
       delete Api.defaults.headers.common["Authorization"];

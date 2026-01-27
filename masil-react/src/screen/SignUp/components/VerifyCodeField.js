@@ -26,9 +26,3 @@ const VerifyCodeField = ({
 );
 
 export default VerifyCodeField;
-
-
-
-
-
-

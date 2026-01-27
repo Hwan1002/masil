@@ -1,98 +1,97 @@
 /* 로그인 섹션 컨테이너 */
 .FindId_container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    max-width: 30em;
-    height: auto;
-    padding: 50px;
-    gap: 1rem;
-    border-radius: 8px;
-    border: 1px solid #a9ddb7;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 30em;
+  height: auto;
+  padding: 50px;
+  gap: 1rem;
+  border-radius: 8px;
+  border: 1px solid #a9ddb7;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  margin: 0 auto;
+  margin-top: 60%;
 }
 
 /* 입력 필드와 버튼을 감싸는 컨테이너 */
 .FindId_inputWrapper {
-    position: relative; 
-    width: 100%;
+  position: relative;
+  width: 100%;
 }
 
 /* 이메일 div 왼쪽정렬 */
-.FindId_left{
-    display: flex;
-    width: 100%;
-    justify-content: flex-start;
+.FindId_left {
+  display: flex;
+  width: 100%;
+  justify-content: flex-start;
 }
 
 /* 이메일입력칸과 찾기버튼 컨테이너 */
 .FindId_inputContainer {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  width: 100%;
 }
 
 /* 입력 필드 스타일 */
 .FindId_input {
-    width: 100%;
-    padding: 10px 50px 10px 10px; 
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
+  width: 100%;
+  padding: 10px 50px 10px 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
 }
 
 /* 입력필드 호버시 테두리 */
-.FindId_input:hover{
-    box-shadow: 0 0 8px rgb(65, 252, 48);
+.FindId_input:hover {
+  box-shadow: 0 0 8px rgb(65, 252, 48);
 }
 
 /* 버튼 스타일 */
 .FindId_sendBtn {
-    position: absolute;
-    top: 50%;
-    right: 5px; 
-    transform: translateY(-50%); 
-    padding: 5px 10px;
-    font-size: 0.9rem;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+  position: absolute;
+  top: 50%;
+  right: 5px;
+  transform: translateY(-50%);
+  padding: 5px 10px;
+  font-size: 0.9rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 /* 버튼 호버 효과 */
 .FindId_sendBtn:hover {
-    background-color: #42db6b;
+  background-color: #42db6b;
 }
-
 
 /* 돌아가기, 비밀번호 찾기 컨테이너 버튼 */
 .FindId_flexrow {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    justify-content: space-between;
-    gap: 3rem;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+  gap: 3rem;
 }
-
 
 /* 돌아가기, 비밀번호 찾기 버튼 */
 .FindId_button {
-    background: #a9ddb7;
-    border: none;
-    color: #fff;
-    font-size: .8rem;
-    width: 6em;
-    height: 2.5em;
-    width: 100%;
-    cursor: pointer;
+  background: #a9ddb7;
+  border: none;
+  color: #fff;
+  font-size: 0.8rem;
+  width: 6em;
+  height: 2.5em;
+  width: 100%;
+  cursor: pointer;
 }
 
 /* 버튼 마우스올렸을시 색상변경*/
 .FindId_button:hover {
-    background-color: #42db6b;
-  }
+  background-color: #42db6b;
+}
